@@ -58,14 +58,24 @@ export function EvidencePanel({ cell, onClose }: Props) {
                           {e.quote}
                         </blockquote>
                       )}
-                      <a
-                        href={e.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="mt-3 inline-flex items-center gap-1 text-xs text-accent hover:underline"
-                      >
-                        원문 보기 <ExternalLink className="w-3 h-3" />
-                      </a>
+                      <div className="mt-3 flex items-center gap-3">
+                        {e.articleId > 0 && (
+                          <a
+                            href={`/articles/${e.articleId}`}
+                            className="inline-flex items-center gap-1 text-xs text-accent hover:underline font-medium"
+                          >
+                            상세 보기
+                          </a>
+                        )}
+                        <a
+                          href={e.url}
+                          target="_blank"
+                          rel="noreferrer noopener"
+                          className="inline-flex items-center gap-1 text-xs text-fg/60 hover:text-accent"
+                        >
+                          원문 ↗ <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
                     </article>
                   ))}
                 </div>

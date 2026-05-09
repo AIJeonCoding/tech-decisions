@@ -120,6 +120,60 @@ export async function getRecentArticles(limit = 12) {
     .limit(limit);
 }
 
+export async function getArticleById(id: number) {
+  const rows = await db
+    .select({
+      id: articles.id,
+      url: articles.url,
+      title: articles.title,
+      author: articles.author,
+      summary: articles.summary,
+      bodyMd: articles.bodyMd,
+      publishedAt: articles.publishedAt,
+      tags: articles.tags,
+      domains: articles.domains,
+      decisions: articles.decisions,
+      processedAt: articles.processedAt,
+      companySlug: companies.slug,
+      companyName: companies.name,
+      companyNameKo: companies.nameKo,
+      companyBlogUrl: companies.blogUrl,
+    })
+    .from(articles)
+    .innerJoin(sources, eq(sources.id, articles.sourceId))
+    .innerJoin(companies, eq(companies.id, sources.companyId))
+    .where(eq(articles.id, id))
+    .limit(1);
+  return rows[0] ?? null;
+}
+
+export async function getAllArticleIds() {
+  return db.select({ id: articles.id, updatedAt: articles.updatedAt }).from(articles);
+}
+
+export async function getCompanyBySlug(slug: string) {
+  const rows = await db.select().from(companies).where(eq(companies.slug, slug)).limit(1);
+  return rows[0] ?? null;
+}
+
+export async function getArticlesByCompanySlug(slug: string) {
+  return db
+    .select({
+      id: articles.id,
+      title: articles.title,
+      url: articles.url,
+      summary: articles.summary,
+      domains: articles.domains,
+      tags: articles.tags,
+      publishedAt: articles.publishedAt,
+    })
+    .from(articles)
+    .innerJoin(sources, eq(sources.id, articles.sourceId))
+    .innerJoin(companies, eq(companies.id, sources.companyId))
+    .where(eq(companies.slug, slug))
+    .orderBy(desc(articles.publishedAt));
+}
+
 export async function getArticlesByIds(ids: number[]) {
   if (ids.length === 0) return [];
   return db

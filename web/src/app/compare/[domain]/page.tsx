@@ -43,13 +43,16 @@ export default async function ComparePage({ params }: Props) {
 
   // 도메인별로 관련 회사만 노출. 셀이 있는 회사 + my-project를 기본으로,
   // 결제·정산·MSA에는 핵심 핀테크 5사를 추가로 채운다.
+  // 네카라쿠배당토 + 뱅크샐러드 + my-project를 도메인별 관련 회사로 채운다.
+  const NETKARAKUBE = ['my-project', 'naver-d2', 'kakao', 'kakaopay', 'line', 'coupang', 'woowahan', 'daangn', 'toss', 'banksalad'];
   const PER_DOMAIN_PINS: Record<string, string[]> = {
-    'payment-settlement': ['my-project', 'toss', 'kakaopay', 'coupang', 'woowahan', 'banksalad'],
-    'msa-migration':      ['my-project', 'toss', 'kakaopay', 'coupang', 'woowahan'],
+    'payment-settlement': ['my-project', 'toss', 'kakaopay', 'coupang', 'woowahan', 'banksalad', 'line'],
+    'msa-migration':      ['my-project', 'toss', 'kakaopay', 'coupang', 'woowahan', 'line'],
     'realtime-data':      ['my-project', 'toss', 'kakaopay', 'coupang', 'woowahan'],
-    'search':             ['naver-d2', 'coupang', 'daangn', 'woowahan'],
-    'recommendation':     ['daangn', 'coupang', 'woowahan', 'naver-d2', 'kakaopay', 'toss'],
+    'search':             ['naver-d2', 'coupang', 'daangn', 'woowahan', 'kakao'],
+    'recommendation':     ['daangn', 'coupang', 'woowahan', 'naver-d2', 'kakaopay', 'toss', 'kakao'],
   };
+  void NETKARAKUBE;
   const pins = PER_DOMAIN_PINS[domain] ?? ['my-project'];
   const slugsWithCells = new Set(withDecisions.map((c) => c.slug));
   const allowed = new Set([...pins, ...slugsWithCells]);

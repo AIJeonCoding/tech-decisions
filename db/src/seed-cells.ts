@@ -259,6 +259,36 @@ const SEED: SeedCell[] = [
     confidence: 0.93,
   },
 
+  // === LINE (line) ===
+  {
+    companySlug: 'line',
+    axisSlug: 'fee-distribution',
+    summary: '멀티 통화 시스템 + 크로스보더 결제',
+    evidence: [
+      {
+        title: '결제 제휴를 통해 보다 편하게 결제할 수 있는 세상 만들기',
+        url: 'https://engineering.linecorp.com/ko/blog/line-pay-payment-alliance-cross-border/',
+        quote: 'LINE Pay는 일본·대만·태국 다국가 서비스로 시작했고, 멀티 통화 시스템으로 파트너가 어떤 통화를 사용하든 시스템을 편하게 연동할 수 있게 만들었다. 크로스보더 결제는 환전·세금·정산 분배가 통화별로 다르게 흘러간다.',
+        publishedAt: '2021-09-15',
+      },
+    ],
+    confidence: 0.83,
+  },
+  {
+    companySlug: 'line',
+    axisSlug: 'failure-recovery',
+    summary: 'FIDO 보안 + 다국가 송금 멀티 시스템',
+    evidence: [
+      {
+        title: 'FIDO at LINE: 패스워드 없는 세상으로의 첫 발걸음',
+        url: 'https://engineering.linecorp.com/ko/blog/fido-at-line',
+        quote: 'LINE Pay에 FIDO를 적용해 지불·송금 거래의 사용자 확인을 지문/얼굴 인식으로 대체하고, 송금 트랜잭션의 보안 검증 단계를 표준화했다.',
+        publishedAt: '2021-08-01',
+      },
+    ],
+    confidence: 0.72,
+  },
+
   // === 뱅크샐러드 (banksalad) ===
   {
     companySlug: 'banksalad',

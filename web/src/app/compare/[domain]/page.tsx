@@ -41,15 +41,24 @@ export default async function ComparePage({ params }: Props) {
     getAllCompanies(),
   ]);
 
-  // Show all major companies even if no cells yet (so empty cells render)
-  // 'my-project' (settlement-msa) is pinned first so portfolio comparison is immediately visible.
-  const PRIMARY = ['my-project', 'toss', 'kakaopay', 'coupang', 'woowahan', 'banksalad', 'naver-d2', 'daangn'];
+  // 도메인별로 관련 회사만 노출. 셀이 있는 회사 + my-project를 기본으로,
+  // 결제·정산·MSA에는 핵심 핀테크 5사를 추가로 채운다.
+  const PER_DOMAIN_PINS: Record<string, string[]> = {
+    'payment-settlement': ['my-project', 'toss', 'kakaopay', 'coupang', 'woowahan', 'banksalad'],
+    'msa-migration':      ['my-project', 'toss', 'kakaopay', 'coupang', 'woowahan'],
+    'realtime-data':      ['my-project', 'toss', 'kakaopay', 'coupang', 'woowahan'],
+    'search':             ['naver-d2', 'coupang', 'daangn', 'woowahan'],
+    'recommendation':     ['daangn', 'coupang', 'woowahan', 'naver-d2', 'kakaopay', 'toss'],
+  };
+  const pins = PER_DOMAIN_PINS[domain] ?? ['my-project'];
+  const slugsWithCells = new Set(withDecisions.map((c) => c.slug));
+  const allowed = new Set([...pins, ...slugsWithCells]);
   const companyList = all
-    .filter((c) => PRIMARY.includes(c.slug) || withDecisions.some((w) => w.id === c.id))
+    .filter((c) => allowed.has(c.slug))
     .sort((a, b) => {
-      const ai = PRIMARY.indexOf(a.slug);
-      const bi = PRIMARY.indexOf(b.slug);
-      if (ai === -1 && bi === -1) return 0;
+      const ai = pins.indexOf(a.slug);
+      const bi = pins.indexOf(b.slug);
+      if (ai === -1 && bi === -1) return a.id - b.id;
       if (ai === -1) return 1;
       if (bi === -1) return -1;
       return ai - bi;

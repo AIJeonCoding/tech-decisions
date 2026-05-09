@@ -1115,6 +1115,21 @@ const SEED: SeedCell[] = [
   {
     companySlug: 'coupang',
     domainSlug: 'recommendation',
+    axisSlug: 'serving-latency',
+    summary: 'Core Serving Layer + dual-layer 캐시 + CSP/N-CSP 격리 클러스터',
+    evidence: [
+      {
+        title: '대용량 트래픽 처리를 위한 쿠팡의 백엔드 전략',
+        url: 'https://medium.com/coupang-engineering/%EB%8C%80%EC%9A%A9%EB%9F%89-%ED%8A%B8%EB%9E%98%ED%94%BD-%EC%B2%98%EB%A6%AC%EB%A5%BC-%EC%9C%84%ED%95%9C-%EC%BF%A0%ED%8C%A1%EC%9D%98-%EB%B0%B1%EC%97%94%EB%93%9C-%EC%A0%84%EB%9E%B5-184f7fdb1367',
+        quote: '애플리케이션과 DB 사이에 NoSQL 통합 Core Serving Layer를 두고, standard + real-time 이중 캐시와 CSP/N-CSP 격리 클러스터로 99.99% 가용성을 유지한다. 모든 마이크로서비스 데이터 업데이트를 실시간으로 반영하지는 않고, 일관성 트레이드오프를 명시적으로 정한다.',
+        publishedAt: '2022-09-02',
+      },
+    ],
+    confidence: 0.85,
+  },
+  {
+    companySlug: 'coupang',
+    domainSlug: 'recommendation',
     axisSlug: 'candidate-generation',
     summary: '협업필터링 + 카탈로그 매핑',
     evidence: [

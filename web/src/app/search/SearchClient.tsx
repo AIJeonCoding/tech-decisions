@@ -110,45 +110,83 @@ export function SearchClient() {
       {loading && <div className="text-fg/50 text-sm">검색 중…</div>}
       {error && <div className="text-red-500 text-sm">{error}</div>}
 
-      <div className="space-y-3">
-        {results.map((r) => (
-          <a
-            key={r.articleId}
-            href={r.url}
-            target="_blank"
-            rel="noreferrer"
-            className="block card p-4 hover:border-accent/50 transition-colors"
-          >
-            <div className="flex items-center gap-2 text-xs text-fg/50">
-              <span>{r.companyNameKo ?? r.companyName}</span>
-              <span>·</span>
-              <span>{formatRelative(r.publishedAt)}</span>
-              <span className="ml-auto text-fg/30">rank {r.rank.toFixed(2)}</span>
-            </div>
-            <h3 className="mt-1 font-medium">{r.title}</h3>
-            {r.domains.length > 0 && (
-              <div className="mt-1.5 flex flex-wrap gap-1">
-                {r.domains.map((d) => (
-                  <span key={d} className="chip text-[10px]">
-                    {DOMAIN_LABELS[d] ?? d}
-                  </span>
-                ))}
-              </div>
-            )}
-            {r.summary && (
-              <p className="mt-2 text-sm text-fg/60 line-clamp-1">{r.summary}</p>
-            )}
-            <p
-              className="mt-2 text-sm text-fg/70 leading-relaxed line-clamp-3"
-              // FTS5 snippet returns HTML with <mark> tags around matched terms
-              dangerouslySetInnerHTML={{ __html: r.snippet || truncate(r.summary ?? '', 200) }}
-            />
-          </a>
-        ))}
-        {!loading && results.length === 0 && initialQ && (
-          <div className="text-fg/50 text-sm">검색 결과가 없습니다.</div>
-        )}
-      </div>
+      {results.length > 0 && (
+        <div className="text-xs text-fg/50 mb-2">
+          {results.length}개 결과 · 도메인별 그룹핑
+        </div>
+      )}
+      <GroupedResults results={results} />
+      {!loading && results.length === 0 && initialQ && (
+        <div className="text-fg/50 text-sm">검색 결과가 없습니다.</div>
+      )}
     </>
+  );
+}
+
+function GroupedResults({ results }: { results: SearchResult[] }) {
+  // 결과를 도메인별로 그룹핑. 한 article이 여러 도메인에 속하면 첫 도메인만 사용.
+  // 도메인 없는 결과는 '기타'로.
+  type Group = { domain: string; label: string; items: SearchResult[] };
+  const order = ['payment-settlement', 'msa-migration', 'realtime-data', 'search', 'recommendation', '_other'];
+  const groupMap = new Map<string, SearchResult[]>();
+  for (const r of results) {
+    const primary = r.domains[0] ?? '_other';
+    const list = groupMap.get(primary) ?? [];
+    list.push(r);
+    groupMap.set(primary, list);
+  }
+  const groups: Group[] = order
+    .filter((d) => groupMap.has(d))
+    .map((d) => ({
+      domain: d,
+      label: d === '_other' ? '기타' : DOMAIN_LABELS[d] ?? d,
+      items: groupMap.get(d)!,
+    }));
+
+  return (
+    <div className="space-y-6">
+      {groups.map((g) => (
+        <section key={g.domain}>
+          <div className="flex items-center gap-2 mb-2">
+            <h3 className="text-xs uppercase tracking-wider text-fg/60 font-semibold">{g.label}</h3>
+            <span className="text-xs text-fg/40">{g.items.length}건</span>
+            <div className="flex-1 h-px bg-border ml-2" />
+          </div>
+          <div className="space-y-3">
+            {g.items.map((r) => (
+              <a
+                key={r.articleId}
+                href={`/articles/${r.articleId}`}
+                className="block card p-4 hover:border-accent/50 transition-colors"
+              >
+                <div className="flex items-center gap-2 text-xs text-fg/50">
+                  <span className="font-medium text-fg/70">{r.companyNameKo ?? r.companyName}</span>
+                  <span>·</span>
+                  <span>{formatRelative(r.publishedAt)}</span>
+                  <span className="ml-auto text-fg/30">rank {r.rank.toFixed(2)}</span>
+                </div>
+                <h3 className="mt-1 font-medium">{r.title}</h3>
+                {r.domains.length > 1 && (
+                  <div className="mt-1.5 flex flex-wrap gap-1">
+                    {r.domains.slice(1).map((d) => (
+                      <span key={d} className="chip text-[10px]">
+                        {DOMAIN_LABELS[d] ?? d}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                {r.summary && (
+                  <p className="mt-2 text-sm text-fg/60 line-clamp-1">{r.summary}</p>
+                )}
+                <p
+                  className="mt-2 text-sm text-fg/70 leading-relaxed line-clamp-3"
+                  dangerouslySetInnerHTML={{ __html: r.snippet || truncate(r.summary ?? '', 200) }}
+                />
+              </a>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
   );
 }

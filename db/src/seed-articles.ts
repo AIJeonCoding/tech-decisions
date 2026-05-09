@@ -496,6 +496,16 @@ const RECOMMENDATION_ARTICLES: SeedArticle[] = [
   },
   {
     companySlug: 'coupang',
+    url: 'https://medium.com/coupang-engineering/%EB%8C%80%EC%9A%A9%EB%9F%89-%ED%8A%B8%EB%9E%98%ED%94%BD-%EC%B2%98%EB%A6%AC%EB%A5%BC-%EC%9C%84%ED%95%9C-%EC%BF%A0%ED%8C%A1%EC%9D%98-%EB%B0%B1%EC%97%94%EB%93%9C-%EC%A0%84%EB%9E%B5-184f7fdb1367',
+    title: '대용량 트래픽 처리를 위한 쿠팡의 백엔드 전략',
+    summary: 'Core Serving Layer + dual-layer 캐시 + CSP/N-CSP 격리로 99.99% 가용성',
+    bodyMd: '쿠팡은 1800만 명이 넘는 사용자에게 데이터를 지연시간 없이 전달하기 위해 Core Serving Layer를 도입했다. 애플리케이션과 데이터베이스 사이에 통합 NoSQL 저장소를 두고, standard + real-time 이중 계층 캐싱으로 응답 지연을 최소화한다. 클러스터를 CSP(Critical Service Path)와 N-CSP로 격리해 핵심 트래픽을 보호한다. 핵심 트레이드오프는 정합성: 여러 마이크로서비스의 모든 데이터 업데이트를 실시간으로 반영하지는 않으며, 일관성 수준을 도메인별로 명시적으로 정한다. 결과적으로 99.99% 가용성과 고가용성·고처리량·지연시간 최소화 세 축을 동시에 달성했다.',
+    publishedAt: '2022-09-02',
+    domains: ['recommendation', 'realtime-data', 'msa-migration'],
+    tags: ['msa', 'redis', 'observability', 'sre'],
+  },
+  {
+    companySlug: 'coupang',
     url: 'https://medium.com/coupang-engineering/matching-duplicate-items-to-improve-catalog-quality-ca4abc827f94',
     title: 'Matching duplicate items to improve catalog quality',
     summary: '중복 카탈로그 매칭으로 협업필터링 시그널이 한 상품으로 집중되어 추천 품질 개선',

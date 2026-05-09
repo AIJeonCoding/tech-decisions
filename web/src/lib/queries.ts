@@ -98,6 +98,26 @@ export async function getDomainStats(): Promise<Array<{
   `);
 }
 
+export async function getCellsByCompanySlug(slug: string) {
+  return db
+    .select({
+      cellId: cells.id,
+      domainSlug: axes.domainSlug,
+      axisName: axes.name,
+      axisSlug: axes.slug,
+      axisSortOrder: axes.sortOrder,
+      cellSummary: cells.cellSummary,
+      confidence: cells.confidence,
+      isVerified: cells.isVerified,
+      evidence: cells.evidence,
+    })
+    .from(cells)
+    .innerJoin(axes, eq(axes.id, cells.axisId))
+    .innerJoin(companies, eq(companies.id, cells.companyId))
+    .where(eq(companies.slug, slug))
+    .orderBy(axes.domainSlug, axes.sortOrder);
+}
+
 export async function getMyProjectCells(domainSlug: string) {
   const result = await db
     .select({

@@ -1,8 +1,8 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { ExternalLink, Calendar, Building2 } from 'lucide-react';
-import { getCompanyBySlug, getArticlesByCompanySlug } from '@/lib/queries';
+import { ExternalLink, Calendar, Building2, Layers, CheckCircle2 } from 'lucide-react';
+import { getCompanyBySlug, getArticlesByCompanySlug, getCellsByCompanySlug } from '@/lib/queries';
 import { formatRelative } from '@/lib/utils';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 
@@ -43,9 +43,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CompanyPage({ params }: Props) {
   const { slug } = await params;
-  const [company, articles] = await Promise.all([
+  const [company, articles, companyCells] = await Promise.all([
     getCompanyBySlug(slug),
     getArticlesByCompanySlug(slug),
+    getCellsByCompanySlug(slug),
   ]);
   if (!company) notFound();
 
@@ -131,10 +132,68 @@ export default async function CompanyPage({ params }: Props) {
           </div>
         </section>
 
+        {/* 비교 셀 미리보기 — 도메인별 그룹핑 */}
+        {companyCells.length > 0 && (
+          <section className="mb-10">
+            <h2 className="text-sm uppercase tracking-wider text-fg/50 mb-4 inline-flex items-center gap-2">
+              <Layers className="w-4 h-4" /> 비교축에서의 의사결정 ({companyCells.length}개)
+            </h2>
+            <div className="space-y-5">
+              {(() => {
+                const byDom = new Map<string, typeof companyCells>();
+                for (const c of companyCells) {
+                  const list = byDom.get(c.domainSlug) ?? [];
+                  list.push(c);
+                  byDom.set(c.domainSlug, list);
+                }
+                return Array.from(byDom.entries()).map(([dom, cells]) => (
+                  <div key={dom}>
+                    <div className="text-xs uppercase tracking-wider text-accent/80 font-semibold mb-2">
+                      {DOMAIN_LABELS[dom] ?? dom}
+                    </div>
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      {cells.map((c) => (
+                        <Link
+                          key={c.cellId}
+                          href={`/compare/${c.domainSlug}`}
+                          className={`card p-4 hover:border-accent/50 transition-colors ${isMine ? 'bg-accent/5 border-accent/30' : ''}`}
+                        >
+                          <div className="flex items-start gap-2 mb-1">
+                            <span className="text-[10px] font-mono text-accent/70 mt-0.5">
+                              {String(c.axisSortOrder ?? 0).padStart(2, '0')}
+                            </span>
+                            <span className="text-[11px] uppercase tracking-wider text-fg/55 font-semibold">
+                              {c.axisName}
+                            </span>
+                          </div>
+                          <p className="text-sm font-medium leading-snug">{c.cellSummary}</p>
+                          <div className="mt-2 flex items-center gap-2 text-[11px] text-fg/45">
+                            <span className={`inline-flex items-center gap-0.5 ${(c.confidence ?? 0) >= 0.85 ? 'text-accent' : ''}`}>
+                              {(c.confidence ?? 0) >= 0.85 && <CheckCircle2 className="w-3 h-3" />}
+                              신뢰도 {Math.round((c.confidence ?? 0) * 100)}%
+                            </span>
+                            <span>·</span>
+                            <span>근거 {c.evidence?.length ?? 0}건</span>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                ));
+              })()}
+            </div>
+          </section>
+        )}
+
+        {articles.length > 0 && (
+          <h2 className="text-sm uppercase tracking-wider text-fg/50 mb-4 inline-flex items-center gap-2">
+            <Calendar className="w-4 h-4" /> 인덱싱된 글 ({articles.length}편)
+          </h2>
+        )}
         {Array.from(byDomain.entries()).map(([domain, list]) => (
           <section key={domain} className="mb-10">
             <div className="flex items-baseline justify-between mb-3">
-              <h2 className="text-lg font-bold">{DOMAIN_LABELS[domain] ?? domain}</h2>
+              <h3 className="text-lg font-bold">{DOMAIN_LABELS[domain] ?? domain}</h3>
               <Link
                 href={`/compare/${domain}`}
                 className="text-xs text-accent hover:underline"

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Star, ChevronRight } from 'lucide-react';
+import { Star, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { cn, truncate } from '@/lib/utils';
 import { EvidencePanel } from './EvidencePanel';
 import type { CellWithCompany } from '@/lib/queries';
@@ -225,7 +225,12 @@ export function CompareTable({ axes, companies, cells }: Props) {
                               </blockquote>
                             )}
                             <div className="text-[11px] text-fg/45 mt-3 flex items-center gap-2 group-hover:text-accent/70 transition-colors">
-                              <span className="font-medium">신뢰도 {Math.round((cell.confidence ?? 0) * 100)}%</span>
+                              {(cell.confidence ?? 0) >= 0.85 && (
+                                <CheckCircle2 className="w-3 h-3 text-green-600 shrink-0" />
+                              )}
+                              <span className={cn('font-medium', (cell.confidence ?? 0) >= 0.85 && 'text-green-700')}>
+                                신뢰도 {Math.round((cell.confidence ?? 0) * 100)}%
+                              </span>
                               <span>·</span>
                               <span>근거 {cell.evidence?.length ?? 0}건</span>
                               <ChevronRight className="w-3 h-3 ml-auto" />

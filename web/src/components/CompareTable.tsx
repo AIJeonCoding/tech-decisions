@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Star, ChevronRight } from 'lucide-react';
 import { cn, truncate } from '@/lib/utils';
 import { EvidencePanel } from './EvidencePanel';
@@ -86,7 +86,14 @@ export function CompareTable({ axes, companies, cells }: Props) {
     <div className="space-y-4">
       {/* 회사 토글 */}
       <div>
-        <div className="text-xs text-fg/50 uppercase tracking-wider mb-2">비교 대상 회사</div>
+        <div className="flex items-center justify-between mb-2">
+          <div className="text-xs text-fg/50 uppercase tracking-wider">비교 대상 회사</div>
+          <div className="text-xs text-fg/50">
+            <span className="font-medium text-fg">{visibleCompanies.length}개 표시</span>
+            <span className="mx-1.5">·</span>
+            <span>{sortedCompanies.length - visibleCompanies.length}개 숨김</span>
+          </div>
+        </div>
         <div className="flex flex-wrap gap-2">
           {sortedCompanies.map((c) => {
             const on = filteredCompanies.has(c.id);
@@ -101,7 +108,7 @@ export function CompareTable({ axes, companies, cells }: Props) {
                     ? isMine
                       ? 'bg-accent text-white border-accent shadow-sm'
                       : 'bg-accent/10 border-accent/40 text-accent'
-                    : 'bg-muted border-border text-fg/50 hover:bg-muted/70',
+                    : 'bg-muted border-border text-fg/40 hover:bg-muted/70 line-through decoration-fg/30',
                 )}
               >
                 {isMine && <Star className="w-3 h-3 fill-current" />}
@@ -112,18 +119,28 @@ export function CompareTable({ axes, companies, cells }: Props) {
         </div>
       </div>
 
-      <p className="text-xs text-fg/50">
-        ← 좌우로 스크롤하여 모든 회사 비교 · 셀 클릭하면 출처 패널이 열립니다
-      </p>
+      <div className="flex items-center gap-2 text-xs text-fg/55">
+        <span className="inline-flex items-center gap-1 px-2 py-1 rounded bg-muted/50 font-medium">
+          ← 가로 스크롤 →
+        </span>
+        <span>모든 회사를 비교하려면 좌우로 스크롤 · 셀 클릭하면 출처 패널이 열립니다</span>
+      </div>
 
       {/* 비교 테이블 */}
-      <div className="card overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm border-collapse">
+      <div className="card overflow-hidden relative">
+        <ScrollableTable visibleCount={visibleCompanies.length}>
+          <table
+            className="text-sm border-collapse"
+            style={{
+              tableLayout: 'fixed',
+              minWidth: `${260 + visibleCompanies.length * 300}px`,
+              width: '100%',
+            }}
+          >
             <colgroup>
-              <col className="w-[260px]" />
+              <col style={{ width: 260 }} />
               {visibleCompanies.map((c) => (
-                <col key={c.id} className="min-w-[280px]" />
+                <col key={c.id} style={{ width: 300 }} />
               ))}
             </colgroup>
             <thead>
@@ -226,10 +243,72 @@ export function CompareTable({ axes, companies, cells }: Props) {
               ))}
             </tbody>
           </table>
-        </div>
+        </ScrollableTable>
       </div>
 
       <EvidencePanel cell={selected} onClose={() => setSelected(null)} />
+    </div>
+  );
+}
+
+/**
+ * 가로 스크롤 컨테이너. 좌·우에 fade gradient + 스크롤 가능 인디케이터를 표시해
+ * 화면 밖에 추가 회사가 더 있다는 사실을 시각적으로 알린다.
+ */
+function ScrollableTable({ children, visibleCount }: { children: React.ReactNode; visibleCount: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [showLeft, setShowLeft] = useState(false);
+  const [showRight, setShowRight] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const update = () => {
+      const { scrollLeft, scrollWidth, clientWidth } = el;
+      setShowLeft(scrollLeft > 8);
+      setShowRight(scrollLeft + clientWidth < scrollWidth - 8);
+    };
+    update();
+    el.addEventListener('scroll', update, { passive: true });
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener('scroll', update);
+      ro.disconnect();
+    };
+  }, [visibleCount]);
+
+  return (
+    <div className="relative">
+      <div ref={ref} className="overflow-x-auto">
+        {children}
+      </div>
+      {/* 좌측 fade — 비교축 sticky 컬럼 뒤로 스크롤이 진행됐다는 신호 */}
+      <div
+        className={cn(
+          'pointer-events-none absolute top-0 bottom-0 left-[260px] w-8',
+          'bg-gradient-to-r from-bg/95 to-transparent transition-opacity duration-200',
+          showLeft ? 'opacity-100' : 'opacity-0',
+        )}
+      />
+      {/* 우측 fade — 추가 회사가 화면 밖에 있다는 신호 */}
+      <div
+        className={cn(
+          'pointer-events-none absolute top-0 bottom-0 right-0 w-12',
+          'bg-gradient-to-l from-bg via-bg/80 to-transparent transition-opacity duration-200',
+          showRight ? 'opacity-100' : 'opacity-0',
+        )}
+      />
+      {/* 우측 floating 인디케이터 */}
+      {showRight && (
+        <div
+          className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2
+                     px-2 py-1.5 rounded-md bg-accent text-white text-xs font-medium shadow-lg
+                     flex items-center gap-1 animate-pulse"
+        >
+          더 보기 <ChevronRight className="w-3 h-3" />
+        </div>
+      )}
     </div>
   );
 }

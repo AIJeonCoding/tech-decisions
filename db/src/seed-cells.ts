@@ -524,6 +524,153 @@ const SEED: SeedCell[] = [
   },
 
   // ============================================================
+  // === 실시간 데이터 파이프라인 (realtime-data) === V1 추가
+  // ============================================================
+
+  // --- 토스 (toss) ---
+  {
+    companySlug: 'toss',
+    domainSlug: 'realtime-data',
+    axisSlug: 'cdc-pipeline',
+    summary: 'CDC 기반 실시간 데이터 반영',
+    evidence: [
+      {
+        title: '고객은 절대 기다려주지 않는다: 빠른 데이터 서빙으로 고객 만족도를 수직 상승',
+        url: 'https://toss.tech/article/payments-legacy-7',
+        quote: '검색은 Elasticsearch, 조인/통합 원장은 StarRocks에 맡겨 각 엔진의 강점을 조합했고, CDC 기반 실시간 데이터 반영으로 정합성을 확보했다.',
+        publishedAt: '2025-12-16',
+      },
+    ],
+    confidence: 0.86,
+  },
+  {
+    companySlug: 'toss',
+    domainSlug: 'realtime-data',
+    axisSlug: 'delivery-semantics',
+    summary: 'Merge on Read + 멱등 처리',
+    evidence: [
+      {
+        title: '고객은 절대 기다려주지 않는다',
+        url: 'https://toss.tech/article/payments-legacy-7',
+        quote: '거래 상태 변경이 발생할 때 보정 내역과 무효화 내역을 별도로 적재한 뒤, 매번 Merge on Read 방식으로 조인하여 최신 상태를 정확히 계산한다.',
+        publishedAt: '2025-12-16',
+      },
+    ],
+    confidence: 0.82,
+  },
+
+  // --- 우아한형제들 (woowahan) ---
+  {
+    companySlug: 'woowahan',
+    domainSlug: 'realtime-data',
+    axisSlug: 'message-broker',
+    summary: 'Kafka',
+    evidence: [
+      {
+        title: '우리 팀은 카프카를 어떻게 사용하고 있을까',
+        url: 'https://techblog.woowahan.com/17386/',
+        quote: '배민배달은 데이터와 메시지 발행의 트랜잭션을 하나로 관리해 정합성을 확보하고, 카프카에 문제가 발생할 경우 데이터베이스에는 변경된 배달상태가 저장되었으나 이벤트는 발행되지 않을 수 있는 문제를 해결한다.',
+        publishedAt: '2024-05-30',
+      },
+    ],
+    confidence: 0.90,
+  },
+  {
+    companySlug: 'woowahan',
+    domainSlug: 'realtime-data',
+    axisSlug: 'cdc-pipeline',
+    summary: 'Debezium MySQL source connector + 토픽별 outbox 분리',
+    evidence: [
+      {
+        title: '우리 팀은 카프카를 어떻게 사용하고 있을까',
+        url: 'https://techblog.woowahan.com/17386/',
+        quote: 'Debezium의 MySQL source connector는 태스크를 하나만 사용하도록 강제해 메시지 전송 순서를 보장하며, 처리량을 위해 delivery-outbox1, delivery-outbox2, delivery-outbox3처럼 토픽별 outbox 테이블을 분리해 각 테이블에 커넥터를 연결한다.',
+        publishedAt: '2024-05-30',
+      },
+    ],
+    confidence: 0.93,
+  },
+  {
+    companySlug: 'woowahan',
+    domainSlug: 'realtime-data',
+    axisSlug: 'partition-routing',
+    summary: '단일 태스크 + 토픽별 분리로 순서·처리량 동시 확보',
+    evidence: [
+      {
+        title: '우리 팀은 카프카를 어떻게 사용하고 있을까',
+        url: 'https://techblog.woowahan.com/17386/',
+        quote: '단일 커넥터에서 메시지 전송 순서를 보장하면서도 토픽별 outbox 테이블을 여러 개로 분리해 처리량을 확보했다.',
+        publishedAt: '2024-05-30',
+      },
+    ],
+    confidence: 0.85,
+  },
+
+  // --- 카카오페이 (kakaopay) ---
+  {
+    companySlug: 'kakaopay',
+    domainSlug: 'realtime-data',
+    axisSlug: 'message-broker',
+    summary: 'RabbitMQ → Kafka 재설계',
+    evidence: [
+      {
+        title: '지연이체 서비스 개발기',
+        url: 'https://tech.kakaopay.com/post/ifkakao2024-delayed-transfer/',
+        quote: 'RabbitMQ를 Kafka 기반으로 재설계하고, 같은 사용자의 송금 건을 동일 Consumer에서 처리하도록 최적화해 처리 속도를 8배 향상시켰다 (68분 → 8분).',
+        publishedAt: '2024-12-10',
+      },
+    ],
+    confidence: 0.91,
+  },
+  {
+    companySlug: 'kakaopay',
+    domainSlug: 'realtime-data',
+    axisSlug: 'partition-routing',
+    summary: '동일 사용자 → 동일 Consumer 라우팅 + 유저락',
+    evidence: [
+      {
+        title: '지연이체 서비스 개발기',
+        url: 'https://tech.kakaopay.com/post/ifkakao2024-delayed-transfer/',
+        quote: '중복 송금 방지를 위해 상태 체킹과 유저락을 적용하고, 같은 사용자의 송금 건을 동일 Consumer에서 처리하도록 최적화했다.',
+        publishedAt: '2024-12-10',
+      },
+    ],
+    confidence: 0.89,
+  },
+
+  // --- 쿠팡 (coupang) ---
+  {
+    companySlug: 'coupang',
+    domainSlug: 'realtime-data',
+    axisSlug: 'stream-processing',
+    summary: 'Kafka + Flink (실시간 정산 분 단위 노출)',
+    evidence: [
+      {
+        title: '실시간 정산 파이프라인',
+        url: 'https://medium.com/coupang-engineering/korean/realtime-settlement',
+        quote: '거래 이벤트를 Kafka로 받아 Flink로 실시간 집계하고, 정산 결과를 분 단위로 셀러 대시보드에 노출한다.',
+        publishedAt: '2024-06-25',
+      },
+    ],
+    confidence: 0.81,
+  },
+  {
+    companySlug: 'coupang',
+    domainSlug: 'realtime-data',
+    axisSlug: 'delivery-semantics',
+    summary: '이벤트소싱 + 일일 스냅샷 자동 보정',
+    evidence: [
+      {
+        title: 'Reconciliation at Coupang',
+        url: 'https://medium.com/coupang-engineering/korean/reconciliation',
+        quote: '모든 금전 변동은 이벤트 로그에 append되어 ground truth가 되고, 일일 스냅샷을 만들어 회계 시스템과 비교해 차이를 자동 분류한다.',
+        publishedAt: '2024-02-08',
+      },
+    ],
+    confidence: 0.77,
+  },
+
+  // ============================================================
   // === MSA 전환 도메인 (msa-migration) === V1 추가
   // ============================================================
 

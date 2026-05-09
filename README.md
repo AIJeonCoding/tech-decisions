@@ -20,21 +20,22 @@
 
 ## 데모 (V1)
 
-**4개 V1 도메인** (모두 즉시 동작):
+**5개 V1 도메인** (모두 즉시 동작):
 
-| 도메인 | 5축 × 회사 | 검증된 셀 |
-|---|---|---|
-| `/compare/payment-settlement` | 5축 × 5개사 (토스/카카오페이/쿠팡/우아한형제들/뱅크샐러드) | 9개 |
-| `/compare/search` | 5축 × 4개사 (네이버 D2/쿠팡/당근/우아한형제들) | 6개 |
-| `/compare/recommendation` | 5축 × 4개사 | 1개 |
-| `/compare/msa-migration` | 5축 × 4개사 | 4개 |
+| 도메인 | 5축 × 회사 |
+|---|---|
+| `/compare/payment-settlement` | 5축 × 5개사 (토스/카카오페이/쿠팡/우아한형제들/뱅크샐러드) |
+| `/compare/search` | 5축 × 4개사 (네이버 D2/쿠팡/당근/우아한형제들) |
+| `/compare/recommendation` | 5축 × 4개사 |
+| `/compare/msa-migration` | 5축 × 4개사 |
+| `/compare/realtime-data` | 5축 × 4개사 |
 
 **도구**:
 - `/search` — SQLite FTS5 키워드 검색 (한국어 prefix 지원)
 - `/admin/cells` — 셀 검수 콘솔 (read-only)
 - `/chat` — V2 RAG 챗봇 placeholder
 
-**총**: 20개 비교축 · 59개 셀 · 37편 article · 20개 검증된 셀(≥0.85)
+**총**: 25개 비교축 · 68개 셀 · 37편 article · **26개 검증된 셀(≥0.85)** — 모두 실제 한국 블로그 인용
 
 데모 GIF 가이드: [docs/DEMO_GUIDE.md](./docs/DEMO_GUIDE.md)
 

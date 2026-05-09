@@ -98,6 +98,48 @@ async function seed() {
         options: ['DLQ+수동', '보상 트랜잭션', '자동 재시도', '상태머신'],
         sortOrder: 5,
       },
+      // === 실시간 데이터 파이프라인 (V1 추가) ===
+      {
+        domainSlug: 'realtime-data',
+        slug: 'message-broker',
+        name: '메시지 브로커 선택',
+        question: '이벤트 스트림을 전송하는 백본은 무엇인가?',
+        options: ['Kafka', 'RabbitMQ', 'Pulsar', 'AWS SNS/SQS'],
+        sortOrder: 1,
+      },
+      {
+        domainSlug: 'realtime-data',
+        slug: 'stream-processing',
+        name: '스트림 처리 엔진',
+        question: '집계/조인/윈도우 처리는 어떻게 하는가?',
+        options: ['Flink', 'ksqlDB', 'Spark Streaming', '직접 구현'],
+        sortOrder: 2,
+      },
+      {
+        domainSlug: 'realtime-data',
+        slug: 'cdc-pipeline',
+        name: 'CDC (변경 데이터 캡처)',
+        question: 'DB 변경을 어떻게 스트림으로 노출하는가?',
+        options: ['Debezium', 'Maxwell', 'AWS DMS', '직접 구현 (이중 쓰기/Outbox)'],
+        sortOrder: 3,
+      },
+      {
+        domainSlug: 'realtime-data',
+        slug: 'delivery-semantics',
+        name: '전달 보증',
+        question: '중복·유실 없이 어떻게 보장하는가?',
+        options: ['exactly-once', 'at-least-once + 멱등', '정합성 자동 검증', '수동 리컨실'],
+        sortOrder: 4,
+      },
+      {
+        domainSlug: 'realtime-data',
+        slug: 'partition-routing',
+        name: '파티션·순서 라우팅',
+        question: '특정 키의 순서를 어떻게 지키는가?',
+        options: ['Consumer 단일 라우팅', '파티션 키 고정', '단일 파티션', 'Consumer Group 분리'],
+        sortOrder: 5,
+      },
+
       // === MSA 전환 도메인 (V1 추가) ===
       {
         domainSlug: 'msa-migration',

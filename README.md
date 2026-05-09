@@ -18,13 +18,23 @@
 
 > **한 줄 가치 제안**: Velopers가 도서관 색인이라면, tech-decisions는 동일 주제로 묶어주는 **비교 큐레이터**.
 
-## 데모
+## 데모 (V1)
 
-3개 핵심 화면:
+**4개 V1 도메인** (모두 즉시 동작):
 
-- `/compare/payment-settlement` — 결제·정산 비교표 (5축 × 4사 = 20셀)
-- `/chat` — RAG 챗봇 ("토스는 정산 동시성을 어떻게 처리해?")
-- `/search` — 하이브리드 검색 (BM25 + vector RRF 머지)
+| 도메인 | 5축 × 회사 | 검증된 셀 |
+|---|---|---|
+| `/compare/payment-settlement` | 5축 × 5개사 (토스/카카오페이/쿠팡/우아한형제들/뱅크샐러드) | 9개 |
+| `/compare/search` | 5축 × 4개사 (네이버 D2/쿠팡/당근/우아한형제들) | 6개 |
+| `/compare/recommendation` | 5축 × 4개사 | 1개 |
+| `/compare/msa-migration` | 5축 × 4개사 | 4개 |
+
+**도구**:
+- `/search` — SQLite FTS5 키워드 검색 (한국어 prefix 지원)
+- `/admin/cells` — 셀 검수 콘솔 (read-only)
+- `/chat` — V2 RAG 챗봇 placeholder
+
+**총**: 20개 비교축 · 59개 셀 · 37편 article · 20개 검증된 셀(≥0.85)
 
 데모 GIF 가이드: [docs/DEMO_GUIDE.md](./docs/DEMO_GUIDE.md)
 

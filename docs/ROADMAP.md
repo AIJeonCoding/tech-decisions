@@ -5,15 +5,21 @@
 
 ## ✅ V1 (완료)
 
-- SQLite + FTS5 한국어 검색
-- 결제·정산 도메인 5축 × 5개사 = 21셀 (수기 시드)
-- 검색 도메인 5축 × 4개사 = 16셀 (수기 시드)
-- 기사 37편 시드 + FTS 인덱싱
+- SQLite + FTS5 한국어 검색 (외부 의존성 0)
+- **4개 V1 도메인**:
+  - 결제·정산 5축 × 5개사 = 21셀
+  - 검색 5축 × 4개사 = 16셀
+  - 추천 5축 × 4개사 = 12셀
+  - MSA 전환 5축 × 4개사 = 10셀
+- 기사 37편 시드 + FTS5 인덱싱
+- 비교 셀 59개 중 **20개가 실제 한국 블로그 인용으로 검증됨** (≥0.85)
 - `/compare/[domain]` 비교페이지 + 셀 클릭 사이드 패널
-- `/search` BM25 + 한국어 prefix
+- `/search` BM25 + 한국어 prefix wildcard
+- `/admin/cells` 셀 검수 콘솔
 - `/chat` V2 placeholder
 - SEO (sitemap, robots, OG image)
 - Next.js 빌드 통과 + 모든 워크스페이스 typecheck OK
+- **vitest 단위 테스트 13개** (web 8 + crawler 5)
 
 ## V2 (계획)
 

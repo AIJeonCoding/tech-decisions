@@ -98,6 +98,48 @@ async function seed() {
         options: ['DLQ+수동', '보상 트랜잭션', '자동 재시도', '상태머신'],
         sortOrder: 5,
       },
+      // === MSA 전환 도메인 (V1 추가) ===
+      {
+        domainSlug: 'msa-migration',
+        slug: 'decomposition-unit',
+        name: '분해 단위',
+        question: '모놀리스를 어떤 단위로 자르는가?',
+        options: ['도메인별 (DDD bounded context)', '기능별', '트래픽 기반', '데이터 격리 우선'],
+        sortOrder: 1,
+      },
+      {
+        domainSlug: 'msa-migration',
+        slug: 'data-separation',
+        name: '데이터 분리 전략',
+        question: '공유 DB를 어떻게 나누는가?',
+        options: ['CDC + Kafka', '이벤트소싱', 'Strangler Fig', 'Stop-the-world'],
+        sortOrder: 2,
+      },
+      {
+        domainSlug: 'msa-migration',
+        slug: 'communication',
+        name: '서비스 간 통신',
+        question: '서비스끼리 어떻게 통신하는가?',
+        options: ['REST', 'gRPC', '이벤트 (Kafka/SNS)', 'GraphQL Federation'],
+        sortOrder: 3,
+      },
+      {
+        domainSlug: 'msa-migration',
+        slug: 'distributed-transaction',
+        name: '분산 트랜잭션 처리',
+        question: '여러 서비스에 걸친 작업을 어떻게 보장하는가?',
+        options: ['Saga', 'Outbox + Kafka', '멱등성 + 보상', '2PC (드물게)'],
+        sortOrder: 4,
+      },
+      {
+        domainSlug: 'msa-migration',
+        slug: 'safe-migration',
+        name: '안전한 마이그레이션',
+        question: '레거시에서 신규로 어떻게 옮기는가?',
+        options: ['Strangler Fig', '카나리/점진 배포', '트래픽 미러링', 'Dual write + 검증'],
+        sortOrder: 5,
+      },
+
       // === 추천 도메인 (V1 추가) ===
       {
         domainSlug: 'recommendation',

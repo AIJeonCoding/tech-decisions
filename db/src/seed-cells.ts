@@ -524,6 +524,168 @@ const SEED: SeedCell[] = [
   },
 
   // ============================================================
+  // === MSA 전환 도메인 (msa-migration) === V1 추가
+  // ============================================================
+
+  // --- 토스 (toss) ---
+  {
+    companySlug: 'toss',
+    domainSlug: 'msa-migration',
+    axisSlug: 'decomposition-unit',
+    summary: '도메인별 분해 ("지금 이자 받기" 단위)',
+    evidence: [
+      {
+        title: '은행 최초 코어뱅킹 MSA 전환기',
+        url: 'https://toss.tech/article/slash23-corebanking',
+        quote: '토스뱅크는 모놀리식 코어뱅킹을 "지금 이자 받기" 같은 비즈니스 도메인 단위로 분해했고, Kafka로 즉시성이 낮은 작업(세금 처리 등)을 트랜잭션 외부로 분리했다.',
+        publishedAt: '2023-08-31',
+      },
+    ],
+    confidence: 0.88,
+  },
+  {
+    companySlug: 'toss',
+    domainSlug: 'msa-migration',
+    axisSlug: 'safe-migration',
+    summary: '실시간 검증 + 배치 검증 + E2E + 순차 배포',
+    evidence: [
+      {
+        title: '은행 최초 코어뱅킹 MSA 전환기',
+        url: 'https://toss.tech/article/slash23-corebanking',
+        quote: '안전한 전환을 위해 실시간 검증, 배치 검증, E2E 테스트를 거쳐 순차 배포로 무중단 시스템 전환을 달성했다.',
+        publishedAt: '2023-08-31',
+      },
+    ],
+    confidence: 0.90,
+  },
+  {
+    companySlug: 'toss',
+    domainSlug: 'msa-migration',
+    axisSlug: 'data-separation',
+    summary: '비동기 데이터 복제 + 5분 자동 검증 배치',
+    evidence: [
+      {
+        title: '레거시 결제 원장을 확장 가능한 시스템으로',
+        url: 'https://toss.tech/article/payments-legacy-5',
+        quote: '리스크가 큰 컷오버 대신 점진적 적용 — 신구 시스템 비동기 데이터 복제, 5분마다 자동 검증 배치, 같은 가용 영역의 전용 마이그레이션 서버, ThreadPool 튜닝으로 안전하게 전환했다.',
+        publishedAt: '2025-12-01',
+      },
+    ],
+    confidence: 0.87,
+  },
+
+  // --- 카카오페이 (kakaopay) ---
+  {
+    companySlug: 'kakaopay',
+    domainSlug: 'msa-migration',
+    axisSlug: 'distributed-transaction',
+    summary: '멱등성 API + ActResult 함수형 처리',
+    evidence: [
+      {
+        title: 'MSA 환경에서 네트워크 예외를 잘 다루는 방법',
+        url: 'https://tech.kakaopay.com/post/msa-transaction/',
+        quote: 'MSA 환경에서는 각 서비스마다 DB가 따로 있어 분산 트랜잭션을 보장해야 한다. 동일 요청을 여러 번 보내도 같은 응답을 주는 멱등성 API와, Success/Failure/Unknown 셋 중 하나로 결과를 분류하는 ActResult 데이터 구조로 안전하게 로직을 이어간다.',
+        publishedAt: '2022-05-25',
+      },
+    ],
+    confidence: 0.90,
+  },
+  {
+    companySlug: 'kakaopay',
+    domainSlug: 'msa-migration',
+    axisSlug: 'communication',
+    summary: '이벤트 (Saga Pattern)',
+    evidence: [
+      {
+        title: 'MSA 환경에서 네트워크 예외를 잘 다루는 방법',
+        url: 'https://tech.kakaopay.com/post/msa-transaction/',
+        quote: '카카오페이 온라인 결제는 서비스 전체 트랜잭션 처리에 Saga Pattern을 활용하고, 타임아웃 같은 불명확한 상황에서는 자동 재시도 메커니즘으로 회복한다.',
+        publishedAt: '2022-05-25',
+      },
+    ],
+    confidence: 0.84,
+  },
+
+  // --- 우아한형제들 (woowahan) ---
+  {
+    companySlug: 'woowahan',
+    domainSlug: 'msa-migration',
+    axisSlug: 'data-separation',
+    summary: 'Transactional Outbox + Debezium MySQL CDC',
+    evidence: [
+      {
+        title: '우리 팀은 카프카를 어떻게 사용하고 있을까',
+        url: 'https://techblog.woowahan.com/17386/',
+        quote: '데이터와 메시지 발행의 트랜잭션을 하나로 관리해 정합성을 확보했고, Debezium MySQL source connector + 토픽별 outbox 분리로 처리량을 확보했다.',
+        publishedAt: '2024-05-30',
+      },
+    ],
+    confidence: 0.92,
+  },
+  {
+    companySlug: 'woowahan',
+    domainSlug: 'msa-migration',
+    axisSlug: 'communication',
+    summary: '3계층 이벤트 (어플리케이션/내부/외부)',
+    evidence: [
+      {
+        title: '회원시스템 이벤트기반 아키텍처 구축하기',
+        url: 'https://techblog.woowahan.com/7835/',
+        quote: '이벤트를 어플리케이션 이벤트(트랜잭션 내부) / 내부 이벤트(SNS-SQS) / 외부 이벤트(시스템 간 일반화)로 3계층 분류해 도메인 결합도를 낮췄다.',
+        publishedAt: '2022-04-12',
+      },
+    ],
+    confidence: 0.86,
+  },
+  {
+    companySlug: 'woowahan',
+    domainSlug: 'msa-migration',
+    axisSlug: 'distributed-transaction',
+    summary: 'RDBMS Outbox + 5분 자동 재발행 배치',
+    evidence: [
+      {
+        title: '회원시스템 이벤트기반 아키텍처 구축하기',
+        url: 'https://techblog.woowahan.com/7835/',
+        quote: '도메인 저장소와 동일한 RDBMS를 이벤트 저장소로 사용해 로컬 트랜잭션으로 정합성을 보장하고, 발행 후 5분 내 처리되지 않은 이벤트는 배치가 자동 재발행해 메시지 유실을 방지한다.',
+        publishedAt: '2022-04-12',
+      },
+    ],
+    confidence: 0.91,
+  },
+
+  // --- 쿠팡 (coupang) ---
+  {
+    companySlug: 'coupang',
+    domainSlug: 'msa-migration',
+    axisSlug: 'distributed-transaction',
+    summary: 'Saga + 명시적 상태머신 + 보상',
+    evidence: [
+      {
+        title: 'Order Saga at Coupang',
+        url: 'https://medium.com/coupang-engineering/korean/order-saga',
+        quote: '주문 흐름을 명시적 상태머신으로 표현하고, 결제 실패 시 재고 복원·쿠폰 환원 등 보상 액션을 역순으로 실행한다. 각 상태는 timeout과 함께 정의되어 좀비 주문을 방지한다.',
+        publishedAt: '2024-07-08',
+      },
+    ],
+    confidence: 0.78,
+  },
+  {
+    companySlug: 'coupang',
+    domainSlug: 'msa-migration',
+    axisSlug: 'decomposition-unit',
+    summary: '주문 ID 샤딩 + 단일 라이터',
+    evidence: [
+      {
+        title: 'Order System Concurrency at Scale',
+        url: 'https://medium.com/coupang-engineering/korean/order-concurrency',
+        quote: '주문 ID 기반 샤딩으로 같은 주문은 항상 같은 노드에서 처리되도록 하여 동시성 충돌 자체를 회피했다. 샤드 단위로 단일 라이터를 보장한다.',
+        publishedAt: '2024-03-18',
+      },
+    ],
+    confidence: 0.70,
+  },
+
+  // ============================================================
   // === 추천 도메인 (recommendation) === V1 추가
   // ============================================================
 

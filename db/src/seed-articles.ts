@@ -382,6 +382,16 @@ const SEARCH_ARTICLES: SeedArticle[] = [
 const PLATFORM_ARTICLES: SeedArticle[] = [
   {
     companySlug: 'kakaopay',
+    url: 'https://tech.kakaopay.com/post/home-hexagonal-architecture/',
+    title: 'Hexagonal Architecture, 진짜 하실 건가요?',
+    summary: '헥사고날 도입 → 제거 → 레이어드 전환으로 코드 8천 줄 이상 감소',
+    bodyMd: '카카오페이 홈 개발팀은 외부 API 변화로부터 도메인을 보호하기 위해 헥사고날 아키텍처를 도입했다. 그러나 실제 운영 과정에서 신규 기능 개발 비효율성, 모호한 도메인 정의, 팀 온보딩 비용 증가 등의 문제에 직면했다. 결국 관심사 단위 패키징 기반의 레이어드 아키텍처로 전환하여 코드 라인을 8천 줄 이상 감소시켰다. 아키텍처 패턴을 도입하기 전 팀 컨텍스트와 비용을 정확히 평가해야 한다는 교훈을 남긴 사례.',
+    publishedAt: '2025-01-21',
+    domains: ['msa-migration'],
+    tags: ['msa', 'monolith-decomposition'],
+  },
+  {
+    companySlug: 'kakaopay',
     url: 'https://tech.kakaopay.com/post/backend-domain-driven-design/',
     title: '카카오페이 여신코어 DDD(Domain Driven Design)로 구축하기',
     summary: 'Bounded Context + 유비쿼터스 언어로 여신 도메인 복잡성을 코드 구조로 격리',

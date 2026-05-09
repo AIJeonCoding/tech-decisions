@@ -740,6 +740,21 @@ const SEED: SeedCell[] = [
   {
     companySlug: 'kakaopay',
     domainSlug: 'msa-migration',
+    axisSlug: 'safe-migration',
+    summary: '헥사고날 도입 → 제거 (코드 8천줄 감소)',
+    evidence: [
+      {
+        title: 'Hexagonal Architecture, 진짜 하실 건가요?',
+        url: 'https://tech.kakaopay.com/post/home-hexagonal-architecture/',
+        quote: '헥사고날 아키텍처를 도입했다가 신규 기능 개발 비효율성, 모호한 도메인 정의, 팀 온보딩 비용 증가 문제로 관심사 단위 패키징 기반 레이어드 아키텍처로 전환해 코드 8천줄 이상을 감소시킨 경험. "진짜 하실 건가요?"가 글 제목.',
+        publishedAt: '2025-01-21',
+      },
+    ],
+    confidence: 0.86,
+  },
+  {
+    companySlug: 'kakaopay',
+    domainSlug: 'msa-migration',
     axisSlug: 'distributed-transaction',
     summary: '멱등성 API + ActResult 함수형 처리',
     evidence: [

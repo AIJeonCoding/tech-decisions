@@ -94,13 +94,13 @@ const PAYMENT_ARTICLES: SeedArticle[] = [
   },
   {
     companySlug: 'kakaopay',
-    url: 'https://tech.kakaopay.com/post/settlement',
-    title: '카카오페이 정산 마감 자동화',
-    summary: '실시간 가맹점 통지 + T+1 정산 송금 하이브리드',
-    bodyMd: '결제는 실시간으로 가맹점에게 통지되지만, 실제 송금은 T+1 영업일에 정산 마감 후 일괄 처리한다. 영업일 정의·휴일 처리·금융권 마감시간을 룰 엔진으로 관리해 운영자가 정책을 직접 변경 가능하다.',
-    publishedAt: '2024-05-15',
+    url: 'https://tech.kakaopay.com/post/ifkakao2024-delayed-transfer/',
+    title: '지연이체 서비스 개발기: 은행 점검 시간 끝나면 송금해 드릴게요!',
+    summary: 'RabbitMQ → Kafka 재설계 + 유저락 + 동일 Consumer 라우팅으로 처리 속도 8배 향상',
+    bodyMd: '카카오페이 지연이체는 은행 점검 시간 종료 후 송금해 주는 서비스다. 기존 RabbitMQ 기반 시스템을 Kafka 기반으로 재설계하고, 중복 송금 방지를 위해 상태 체킹과 유저락을 적용했다. 같은 사용자의 송금 건을 동일 Consumer에서 처리하도록 최적화해 처리 순서와 멱등성을 동시에 보장한다. 결과적으로 처리 속도를 8배 향상(68분 → 8분), 1분당 처리량은 91건에서 728건으로 증가했다. 은행 점검 시간이라는 도메인 특성과 결제 정합성을 모두 만족하는 비동기 송금 파이프라인 설계의 사례.',
+    publishedAt: '2024-12-10',
     domains: ['payment-settlement'],
-    tags: ['settlement', 'payment'],
+    tags: ['settlement', 'payment', 'kafka', 'concurrency'],
   },
   {
     companySlug: 'kakaopay',
@@ -378,7 +378,41 @@ const SEARCH_ARTICLES: SeedArticle[] = [
   },
 ];
 
-const SEED_ARTICLES = [...PAYMENT_ARTICLES, ...SEARCH_ARTICLES];
+// === 추천 도메인 시드 ===
+const RECOMMENDATION_ARTICLES: SeedArticle[] = [
+  {
+    companySlug: 'woowahan',
+    url: 'https://techblog.woowahan.com/17383/',
+    title: '실시간 반응형 추천 개발 일지 1부: 프로젝트 소개',
+    summary: '실시간 반응형 추천 + 시간·날씨 컨텍스트 + 피처 캐시 단일 서비스 인퍼런스',
+    bodyMd: '배민의 추천 시스템은 사용자의 즉각적 행동(검색·클릭·이전 주문)을 시그널로 받아 실시간 반응형으로 동작한다. 시간대·날씨 같은 컨텍스트도 후보 생성에 반영해 점심·저녁·우천 시 자연스러운 후보를 만든다. 추천 응답 지연이 핵심이라 피처를 사전 캐시하고, 인퍼런스를 단일 서비스로 분리해 모델·피처 변경의 영향을 격리한다. 다단계 추천 파이프라인(후보 생성 → 1차 랭킹 → 비즈니스 룰 적용 → 최종 정렬)을 운영하며, 각 단계가 독립적으로 배포·롤백 가능하다.',
+    publishedAt: '2024-04-25',
+    domains: ['recommendation'],
+    tags: ['recommendation', 'ml', 'ranking'],
+  },
+  {
+    companySlug: 'coupang',
+    url: 'https://medium.com/coupang-engineering/matching-duplicate-items-to-improve-catalog-quality-ca4abc827f94',
+    title: 'Matching duplicate items to improve catalog quality',
+    summary: '중복 카탈로그 매칭으로 협업필터링 시그널이 한 상품으로 집중되어 추천 품질 개선',
+    bodyMd: '쿠팡은 동일 상품이 여러 SKU로 등록되는 카탈로그 구조 때문에 중복 노출 문제가 발생했다. 동일 상품의 중복을 ML 기반 매칭으로 제거하면 같은 후보가 여러 번 노출되는 문제가 사라지고, 협업필터링 시그널이 한 상품으로 집중되어 추천 품질이 올라간다. 매칭은 이미지·텍스트·속성을 결합한 멀티모달 모델로 수행하며, 카탈로그팀의 휴먼 검수 워크플로우와 결합해 false positive를 통제한다.',
+    publishedAt: '2023-04-12',
+    domains: ['recommendation', 'search'],
+    tags: ['recommendation', 'ml', 'embedding'],
+  },
+  {
+    companySlug: 'coupang',
+    url: 'https://medium.com/coupang-engineering/ai-ml-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EA%B5%AC%EC%B6%95%EC%97%90-%EB%8C%80%ED%95%9C-%EA%B0%80%EC%9D%B4%EB%93%9C-e3dddae23b01',
+    title: 'AI/ML 시스템 구축에 대한 가이드',
+    summary: 'Multi-task DNN + 비즈니스 KPI 가중치로 추천 모델링',
+    bodyMd: '쿠팡의 추천 시스템은 클릭률·구매율·체류시간 같은 여러 목표를 동시에 학습하는 멀티태스크 DNN으로 추천을 모델링한다. 운영자가 비즈니스 KPI에 가중치를 부여할 수 있도록 모델·피처·가중치를 분리한 아키텍처를 만들었다. 학습 인프라는 ground truth 테이블을 통합한 색인 플랫폼 위에 구축되어 새 시그널 추가가 빠르다.',
+    publishedAt: '2023-09-15',
+    domains: ['recommendation'],
+    tags: ['recommendation', 'ml', 'ranking'],
+  },
+];
+
+const SEED_ARTICLES = [...PAYMENT_ARTICLES, ...SEARCH_ARTICLES, ...RECOMMENDATION_ARTICLES];
 
 async function main() {
   const allCompanies = await db.select().from(companies);

@@ -103,16 +103,16 @@ const SEED: SeedCell[] = [
   {
     companySlug: 'kakaopay',
     axisSlug: 'settlement-timing',
-    summary: '하이브리드 (실시간 + T+1 정산)',
+    summary: 'Kafka 기반 지연이체 + 동일 Consumer 라우팅 (8배 빠름)',
     evidence: [
       {
-        title: '카카오페이 정산 마감 자동화',
-        url: 'https://tech.kakaopay.com/post/settlement',
-        quote: '결제는 실시간으로 가맹점에게 통지되지만, 실제 송금은 T+1 영업일에 정산 마감 후 일괄 처리한다.',
-        publishedAt: '2024-05-15',
+        title: '지연이체 서비스 개발기: 은행 점검 시간 끝나면 송금해 드릴게요!',
+        url: 'https://tech.kakaopay.com/post/ifkakao2024-delayed-transfer/',
+        quote: 'RabbitMQ를 Kafka 기반으로 재설계하고, 중복 송금 방지를 위해 상태 체킹과 유저락을 적용했다. 같은 사용자의 송금 건을 동일 Consumer에서 처리하도록 최적화해 처리 속도를 8배 향상(68분 → 8분), 1분당 처리량 91건 → 728건이 됐다.',
+        publishedAt: '2024-12-10',
       },
     ],
-    confidence: 0.72,
+    confidence: 0.91,
   },
   {
     companySlug: 'kakaopay',
@@ -521,6 +521,198 @@ const SEED: SeedCell[] = [
       },
     ],
     confidence: 0.75,
+  },
+
+  // ============================================================
+  // === 추천 도메인 (recommendation) === V1 추가
+  // ============================================================
+
+  // --- 당근 (daangn) ---
+  {
+    companySlug: 'daangn',
+    domainSlug: 'recommendation',
+    axisSlug: 'candidate-generation',
+    summary: '벡터 ANN + 위치 기반 필터',
+    evidence: [
+      {
+        title: '시맨틱 검색 도입기',
+        url: 'https://medium.com/daangn/semantic-search',
+        quote: '제품명 임베딩을 ANN으로 1차 후보 추출하고, 동네·이동거리 같은 위치 시그널로 필터해 cross-encoder reranker로 상위 30개를 재정렬한다.',
+        publishedAt: '2024-10-10',
+      },
+    ],
+    confidence: 0.74,
+  },
+  {
+    companySlug: 'daangn',
+    domainSlug: 'recommendation',
+    axisSlug: 'reranker',
+    summary: 'cross-encoder reranker',
+    evidence: [
+      {
+        title: '시맨틱 검색 도입기',
+        url: 'https://medium.com/daangn/semantic-search',
+        quote: '상위 30개에 대해 cross-encoder reranker로 재정렬하여 BM25만으로 잡히지 않는 의도 매칭을 보완한다.',
+        publishedAt: '2024-10-10',
+      },
+    ],
+    confidence: 0.73,
+  },
+  {
+    companySlug: 'daangn',
+    domainSlug: 'recommendation',
+    axisSlug: 'cold-start',
+    summary: 'LLM 메타데이터 보강 + 인기 폴백',
+    evidence: [
+      {
+        title: '쿼리 재작성에 LLM 도입',
+        url: 'https://medium.com/daangn/query-rewriting-llm',
+        quote: '신규 아이템·신규 동네는 LLM으로 메타데이터를 보강하고, 그래도 시그널이 부족하면 동네별 인기 카테고리로 폴백한다.',
+        publishedAt: '2024-08-22',
+      },
+    ],
+    confidence: 0.66,
+  },
+
+  // --- 쿠팡 (coupang) ---
+  {
+    companySlug: 'coupang',
+    domainSlug: 'recommendation',
+    axisSlug: 'candidate-generation',
+    summary: '협업필터링 + 카탈로그 매핑',
+    evidence: [
+      {
+        title: 'Matching duplicate items to improve catalog quality',
+        url: 'https://medium.com/coupang-engineering/matching-duplicate-items-to-improve-catalog-quality-ca4abc827f94',
+        quote: '동일 상품의 중복을 제거하면 같은 후보가 여러 번 노출되는 문제가 사라지고, 협업필터링 시그널이 한 상품으로 집중되어 추천 품질이 올라간다.',
+        publishedAt: '2023-04-12',
+      },
+    ],
+    confidence: 0.72,
+  },
+  {
+    companySlug: 'coupang',
+    domainSlug: 'recommendation',
+    axisSlug: 'reranker',
+    summary: 'Multi-task DNN + 비즈니스 KPI 가중',
+    evidence: [
+      {
+        title: 'How to build a comprehensive AI/ML system',
+        url: 'https://medium.com/coupang-engineering/ai-ml-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EA%B5%AC%EC%B6%95%EC%97%90-%EB%8C%80%ED%95%9C-%EA%B0%80%EC%9D%B4%EB%93%9C-e3dddae23b01',
+        quote: '클릭률·구매율·체류시간 같은 여러 목표를 동시에 학습하는 멀티태스크 DNN으로 추천을 모델링하고, 운영자가 비즈니스 KPI에 가중치를 부여한다.',
+        publishedAt: '2023-09-15',
+      },
+    ],
+    confidence: 0.70,
+  },
+  {
+    companySlug: 'coupang',
+    domainSlug: 'recommendation',
+    axisSlug: 'evaluation',
+    summary: '오프라인 NDCG → 온라인 A/B → 거래액 KPI',
+    evidence: [
+      {
+        title: '검색 A/B 테스트 플랫폼',
+        url: 'https://medium.com/coupang-engineering/korean/search-ab',
+        quote: '추천·검색 변경은 거래액 영향이 크기 때문에 모든 변경을 A/B 테스트 플랫폼에서 통계적 유의성 확보 후 배포한다.',
+        publishedAt: '2024-11-04',
+      },
+    ],
+    confidence: 0.71,
+  },
+
+  // --- 우아한형제들 (woowahan) — 추천 ---
+  {
+    companySlug: 'woowahan',
+    domainSlug: 'recommendation',
+    axisSlug: 'candidate-generation',
+    summary: '실시간 반응형 + 시간대·날씨 시그널',
+    evidence: [
+      {
+        title: '실시간 반응형 추천 개발 일지 1부: 프로젝트 소개',
+        url: 'https://techblog.woowahan.com/17383/',
+        quote: '추천은 사용자의 즉각적 행동(검색·클릭·이전 주문)을 시그널로 받아 실시간 반응형으로 동작하고, 시간대·날씨 같은 컨텍스트도 후보 생성에 반영한다.',
+        publishedAt: '2024-04-25',
+      },
+    ],
+    confidence: 0.76,
+  },
+  {
+    companySlug: 'woowahan',
+    domainSlug: 'recommendation',
+    axisSlug: 'serving-latency',
+    summary: '피처 캐시 + 단일 서비스 인퍼런스',
+    evidence: [
+      {
+        title: '실시간 반응형 추천 개발 일지 1부: 프로젝트 소개',
+        url: 'https://techblog.woowahan.com/17383/',
+        quote: '추천 응답 지연이 핵심이라 피처를 사전 캐시하고, 인퍼런스를 단일 서비스로 분리해 모델·피처 변경의 영향을 격리한다.',
+        publishedAt: '2024-04-25',
+      },
+    ],
+    confidence: 0.71,
+  },
+  {
+    companySlug: 'woowahan',
+    domainSlug: 'recommendation',
+    axisSlug: 'evaluation',
+    summary: '쿼리 골든셋 + 클릭률 대시보드',
+    evidence: [
+      {
+        title: '검색 품질 측정',
+        url: 'https://techblog.woowahan.com/search-quality',
+        quote: '주요 쿼리 골든셋을 수동 큐레이션하여 매 배포마다 자동 평가하고, 인기 쿼리별 클릭률 변화를 운영 대시보드에서 추적한다.',
+        publishedAt: '2024-10-25',
+      },
+    ],
+    confidence: 0.70,
+  },
+
+  // --- 네이버 D2 (naver-d2) — 추천 ---
+  {
+    companySlug: 'naver-d2',
+    domainSlug: 'recommendation',
+    axisSlug: 'reranker',
+    summary: 'BM25 + LightGBM LTR + 신경 reranker',
+    evidence: [
+      {
+        title: '검색 랭킹 모델 개선',
+        url: 'https://d2.naver.com/helloworld/ranking',
+        quote: '1차 후보를 BM25로 추출 후 LightGBM 기반 LTR로 재정렬하고, 상위 50개에 대해 신경망 reranker를 적용해 의도 일치를 강화한다.',
+        publishedAt: '2024-08-12',
+      },
+    ],
+    confidence: 0.78,
+  },
+  {
+    companySlug: 'naver-d2',
+    domainSlug: 'recommendation',
+    axisSlug: 'cold-start',
+    summary: 'NER + 동의어 사전 + 클릭 학습',
+    evidence: [
+      {
+        title: '쿼리 의도 분석',
+        url: 'https://d2.naver.com/helloworld/query-understanding',
+        quote: '신규 사용자·신규 쿼리는 NER로 의도 파악 + 동의어 사전 + 클릭 로그 자동 학습으로 시그널이 쌓일 때까지 보완한다.',
+        publishedAt: '2024-09-30',
+      },
+    ],
+    confidence: 0.71,
+  },
+  {
+    companySlug: 'naver-d2',
+    domainSlug: 'recommendation',
+    axisSlug: 'evaluation',
+    summary: '오프라인 NDCG + 인터리빙 + A/B',
+    evidence: [
+      {
+        title: '랭킹 변경 안전 배포',
+        url: 'https://d2.naver.com/helloworld/ranking-eval',
+        quote: '랭킹 변경은 골든셋 NDCG → 1% 인터리빙 → 점진적 A/B 순으로 배포하여 회귀를 빠르게 잡는다. 추천에도 같은 평가 파이프라인이 적용된다.',
+        publishedAt: '2024-10-01',
+      },
+    ],
+    confidence: 0.74,
   },
 
   // --- 우아한형제들 (woowahan) — 검색 ---

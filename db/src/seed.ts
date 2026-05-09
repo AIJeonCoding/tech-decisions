@@ -98,6 +98,48 @@ async function seed() {
         options: ['DLQ+수동', '보상 트랜잭션', '자동 재시도', '상태머신'],
         sortOrder: 5,
       },
+      // === 추천 도메인 (V1 추가) ===
+      {
+        domainSlug: 'recommendation',
+        slug: 'candidate-generation',
+        name: '후보 생성',
+        question: '수백만 아이템 중 어떻게 1차 후보를 골라내는가?',
+        options: ['협업필터링', '콘텐츠 기반', '벡터 ANN', '룰/탐색 기반'],
+        sortOrder: 1,
+      },
+      {
+        domainSlug: 'recommendation',
+        slug: 'reranker',
+        name: '재정렬 모델',
+        question: '후보 위에서 어떤 모델로 재정렬하는가?',
+        options: ['LightGBM/LTR', 'DNN/Two-Tower', 'Transformer', 'Multi-task DNN'],
+        sortOrder: 2,
+      },
+      {
+        domainSlug: 'recommendation',
+        slug: 'cold-start',
+        name: '콜드 스타트 처리',
+        question: '신규 유저·아이템은 어떻게 채우는가?',
+        options: ['인기/룰 기반', '메타데이터 임베딩', 'LLM 보조', '하이브리드'],
+        sortOrder: 3,
+      },
+      {
+        domainSlug: 'recommendation',
+        slug: 'serving-latency',
+        name: '서빙 지연 처리',
+        question: 'p99 100ms 이내로 어떻게 응답하는가?',
+        options: ['피처 캐시', '모델 양자화', '프리컴퓨트', 'GPU 인퍼런스'],
+        sortOrder: 4,
+      },
+      {
+        domainSlug: 'recommendation',
+        slug: 'evaluation',
+        name: '추천 품질 측정',
+        question: '추천 변경의 품질을 어떻게 검증하는가?',
+        options: ['오프라인 NDCG/MAP', '온라인 A/B', '인터리빙', '비즈니스 KPI'],
+        sortOrder: 5,
+      },
+
       // === 검색 도메인 (V1 데모용) ===
       {
         domainSlug: 'search',

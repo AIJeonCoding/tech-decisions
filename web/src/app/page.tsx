@@ -48,7 +48,7 @@ export default async function Home() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {domainList.map((d: typeof domainList[number]) => {
             const s = statsBySlug[d.slug];
-            const enabled = d.slug === 'payment-settlement';
+            const enabled = (s?.article_count ?? 0) > 0;
             return (
               <Link
                 key={d.slug}

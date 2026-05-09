@@ -89,16 +89,16 @@ const SEED: SeedCell[] = [
   {
     companySlug: 'kakaopay',
     axisSlug: 'concurrency-control',
-    summary: '낙관적 락 + 이벤트소싱',
+    summary: 'putIfAbsent 캐시 충돌 회피 + Redis/Local 이중 캐시',
     evidence: [
       {
-        title: '카카오페이 결제 시스템 동시성',
-        url: 'https://tech.kakaopay.com/post/concurrency',
-        quote: '잔고 변경은 version 컬럼을 사용한 낙관적 락으로 처리하고, 모든 변경 이력은 이벤트 스토어에 append-only로 기록된다.',
-        publishedAt: '2024-07-22',
+        title: '카카오페이 온라인 결제 서비스 2.5배 성능 개선기',
+        url: 'https://tech.kakaopay.com/post/improve-service-performance/',
+        quote: 'Cacheable·CachePut 충돌 시 putIfAbsent로 데이터 정합성 문제를 방지하고, Redis/Local Cache 이중 구조로 외부 API 요청 226건을 줄여 TPS를 170 → 400으로 2.35배 개선했다. Redis가 만능은 아니라는 교훈도 함께 남겼다.',
+        publishedAt: '2023-12-07',
       },
     ],
-    confidence: 0.75,
+    confidence: 0.88,
   },
   {
     companySlug: 'kakaopay',

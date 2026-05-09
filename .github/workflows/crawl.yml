@@ -1,0 +1,60 @@
+name: Daily crawl + LLM pipeline
+
+on:
+  schedule:
+    - cron: '0 18 * * *'  # 03:00 KST daily
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Company slug or "all"'
+        required: false
+        default: 'all'
+      limit:
+        description: 'Articles per source'
+        required: false
+        default: '20'
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      VOYAGE_API_KEY: ${{ secrets.VOYAGE_API_KEY }}
+      LLM_DAILY_BUDGET_USD: ${{ vars.LLM_DAILY_BUDGET_USD || '3' }}
+      CRAWLER_USER_AGENT: 'tech-decisions-bot/0.1 (+https://tech-decisions.app)'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+
+      - name: Crawl new articles
+        run: pnpm --filter @td/crawler start crawl ${{ github.event.inputs.target || 'all' }} --limit ${{ github.event.inputs.limit || 20 }}
+
+      - name: Summarize
+        run: pnpm --filter @td/crawler start summarize --limit 60
+
+      - name: Tag
+        run: pnpm --filter @td/crawler start tag --limit 60
+
+      - name: Decisions (payment-settlement)
+        run: pnpm --filter @td/crawler start decisions --limit 30
+
+      - name: Embed
+        run: pnpm --filter @td/crawler start embed --limit 60
+
+      - name: Build comparison cells
+        run: pnpm --filter @td/crawler start cells --domain payment-settlement
+
+      - name: Daily cost summary
+        if: always()
+        run: |
+          echo "## LLM Cost Summary" >> $GITHUB_STEP_SUMMARY
+          echo "Run finished at $(date -u)" >> $GITHUB_STEP_SUMMARY

@@ -3,6 +3,9 @@
 > 한국 빅테크의 엔지니어링 의사결정을 비교·검색·질의하는 서비스.
 > "다른 회사는 이 문제를 어떻게 풀었지?"에 30초 안에 답한다.
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyour-username%2Ftech-decisions&project-name=tech-decisions&repository-name=tech-decisions)
+**5분 만에 면접용 URL 만들기**: [docs/DEPLOY_5MIN.md](./docs/DEPLOY_5MIN.md)
+
 [![status](https://img.shields.io/badge/status-MVP-blue)]() [![stack](https://img.shields.io/badge/stack-Next.js%2015-black)]() [![db](https://img.shields.io/badge/db-pgvector-336791)]() [![llm](https://img.shields.io/badge/llm-Claude%204-orange)]()
 
 ---

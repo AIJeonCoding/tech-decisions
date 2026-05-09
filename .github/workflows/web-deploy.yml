@@ -1,4 +1,4 @@
-name: Build check
+name: Web build check
 
 on:
   pull_request:
@@ -6,24 +6,45 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+
       - uses: pnpm/action-setup@v4
         with:
           version: 9
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
-      - run: pnpm install --frozen-lockfile
-      - name: Type check (web)
-        run: pnpm --filter @td/web exec tsc --noEmit
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check (db)
+        run: pnpm --filter @td/db exec tsc --noEmit
+
       - name: Type check (crawler)
         run: pnpm --filter @td/crawler exec tsc --noEmit
-      - name: Lint (web)
-        run: pnpm --filter @td/web lint
-        continue-on-error: true
+
+      - name: Type check (web)
+        run: pnpm --filter @td/web exec tsc --noEmit
+
+      - name: Unit tests (web)
+        run: pnpm --filter @td/web test
+
+      - name: Unit tests (crawler)
+        run: pnpm --filter @td/crawler test
+
+      - name: Build DB seed
+        run: pnpm db:reset
+
+      - name: Build web
+        run: pnpm --filter @td/web build

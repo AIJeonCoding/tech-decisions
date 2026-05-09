@@ -465,6 +465,26 @@ const PLATFORM_ARTICLES: SeedArticle[] = [
 // === 추천 도메인 시드 ===
 const RECOMMENDATION_ARTICLES: SeedArticle[] = [
   {
+    companySlug: 'kakao',
+    url: 'https://tech.kakao.com/2016/04/27/rubics/',
+    title: '루빅스(RUBICS) – kakao의 실시간 추천 시스템',
+    summary: 'Apache Kafka + Spark Streaming 기반 실시간 추천, 99.998% 가용성',
+    bodyMd: '루빅스는 실시간으로 사용자 반응을 분석하여 콘텐츠를 추천하는 카카오의 추천 시스템이다. 2015년 5월에 다음 포털 뉴스 서비스의 일부 사용자를 대상으로 추천을 시작했고, 한달 뒤인 6월부터 전체 사용자에게 확대했다. 다음 뉴스 외에도 카카오톡 채널 등 다양한 콘텐츠 서비스에서 사용된다. 루빅스는 Apache Kafka를 메시지 큐 시스템으로 채택했으며, 메시지 큐에 저장된 데이터를 빠르게 읽어서 처리한 결과는 추천 랭킹을 위한 기계 학습에 사용된다. 실시간으로 데이터 스트림을 처리할 수 있는 여러 기술 중에서 루빅스는 Apache Spark Streaming을 사용하고 있다. 2016년 4월 현재 루빅스는 서비스 오픈 이후로 99.998% 가용성을 보이고 있으며, 그 전 해 9월 이후로 장애시간은 0을 기록하고 있다.',
+    publishedAt: '2016-04-27',
+    domains: ['recommendation', 'realtime-data'],
+    tags: ['recommendation', 'kafka', 'ml', 'data-pipeline'],
+  },
+  {
+    companySlug: 'kakao',
+    url: 'https://tech.kakao.com/2021/06/25/kakao-ai-recommendation-01/',
+    title: '카카오 AI추천 : 토픽 모델링과 MAB를 이용한 카카오 개인화 추천',
+    summary: '토픽 모델링 + MAB(Multi-Armed Bandit)로 탐색-활용 자동 균형',
+    bodyMd: '카카오 AI 추천팀은 토픽 모델링으로 콘텐츠 의미를 압축하고, MAB(Multi-Armed Bandit) 알고리즘으로 탐색-활용 트레이드오프를 자동 균형화한다. 신규 사용자에게는 탐색을, 행동 데이터가 충분한 장기 사용자에게는 활용을 더 많이 하면서 단일 시스템에서 모두 처리한다. 토픽 모델링은 잠재 의미 공간을 학습하므로 신규 콘텐츠도 빠르게 후보로 등장 가능하다.',
+    publishedAt: '2021-06-25',
+    domains: ['recommendation'],
+    tags: ['recommendation', 'ml', 'ranking'],
+  },
+  {
     companySlug: 'woowahan',
     url: 'https://techblog.woowahan.com/17383/',
     title: '실시간 반응형 추천 개발 일지 1부: 프로젝트 소개',

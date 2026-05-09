@@ -4,6 +4,12 @@ const nextConfig = {
     serverActions: { bodySizeLimit: '2mb' },
   },
   transpilePackages: ['@td/db'],
+  // Bundle the seeded SQLite file into Vercel function output so runtime can read it.
+  outputFileTracingIncludes: {
+    '/**': ['../tech-decisions.db'],
+  },
+  // better-sqlite3 is a native module — exclude from server bundle so Next can still resolve it.
+  serverExternalPackages: ['better-sqlite3'],
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'static.toss.im' },

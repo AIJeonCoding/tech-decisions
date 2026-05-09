@@ -1205,6 +1205,38 @@ const SEED: SeedCell[] = [
     confidence: 0.70,
   },
 
+  // --- 카카오 본사 (kakao) — 추천 ---
+  {
+    companySlug: 'kakao',
+    domainSlug: 'recommendation',
+    axisSlug: 'candidate-generation',
+    summary: 'Rubix — Kafka + Spark Streaming 실시간 추천',
+    evidence: [
+      {
+        title: '루빅스(RUBICS) – kakao의 실시간 추천 시스템',
+        url: 'https://tech.kakao.com/2016/04/27/rubics/',
+        quote: '루빅스는 Apache Kafka를 메시지 큐로 채택하고, Apache Spark Streaming으로 실시간 데이터 스트림을 처리해 추천 랭킹용 기계학습에 사용한다. 서비스 오픈 이후 99.998% 가용성을 유지한다.',
+        publishedAt: '2016-04-27',
+      },
+    ],
+    confidence: 0.86,
+  },
+  {
+    companySlug: 'kakao',
+    domainSlug: 'recommendation',
+    axisSlug: 'reranker',
+    summary: '토픽 모델링 + MAB(Multi-Armed Bandit)',
+    evidence: [
+      {
+        title: '카카오 AI추천 : 토픽 모델링과 MAB를 이용한 카카오 개인화 추천',
+        url: 'https://tech.kakao.com/2021/06/25/kakao-ai-recommendation-01/',
+        quote: '토픽 모델링으로 콘텐츠 의미를 압축하고, MAB(Multi-Armed Bandit)로 탐색-활용을 자동 균형화해 신규/장기 사용자에게 모두 적합한 추천을 만든다.',
+        publishedAt: '2021-06-25',
+      },
+    ],
+    confidence: 0.78,
+  },
+
   // --- 네이버 D2 (naver-d2) — 추천 ---
   {
     companySlug: 'naver-d2',

@@ -31,16 +31,16 @@ const SEED: SeedCell[] = [
   {
     companySlug: 'toss',
     axisSlug: 'concurrency-control',
-    summary: 'Idempotency-Key + Redis 분산락',
+    summary: 'Redis Global Lock + JPA @Lock 이중 보호',
     evidence: [
       {
-        title: '결제 API의 멱등성 처리하기',
-        url: 'https://toss.tech/article/idempotency',
-        quote: '결제 요청마다 클라이언트가 발급한 Idempotency-Key를 받아 Redis에 일정 시간 저장하고, 같은 키가 들어오면 이전 응답을 그대로 반환한다.',
-        publishedAt: '2024-08-12',
+        title: '은행 최초 코어뱅킹 MSA 전환기 (feat. 지금 이자 받기)',
+        url: 'https://toss.tech/article/slash23-corebanking',
+        quote: 'Redis Global Lock과 더불어 DB Layer에서 동시성을 제어하기 위한 JPA의 @Lock 어노테이션을 활용해 트랜잭션 안정성을 확보했다.',
+        publishedAt: '2023-08-31',
       },
     ],
-    confidence: 0.85,
+    confidence: 0.92,
   },
   {
     companySlug: 'toss',
@@ -59,16 +59,16 @@ const SEED: SeedCell[] = [
   {
     companySlug: 'toss',
     axisSlug: 'reconciliation',
-    summary: '이중기장 + PG 전문 일일 리컨실',
+    summary: 'Druid → StarRocks 전환 + CDC 기반 실시간 정합성',
     evidence: [
       {
-        title: '대사 시스템',
-        url: 'https://toss.tech/article/reconciliation',
-        quote: '내부 원장은 차변/대변 한 쌍의 분개로 기록하고, PG에서 받은 정산 전문과 매일 자정 비교하여 차이를 알람으로 띄운다.',
-        publishedAt: '2024-04-20',
+        title: '고객은 절대 기다려주지 않는다: 빠른 데이터 서빙으로 고객 만족도를 수직 상승 시키는 법',
+        url: 'https://toss.tech/article/payments-legacy-7',
+        quote: '검색은 Elasticsearch에, 조인/통합 원장은 StarRocks에 맡겨 각 엔진의 강점을 조합했고, CDC 기반 실시간 데이터 반영으로 정합성을 확보했다.',
+        publishedAt: '2025-12-16',
       },
     ],
-    confidence: 0.80,
+    confidence: 0.86,
   },
   {
     companySlug: 'toss',
@@ -131,16 +131,16 @@ const SEED: SeedCell[] = [
   {
     companySlug: 'kakaopay',
     axisSlug: 'failure-recovery',
-    summary: '보상 트랜잭션 (Saga)',
+    summary: '멱등성 API + ActResult 함수형 처리 + 자동 재시도',
     evidence: [
       {
-        title: 'Saga로 분산 트랜잭션 처리',
-        url: 'https://tech.kakaopay.com/post/saga',
-        quote: '여러 마이크로서비스가 관여하는 결제 흐름은 Choreography Saga로 모델링하고, 실패 시 각 단계의 보상 액션을 역순으로 실행한다.',
-        publishedAt: '2024-10-01',
+        title: 'MSA 환경에서 네트워크 예외를 잘 다루는 방법',
+        url: 'https://tech.kakaopay.com/post/msa-transaction/',
+        quote: '동일한 요청을 여러 번 보내도 같은 응답을 줄 수 있으면 해당 API는 멱등성이 있다. 결제 트랜잭션 결과가 Success/Failure/Unknown 셋 중 하나로 분류되어 함수형으로 안전하게 이어진다.',
+        publishedAt: '2022-05-25',
       },
     ],
-    confidence: 0.79,
+    confidence: 0.90,
   },
 
   // === 쿠팡 (coupang) ===
@@ -205,16 +205,16 @@ const SEED: SeedCell[] = [
   {
     companySlug: 'woowahan',
     axisSlug: 'concurrency-control',
-    summary: '분산락 (Redis Redlock)',
+    summary: 'Transactional Outbox + RDBMS 이벤트 저장소 + 5분 자동 재발행',
     evidence: [
       {
-        title: '동시 주문 처리 이야기',
-        url: 'https://techblog.woowahan.com/concurrency',
-        quote: '같은 사용자가 빠르게 중복 결제하는 케이스를 막기 위해 Redis Redlock으로 사용자 단위 락을 짧게 잡는다.',
-        publishedAt: '2024-04-10',
+        title: '회원시스템 이벤트기반 아키텍처 구축하기',
+        url: 'https://techblog.woowahan.com/7835/',
+        quote: '메시징 발행 실패 문제 해결을 위해 도메인 저장소와 동일한 RDBMS를 이벤트 저장소로 사용해 로컬 트랜잭션으로 정합성을 보장하고, 5분 내 처리되지 않은 이벤트는 배치가 자동 재발행한다.',
+        publishedAt: '2022-04-12',
       },
     ],
-    confidence: 0.76,
+    confidence: 0.88,
   },
   {
     companySlug: 'woowahan',
@@ -247,16 +247,16 @@ const SEED: SeedCell[] = [
   {
     companySlug: 'woowahan',
     axisSlug: 'failure-recovery',
-    summary: 'Outbox 패턴 + 자동 재시도',
+    summary: 'Transactional Outbox + Debezium MySQL connector + 토픽별 outbox 분리',
     evidence: [
       {
-        title: 'Outbox 패턴 도입기',
-        url: 'https://techblog.woowahan.com/outbox',
-        quote: '결제 완료 이벤트를 DB outbox 테이블에 같은 트랜잭션으로 기록하고, 별도 워커가 메시지 브로커로 발행하며 실패 시 자동 재시도한다.',
-        publishedAt: '2024-11-05',
+        title: '우리 팀은 카프카를 어떻게 사용하고 있을까',
+        url: 'https://techblog.woowahan.com/17386/',
+        quote: '데이터와 메시지 발행의 트랜잭션을 하나로 관리하여 데이터 정합성을 확보할 필요가 있었고, Debezium의 MySQL source connector가 단일 태스크로 메시지 전송 순서를 보장한다. 처리량을 위해 토픽별 outbox 테이블을 여러 개로 분리한다.',
+        publishedAt: '2024-05-30',
       },
     ],
-    confidence: 0.84,
+    confidence: 0.93,
   },
 
   // === 뱅크샐러드 (banksalad) ===

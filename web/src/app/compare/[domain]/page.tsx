@@ -83,17 +83,32 @@ export default async function ComparePage({ params }: Props) {
         </p>
       </header>
 
+      {/* my-project 강조 배너 — 결제·정산/MSA 도메인에만 노출 */}
+      {(domain === 'payment-settlement' || domain === 'msa-migration') && companyList.some((c) => c.slug === 'my-project') && (
+        <div className="mb-6 p-4 rounded-lg bg-accent/8 border border-accent/30 flex items-start gap-3">
+          <span className="shrink-0 w-7 h-7 rounded-full bg-accent text-white flex items-center justify-center text-sm font-bold">★</span>
+          <div className="text-sm leading-relaxed">
+            <strong className="text-accent">내 정산 MSA 포트폴리오</strong>
+            <span className="text-fg/70">가 아래 표의 첫 컬럼입니다. 토스/카카오페이/쿠팡/우아한과 같은 비교축에서 어떤 의사결정을 내렸는지 셀 클릭으로 확인하세요.</span>
+          </div>
+        </div>
+      )}
+
       <CompareTable axes={axes} companies={companyList} cells={cells} />
 
       <section className="mt-12 p-6 card bg-muted/20">
         <h2 className="font-semibold mb-2">자연어로 직접 물어볼 수 있어요</h2>
         <p className="text-sm text-fg/70 mb-4">
-          비교축이 부족하다면 챗봇이 인덱싱된 모든 글에서 직접 답을 찾아줍니다.
+          비교축이 부족하다면 자주 묻는 질문 8개와 키워드 검색에서 답을 찾을 수 있습니다.
         </p>
-        <a href={`/chat?q=${encodeURIComponent(`${d.name}을 토스/카카오페이/쿠팡은 각각 어떻게 처리해?`)}`}
-           className="btn-primary">
-          챗봇에게 물어보기 →
-        </a>
+        <div className="flex flex-wrap gap-2">
+          <a href="/chat" className="btn-primary">
+            자주 묻는 질문 →
+          </a>
+          <a href={`/search?q=${encodeURIComponent(d.name)}&domain=${domain}`} className="btn">
+            검색 결과 보기
+          </a>
+        </div>
       </section>
     </div>
   );

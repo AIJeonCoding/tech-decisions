@@ -36,6 +36,7 @@ export interface SearchResult {
   companySlug: string;
   companyName: string;
   companyNameKo: string | null;
+  domains: string[];
   snippet: string;
   rank: number;
 }
@@ -74,6 +75,7 @@ export async function searchArticles(opts: SearchOpts): Promise<SearchResult[]> 
     company_slug: string;
     company_name: string;
     company_name_ko: string | null;
+    domains: string | null;
     snippet: string;
     rank: number;
   }>(sql`
@@ -83,6 +85,7 @@ export async function searchArticles(opts: SearchOpts): Promise<SearchResult[]> 
       a.url          AS url,
       a.summary      AS summary,
       a.published_at AS published_at,
+      a.domains      AS domains,
       co.slug        AS company_slug,
       co.name        AS company_name,
       co.name_ko     AS company_name_ko,
@@ -107,7 +110,18 @@ export async function searchArticles(opts: SearchOpts): Promise<SearchResult[]> 
     companySlug: r.company_slug,
     companyName: r.company_name,
     companyNameKo: r.company_name_ko,
+    domains: parseDomains(r.domains),
     snippet: r.snippet ?? '',
     rank: r.rank ?? 0,
   }));
+}
+
+function parseDomains(raw: string | null): string[] {
+  if (!raw) return [];
+  try {
+    const v = JSON.parse(raw);
+    return Array.isArray(v) ? v.filter((s): s is string => typeof s === 'string') : [];
+  } catch {
+    return [];
+  }
 }

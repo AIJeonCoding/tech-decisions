@@ -381,6 +381,16 @@ const SEARCH_ARTICLES: SeedArticle[] = [
 // === MSA 전환 / 캐시 추가 글 ===
 const PLATFORM_ARTICLES: SeedArticle[] = [
   {
+    companySlug: 'woowahan',
+    url: 'https://techblog.woowahan.com/2588/',
+    title: '신규 포인트 시스템 전환기 #2 – 오픈 준비 단계',
+    summary: '레거시 랩핑 API + 신규 API 동시 운영 + 30분 차단 마이그레이션으로 무중단 전환',
+    bodyMd: '우아한형제들은 포인트 시스템을 프로시저 기반에서 API 기반으로 전환했다. 핵심은 레거시 프로시저를 랩핑한 API와 신규 도메인 모델 API 두 가지를 동시에 구축해 롤백 위험을 최소화한 것이다. 성능 테스트는 Ngrinder와 Pinpoint를 활용하고, 주말 피크타임 주문수 5배를 기준으로 설정했다. QA 중 발견된 Redis 캐시 갱신 문제는 트랜잭션 완료 후 메시지 발행으로 해결했다. 오픈 전략은 3단계를 거쳤다: 레거시 API 선 오픈 → 레거시 우선 순위 전환 → 신규 API 우선 순위 전환. 특히 오픈 시간 동안 포인트 사용을 30분 차단하는 창의적 방식으로 마이그레이션 데이터 일관성을 보장했다.',
+    publishedAt: '2018-10-15',
+    domains: ['msa-migration', 'payment-settlement'],
+    tags: ['msa', 'payment', 'monolith-decomposition'],
+  },
+  {
     companySlug: 'kakaopay',
     url: 'https://tech.kakaopay.com/post/home-hexagonal-architecture/',
     title: 'Hexagonal Architecture, 진짜 하실 건가요?',

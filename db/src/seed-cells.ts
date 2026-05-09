@@ -787,6 +787,21 @@ const SEED: SeedCell[] = [
   {
     companySlug: 'woowahan',
     domainSlug: 'msa-migration',
+    axisSlug: 'safe-migration',
+    summary: '레거시 랩핑 API + 신규 API 동시 운영 + 30분 차단 마이그레이션',
+    evidence: [
+      {
+        title: '신규 포인트 시스템 전환기 #2 – 오픈 준비 단계',
+        url: 'https://techblog.woowahan.com/2588/',
+        quote: '레거시 프로시저를 랩핑한 API와 신규 도메인 모델 API 두 가지를 동시에 구축해 롤백 위험을 최소화하고, 오픈 시간 동안 포인트 사용을 30분 차단하는 방식으로 마이그레이션 데이터 일관성을 보장했다. 3단계(레거시 우선 → 신규 우선) 점진 전환.',
+        publishedAt: '2018-10-15',
+      },
+    ],
+    confidence: 0.85,
+  },
+  {
+    companySlug: 'woowahan',
+    domainSlug: 'msa-migration',
     axisSlug: 'data-separation',
     summary: 'Transactional Outbox + Debezium MySQL CDC',
     evidence: [

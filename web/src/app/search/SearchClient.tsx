@@ -14,9 +14,18 @@ interface SearchResult {
   companySlug: string;
   companyName: string;
   companyNameKo: string | null;
+  domains: string[];
   snippet: string;
   rank: number;
 }
+
+const DOMAIN_LABELS: Record<string, string> = {
+  'payment-settlement': '결제·정산',
+  'search': '검색',
+  'recommendation': '추천',
+  'msa-migration': 'MSA 전환',
+  'realtime-data': '실시간 데이터',
+};
 
 const DOMAINS = [
   { slug: '', name: '전체' },
@@ -117,8 +126,17 @@ export function SearchClient() {
               <span className="ml-auto text-fg/30">rank {r.rank.toFixed(2)}</span>
             </div>
             <h3 className="mt-1 font-medium">{r.title}</h3>
+            {r.domains.length > 0 && (
+              <div className="mt-1.5 flex flex-wrap gap-1">
+                {r.domains.map((d) => (
+                  <span key={d} className="chip text-[10px]">
+                    {DOMAIN_LABELS[d] ?? d}
+                  </span>
+                ))}
+              </div>
+            )}
             {r.summary && (
-              <p className="mt-1 text-sm text-fg/60 line-clamp-1">{r.summary}</p>
+              <p className="mt-2 text-sm text-fg/60 line-clamp-1">{r.summary}</p>
             )}
             <p
               className="mt-2 text-sm text-fg/70 leading-relaxed line-clamp-3"

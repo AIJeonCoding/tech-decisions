@@ -851,6 +851,23 @@ const SEED: SeedCell[] = [
   // === 추천 도메인 (recommendation) === V1 추가
   // ============================================================
 
+  // --- 토스 (toss) ---
+  {
+    companySlug: 'toss',
+    domainSlug: 'recommendation',
+    axisSlug: 'serving-latency',
+    summary: 'Redis Look-Aside + Circuit Breaker (TPS 1만 안정화)',
+    evidence: [
+      {
+        title: '캐시를 적용하기 까지의 험난한 길 (TPS 1만 안정적으로 서비스하기)',
+        url: 'https://toss.tech/article/34481',
+        quote: '약관 동의 여부는 값이 DB에 Commit 되는 순간 바로 다음 요청에 정확하게 응답되어야 해 강한 일관성이 필요하다. Replication Database 대신 Redis Look-Aside 캐시를 선택하고, 캐시 무효화 실패 시 Circuit Breaker를 강제로 열어 모든 트래픽을 DB로 우회시킨다.',
+        publishedAt: '2025-03-31',
+      },
+    ],
+    confidence: 0.89,
+  },
+
   // --- 카카오페이 (kakaopay) ---
   {
     companySlug: 'kakaopay',

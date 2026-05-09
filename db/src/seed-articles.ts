@@ -381,6 +381,16 @@ const SEARCH_ARTICLES: SeedArticle[] = [
 // === MSA 전환 / 캐시 추가 글 ===
 const PLATFORM_ARTICLES: SeedArticle[] = [
   {
+    companySlug: 'toss',
+    url: 'https://toss.tech/article/34481',
+    title: '캐시를 적용하기 까지의 험난한 길 (TPS 1만 안정적으로 서비스하기)',
+    summary: 'Redis Look-Aside + Circuit Breaker로 TPS 1만 안정화 + 강한 일관성 보장',
+    bodyMd: '토스뱅크 서버 개발팀은 약관 서버의 급증한 트래픽(평균 TPS 1만, 최대 2만)을 처리하기 위해 Redis 캐시를 도입했다. 약관 동의 여부는 값이 DB에 Commit 되는 순간 바로 다음 요청에 DB에 저장된 값이 정확하게 응답되어야 하므로 강한 일관성(Strong Consistency)이 필수다. 따라서 복제 지연이 발생할 수 있는 Replication Database 대신 Redis 캐시를 선택했다. DB의 정보가 자주 변경되지 않고 대부분의 케이스는 Cache Hit를 하기 때문에 Look-Aside 패턴을 채택했다. 캐시 무효화 실패 시 Circuit Breaker를 강제로 열어 모든 트래픽을 데이터베이스로 우회시켜 잘못된 캐시 응답을 원천 차단한다.',
+    publishedAt: '2025-03-31',
+    domains: ['recommendation', 'realtime-data'],
+    tags: ['redis', 'observability', 'sre'],
+  },
+  {
     companySlug: 'coupang',
     url: 'https://medium.com/coupang-engineering/how-coupang-built-a-microservice-architecture-fd584fff7f2b',
     title: '쿠팡의 마이크로서비스 아키텍처 전환',

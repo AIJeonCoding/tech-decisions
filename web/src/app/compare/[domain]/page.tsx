@@ -42,7 +42,8 @@ export default async function ComparePage({ params }: Props) {
   ]);
 
   // Show all major companies even if no cells yet (so empty cells render)
-  const PRIMARY = ['toss', 'kakaopay', 'coupang', 'woowahan', 'banksalad'];
+  // 'my-project' (settlement-msa) is pinned first so portfolio comparison is immediately visible.
+  const PRIMARY = ['my-project', 'toss', 'kakaopay', 'coupang', 'woowahan', 'banksalad', 'naver-d2', 'daangn'];
   const companyList = all
     .filter((c) => PRIMARY.includes(c.slug) || withDecisions.some((w) => w.id === c.id))
     .sort((a, b) => {

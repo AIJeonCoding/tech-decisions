@@ -44,6 +44,7 @@ export function CompareTable({ axes, companies, cells }: Props) {
       <div className="flex flex-wrap gap-2">
         {companies.map((c) => {
           const on = filteredCompanies.has(c.id);
+          const isMine = c.slug === 'my-project';
           return (
             <button
               key={c.id}
@@ -56,11 +57,13 @@ export function CompareTable({ axes, companies, cells }: Props) {
               className={cn(
                 'px-3 py-1 rounded-full text-xs border transition-colors',
                 on
-                  ? 'bg-accent/10 border-accent/50 text-accent'
+                  ? isMine
+                    ? 'bg-accent text-white border-accent'
+                    : 'bg-accent/10 border-accent/50 text-accent'
                   : 'bg-muted border-border text-fg/50',
               )}
             >
-              {c.nameKo ?? c.name}
+              {isMine && '★ '}{c.nameKo ?? c.name}
             </button>
           );
         })}
@@ -71,11 +74,21 @@ export function CompareTable({ axes, companies, cells }: Props) {
           <thead className="bg-muted/50 border-b border-border">
             <tr>
               <th className="text-left px-4 py-3 font-medium text-fg/60 w-48">비교축</th>
-              {visibleCompanies.map((c) => (
-                <th key={c.id} className="text-left px-4 py-3 font-medium min-w-[200px]">
-                  {c.nameKo ?? c.name}
-                </th>
-              ))}
+              {visibleCompanies.map((c) => {
+                const isMine = c.slug === 'my-project';
+                return (
+                  <th
+                    key={c.id}
+                    className={cn(
+                      'text-left px-4 py-3 font-medium min-w-[200px]',
+                      isMine && 'bg-accent/10 text-accent border-l-2 border-accent/40',
+                    )}
+                  >
+                    {isMine && <span className="chip mr-1.5 text-accent bg-accent/15">내 프로젝트</span>}
+                    {c.nameKo ?? c.name}
+                  </th>
+                );
+              })}
             </tr>
           </thead>
           <tbody>
@@ -89,8 +102,15 @@ export function CompareTable({ axes, companies, cells }: Props) {
                 </td>
                 {visibleCompanies.map((co) => {
                   const cell = cellMap.get(`${ax.id}::${co.id}`);
+                  const isMine = co.slug === 'my-project';
                   return (
-                    <td key={co.id} className="px-4 py-4 align-top">
+                    <td
+                      key={co.id}
+                      className={cn(
+                        'px-4 py-4 align-top',
+                        isMine && 'bg-accent/5 border-l-2 border-accent/40',
+                      )}
+                    >
                       {cell?.cellSummary ? (
                         <button
                           onClick={() => setSelected(cell)}

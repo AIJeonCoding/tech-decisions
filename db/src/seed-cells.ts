@@ -275,6 +275,78 @@ const SEED: SeedCell[] = [
     confidence: 0.73,
   },
 
+  // === settlement-msa (내 프로젝트) — 결제·정산 5축 모두 채움 ===
+  {
+    companySlug: 'my-project',
+    axisSlug: 'concurrency-control',
+    summary: '@Version 낙관적 락 + Idempotency-Key 4중 가드 + Pessimistic IT',
+    evidence: [
+      {
+        title: '묶음 A — Daily Closing + V5 Recognition + @Version',
+        url: 'https://github.com/',
+        quote: '잔고 변경은 JPA @Version 낙관적 락으로 처리하고, AR Clearing 등 멱등성 핵심 경로는 Idempotency-Key 4중 가드(C-1)로 중복 청산을 차단했다. Concurrent/Pessimistic 통합 테스트 5종으로 회귀 검증.',
+        publishedAt: '2026-05-07',
+      },
+    ],
+    confidence: 0.95,
+  },
+  {
+    companySlug: 'my-project',
+    axisSlug: 'settlement-timing',
+    summary: 'PROVISIONAL → FINAL → REVISED 3단계 인식 + Pipeline 11 step',
+    evidence: [
+      {
+        title: '묶음 A·B — Daily Closing Recognition + ClosingPipeline 11 step',
+        url: 'https://github.com/',
+        quote: '거래 발생 시 PROVISIONAL(가인식) → 마감 시 FINAL → 사후 정정 시 REVISED 의 3단계 인식으로 발생주의 회계 표준을 시스템에 내장했다. ClosingPipeline 11 step + closing_step_timing + RELOAD 모드 + CompositeValidator로 마감 운영 가시성 확보.',
+        publishedAt: '2026-05-07',
+      },
+    ],
+    confidence: 0.95,
+  },
+  {
+    companySlug: 'my-project',
+    axisSlug: 'reconciliation',
+    summary: '이중기장 + 시산표 + 대차대조 항등식 자동 회귀 가드',
+    evidence: [
+      {
+        title: '묶음 F·v0.6.1 — ValidateTrialBalanceStep + ValidateBalanceSheetStep (ADR-0030)',
+        url: 'https://github.com/',
+        quote: '내부 원장은 차변/대변 이중기장으로 기록하고, ValidateTrialBalanceStep(시산표 합계 0) + ValidateBalanceSheetStep(자산=부채+자본)으로 매 마감마다 회계 항등식을 자동 검증한다. 회귀 가드 4중으로 회계 무결성을 코드 레벨에서 보장.',
+        publishedAt: '2026-05-07',
+      },
+    ],
+    confidence: 0.95,
+  },
+  {
+    companySlug: 'my-project',
+    axisSlug: 'fee-distribution',
+    summary: 'AR Clearing FIFO + Chargeback 상태머신 + 충당금 + 세금계산서',
+    evidence: [
+      {
+        title: '묶음 C·D — AR Clearing + Chargeback + Adjusting/Reversing + TaxInvoice',
+        url: 'https://github.com/',
+        quote: 'AR Clearing은 가맹점 단위 FIFO로 미수금 자동 회수, Chargeback은 명시적 상태머신 + 분개로 망취소까지 추적, 발생주의 분개를 위해 Adjusting + Reversing(정정전표) 표준 적용. RefundReserve / DoubtfulReceivable 충당금 + TaxInvoice 상태머신으로 세금계산서까지 풀스택.',
+        publishedAt: '2026-05-07',
+      },
+    ],
+    confidence: 0.95,
+  },
+  {
+    companySlug: 'my-project',
+    axisSlug: 'failure-recovery',
+    summary: 'Outbox + Admin redrive + Zipkin + Prometheus alert 12 + RUNBOOK 7 INC',
+    evidence: [
+      {
+        title: '묶음 E·F·v0.6.1 — Outbox + OutboxAdminController + 분산추적 + 운영 도구',
+        url: 'https://github.com/',
+        quote: 'Outbox 패턴 + OutboxAdminController로 RUNBOOK INC-06 redrive 운영 가능, Brave + Zipkin + MDC로 분산 추적, Prometheus alert 12개 + Grafana 8 panel + 자동 provisioning, 7개 INC 대응 RUNBOOK + ADR 29건. JaCoCo 60% INSTRUCTION + 80% accounting gate.',
+        publishedAt: '2026-05-07',
+      },
+    ],
+    confidence: 0.95,
+  },
+
   // === 결제·정산 빈 셀 보강 ===
   {
     companySlug: 'toss',
@@ -843,6 +915,38 @@ const SEED: SeedCell[] = [
       },
     ],
     confidence: 0.91,
+  },
+
+  // --- settlement-msa (내 프로젝트) — MSA 전환 ---
+  {
+    companySlug: 'my-project',
+    domainSlug: 'msa-migration',
+    axisSlug: 'decomposition-unit',
+    summary: '도메인별 6 서비스 (api-gateway / eureka / commerce / merchant / settlement / transaction)',
+    evidence: [
+      {
+        title: 'settlement-msa 구성 — 6 서비스 + Frontend',
+        url: 'https://github.com/',
+        quote: 'PG 정산 도메인을 api-gateway / eureka-server / commerce / merchant / settlement / transaction 6개 마이크로서비스로 분해하고, 각 서비스는 자체 DB와 책임 경계를 가진다. 분해 단위는 도메인 책임(거래·가맹점·정산·결제 처리)을 따른다.',
+        publishedAt: '2026-05-07',
+      },
+    ],
+    confidence: 0.92,
+  },
+  {
+    companySlug: 'my-project',
+    domainSlug: 'msa-migration',
+    axisSlug: 'safe-migration',
+    summary: 'ADR 29건 + RUNBOOK 7 INC + JaCoCo gate + 5종 IT + 운영 대시보드',
+    evidence: [
+      {
+        title: '묶음 F·v0.6.1 — 시니어급 운영 안전망',
+        url: 'https://github.com/',
+        quote: '아키텍처 결정 ADR 29건 + 장애 대응 RUNBOOK 7 INC + JaCoCo 60% INSTRUCTION/80% accounting 게이트 + Concurrent/Pessimistic/Unique/JournalPosting/Remittance IT 5종 + Prometheus 12 alert + Grafana 8 panel. 신규 변경의 회계 항등식 회귀를 ValidateTrialBalanceStep + ValidateBalanceSheetStep으로 자동 가드.',
+        publishedAt: '2026-05-07',
+      },
+    ],
+    confidence: 0.94,
   },
 
   // --- 쿠팡 (coupang) ---

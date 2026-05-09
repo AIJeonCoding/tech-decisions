@@ -15,6 +15,13 @@ async function seed() {
       { slug: 'daangn', name: 'Daangn', nameKo: '당근', blogUrl: 'https://medium.com/daangn' },
       { slug: 'banksalad', name: 'Banksalad', nameKo: '뱅크샐러드', blogUrl: 'https://blog.banksalad.com/' },
       { slug: 'yanolja', name: 'Yanolja', nameKo: '야놀자', blogUrl: 'https://medium.com/yanolja' },
+      {
+        slug: 'my-project',
+        name: 'settlement-msa',
+        nameKo: '내 프로젝트',
+        blogUrl: 'https://github.com/',
+        description: 'PG 정산 MSA 포트폴리오 — Spring Boot + Spring Cloud + JPA + Outbox + Prometheus. 회계 항등식 자동 검증 + SRE-ready 운영 도구.',
+      },
     ])
     .onConflictDoNothing();
 

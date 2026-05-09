@@ -43,6 +43,9 @@ export default async function Home() {
             같은 비교축에 나란히 두어 <strong className="text-fg">의사결정에 쓸 수 있게</strong> 정리했습니다.
             제목 모음이 아니라, 본문에서 핵심 의사결정을 추출한 비교표입니다.
           </p>
+          <p className="mt-3 text-sm text-accent">
+            ★ 내 정산 MSA 포트폴리오(<code className="text-xs bg-accent/10 px-1 py-0.5 rounded">settlement-msa</code>)도 같은 비교축에 함께 노출됩니다.
+          </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/compare/payment-settlement" className="btn-primary">
               결제·정산 비교 보기 <ArrowRight className="w-4 h-4" />

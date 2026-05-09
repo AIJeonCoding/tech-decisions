@@ -1,6 +1,32 @@
 import { sql } from 'drizzle-orm';
 import { db } from './db';
 
+/**
+ * Build a SQLite FTS5 MATCH expression from raw user input.
+ *
+ * Strategy:
+ *  - Split on whitespace, strip non-letter/digit characters per token.
+ *  - For each token emit `("token" OR token*)` so we get both phrase match
+ *    and prefix match (the FTS5 prefix index handles shorter substrings).
+ *  - Combine all tokens with OR — a search for "정산 동시성" should match
+ *    documents that mention either term.
+ *
+ * Returns `null` when the query has no usable tokens (avoids empty MATCH).
+ *
+ * Korean note: SQLite FTS5's unicode61 tokenizer splits on whitespace only,
+ * so "멱등" won't directly hit a token "멱등키" without `token*` prefix
+ * expansion enabled by `prefix='2 3 4'` on the virtual table.
+ */
+export function buildFtsQuery(input: string): string | null {
+  const tokens = input
+    .trim()
+    .split(/\s+/)
+    .map((t) => t.replace(/[^\p{L}\p{N}_]/gu, ''))
+    .filter((t) => t.length > 0);
+  if (tokens.length === 0) return null;
+  return tokens.map((t) => `("${t}" OR ${t}*)`).join(' OR ');
+}
+
 export interface SearchResult {
   articleId: number;
   title: string;
@@ -27,19 +53,8 @@ interface SearchOpts {
 export async function searchArticles(opts: SearchOpts): Promise<SearchResult[]> {
   const { query, limit = 20, domainSlug } = opts;
 
-  // FTS5 query: sanitize each token, then OR phrase-match + prefix-match.
-  // Korean unicode61 tokenizer splits on whitespace only, so "멱등" won't
-  // hit the token "멱등키" without prefix expansion. We add `token*` so
-  // shorter inputs still find substring matches via the prefix index.
-  const tokens = query
-    .trim()
-    .split(/\s+/)
-    .map((t) => t.replace(/[^\p{L}\p{N}_]/gu, ''))
-    .filter((t) => t.length > 0);
-  if (tokens.length === 0) return [];
-  const ftsQuery = tokens
-    .map((t) => `("${t}" OR ${t}*)`)
-    .join(' OR ');
+  const ftsQuery = buildFtsQuery(query);
+  if (ftsQuery === null) return [];
 
   if (!ftsQuery) return [];
 

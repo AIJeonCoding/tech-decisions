@@ -45,16 +45,16 @@ const SEED: SeedCell[] = [
   {
     companySlug: 'toss',
     axisSlug: 'settlement-timing',
-    summary: '실시간 가집계 + 일배치 정산',
+    summary: '거래 단위 독립 처리 + 병렬 배치 + 카나리 라이브 투입',
     evidence: [
       {
-        title: '정산 시스템의 진화',
-        url: 'https://toss.tech/article/settlement',
-        quote: '거래 발생 시점에 실시간으로 가집계하여 사용자에게는 즉시 보여주고, 실제 정산 마감은 일배치로 처리한다.',
-        publishedAt: '2024-06-03',
+        title: '레거시 정산 개편기: 신규 시스템 투입 여정부터 대규모 배치 운영 노하우까지',
+        url: 'https://toss.tech/article/payments-legacy-6',
+        quote: '기존 시스템은 수천만 건의 거래를 하나의 트랜잭션으로 묶어 모든 결과 계산 후 한 번에 커밋했지만, 신규 시스템은 거래별 상태를 독립적으로 기록하도록 설계해 I/O 감소와 병렬 처리로 배치 처리 시간을 최대 10배 단축했고, 배치 카나리로 안전하게 라이브 투입했다.',
+        publishedAt: '2025-12-11',
       },
     ],
-    confidence: 0.78,
+    confidence: 0.92,
   },
   {
     companySlug: 'toss',
@@ -279,16 +279,16 @@ const SEED: SeedCell[] = [
   {
     companySlug: 'toss',
     axisSlug: 'fee-distribution',
-    summary: '룰 기반 + BigDecimal 정밀도',
+    summary: '통합 approve 테이블 + 결제·승인 분리로 split payment 지원',
     evidence: [
       {
-        title: '결제 수수료 계산 정밀도',
-        url: 'https://toss.tech/article/fee-precision',
-        quote: '수수료는 BigDecimal로 계산하고 마지막 단계에서만 반올림하여 누적 오차를 0으로 유지한다.',
-        publishedAt: '2024-10-15',
+        title: '레거시 결제 원장을 확장 가능한 시스템으로',
+        url: 'https://toss.tech/article/payments-legacy-5',
+        quote: '서로 다른 결제 수단의 호환되지 않던 테이블 스키마를 통합 approve 테이블로 표준화하고, 기존 1:1 거래-결제수단 관계를 분리해 split payments와 다중 결제수단 시나리오를 가능하게 만들었다.',
+        publishedAt: '2025-12-01',
       },
     ],
-    confidence: 0.74,
+    confidence: 0.86,
   },
   {
     companySlug: 'kakaopay',

@@ -1,16 +1,29 @@
 import Link from 'next/link';
-import { ArrowRight, MessageSquareText, Search, Layers } from 'lucide-react';
-import { db, domains } from '@/lib/db';
+import { sql, desc } from 'drizzle-orm';
+import { ArrowRight, MessageSquareText, Search, Layers, CheckCircle2, FileText, Building2 } from 'lucide-react';
+import { db, domains, cells, companies, articles } from '@/lib/db';
 import { getDomainStats, getRecentArticles } from '@/lib/queries';
 import { formatRelative } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
 
+async function getOverallStats() {
+  const r = await db.all<{ totalCells: number; verifiedCells: number; companyCount: number; articleCount: number }>(sql`
+    SELECT
+      (SELECT COUNT(*) FROM cells) AS totalCells,
+      (SELECT COUNT(*) FROM cells WHERE coalesce(confidence, 0) >= 0.85) AS verifiedCells,
+      (SELECT COUNT(*) FROM companies) AS companyCount,
+      (SELECT COUNT(*) FROM articles) AS articleCount
+  `);
+  return r[0] ?? { totalCells: 0, verifiedCells: 0, companyCount: 0, articleCount: 0 };
+}
+
 export default async function Home() {
-  const [domainList, stats, recent] = await Promise.all([
-    db.select().from(domains).orderBy(domains.priority),
+  const [domainList, stats, recent, overall] = await Promise.all([
+    db.select().from(domains).orderBy(desc(domains.priority)),
     getDomainStats(),
     getRecentArticles(8),
+    getOverallStats(),
   ]);
 
   const statsBySlug: Record<string, typeof stats[number]> = Object.fromEntries(
@@ -34,9 +47,43 @@ export default async function Home() {
             <Link href="/compare/payment-settlement" className="btn-primary">
               결제·정산 비교 보기 <ArrowRight className="w-4 h-4" />
             </Link>
-            <Link href="/chat" className="btn">
-              <MessageSquareText className="w-4 h-4" /> 챗봇으로 물어보기
+            <Link href="/search" className="btn">
+              <Search className="w-4 h-4" /> 키워드로 검색
             </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="container-wide pb-12">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="card p-4">
+            <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-fg/50">
+              <Building2 className="w-3.5 h-3.5" /> 인덱싱된 회사
+            </div>
+            <div className="mt-2 text-3xl font-bold tracking-tight">{overall.companyCount}</div>
+          </div>
+          <div className="card p-4">
+            <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-fg/50">
+              <FileText className="w-3.5 h-3.5" /> 분석된 글
+            </div>
+            <div className="mt-2 text-3xl font-bold tracking-tight">{overall.articleCount}</div>
+          </div>
+          <div className="card p-4">
+            <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-fg/50">
+              <Layers className="w-3.5 h-3.5" /> 비교 셀
+            </div>
+            <div className="mt-2 text-3xl font-bold tracking-tight">{overall.totalCells}</div>
+          </div>
+          <div className="card p-4 ring-1 ring-accent/30 bg-accent/5">
+            <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-accent">
+              <CheckCircle2 className="w-3.5 h-3.5" /> 검증된 셀 ≥ 85%
+            </div>
+            <div className="mt-2 text-3xl font-bold tracking-tight text-accent">
+              {overall.verifiedCells}
+              <span className="text-base font-normal text-accent/60 ml-1">
+                / {overall.totalCells}
+              </span>
+            </div>
           </div>
         </div>
       </section>

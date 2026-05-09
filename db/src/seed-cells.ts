@@ -725,6 +725,21 @@ const SEED: SeedCell[] = [
   {
     companySlug: 'kakaopay',
     domainSlug: 'msa-migration',
+    axisSlug: 'decomposition-unit',
+    summary: 'DDD Bounded Context — 유비쿼터스 언어 기반 분해',
+    evidence: [
+      {
+        title: '카카오페이 여신코어 DDD로 구축하기',
+        url: 'https://tech.kakaopay.com/post/backend-domain-driven-design/',
+        quote: '정책이 명확한 도메인을 견고하게 설계/구현하기 위해 DDD를 채택했고, 도메인 전문가와 개발자가 공통으로 사용하는 유비쿼터스 언어로 의사소통의 모호함을 줄였다. Bounded Context가 독립 개발되어 도메인의 기능을 Application Level로 일원화한다.',
+        publishedAt: '2025-05-23',
+      },
+    ],
+    confidence: 0.88,
+  },
+  {
+    companySlug: 'kakaopay',
+    domainSlug: 'msa-migration',
     axisSlug: 'distributed-transaction',
     summary: '멱등성 API + ActResult 함수형 처리',
     evidence: [

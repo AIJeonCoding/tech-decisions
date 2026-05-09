@@ -381,6 +381,16 @@ const SEARCH_ARTICLES: SeedArticle[] = [
 // === MSA 전환 / 캐시 추가 글 ===
 const PLATFORM_ARTICLES: SeedArticle[] = [
   {
+    companySlug: 'kakaopay',
+    url: 'https://tech.kakaopay.com/post/backend-domain-driven-design/',
+    title: '카카오페이 여신코어 DDD(Domain Driven Design)로 구축하기',
+    summary: 'Bounded Context + 유비쿼터스 언어로 여신 도메인 복잡성을 코드 구조로 격리',
+    bodyMd: '카카오페이는 정책이 명확한 도메인을 견고하게 설계/구현하기 위해 DDD를 채택했다. 여신업무의 높은 비즈니스 복잡성을 체계적으로 관리하기 위함이었다. 도메인 전문가와 개발자가 공통으로 사용하는 언어인 유비쿼터스 언어를 통해 팀원 간 의사소통을 원활하게 하고 요구사항의 모호함을 줄였다. 각 Bounded Context가 독립적으로 개발되면서 도메인의 기능을 기반으로 Application Level을 구현해 정책 관련 코드의 일원화와 중복 방지를 달성했다. 모놀리스 분해 시 어디서 어떻게 자를지에 대한 답으로 DDD를 적용한 사례다.',
+    publishedAt: '2025-05-23',
+    domains: ['msa-migration'],
+    tags: ['msa', 'monolith-decomposition', 'payment'],
+  },
+  {
     companySlug: 'toss',
     url: 'https://toss.tech/article/34481',
     title: '캐시를 적용하기 까지의 험난한 길 (TPS 1만 안정적으로 서비스하기)',

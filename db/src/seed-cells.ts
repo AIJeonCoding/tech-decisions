@@ -1220,6 +1220,38 @@ const SEED: SeedCell[] = [
     confidence: 0.70,
   },
 
+  // --- LINE (line) — 검색 ---
+  {
+    companySlug: 'line',
+    domainSlug: 'search',
+    axisSlug: 'index-engine',
+    summary: 'Elasticsearch 35 클러스터 + 도메인별 분리 (LINE MUSIC 86M 곡)',
+    evidence: [
+      {
+        title: 'Elasticsearch を検索エンジンとして利用する際のポイント',
+        url: 'https://engineering.linecorp.com/ja/blog/using-elasticsearch-as-a-search-engine/',
+        quote: 'LINE Shop은 list display와 search 용도로 35개 Elasticsearch 클러스터를 운영하며, Search 요청 약 1500 QPS·키워드 검색 300 QPS·Get 400 QPS를 처리한다. LINE MUSIC은 86M 곡 검색에서 CPU 병목을 ES 노드 튜닝으로 해소.',
+        publishedAt: '2020-12-01',
+      },
+    ],
+    confidence: 0.81,
+  },
+  {
+    companySlug: 'line',
+    domainSlug: 'search',
+    axisSlug: 'index-pipeline',
+    summary: 'Daily full reindex + 시간별 incremental',
+    evidence: [
+      {
+        title: 'LINE Data Catalog 검색 정확도 개선',
+        url: 'https://engineering.linecorp.com/ja/blog/improvement-in-the-search-accuracy-of-line-data-catalog/',
+        quote: 'IU Web 데이터 카탈로그는 ES 7.10으로 DB/테이블 메타데이터를 색인하고, 매일 1회 풀 reindex + 매시간 incremental 색인 정책으로 정합성과 신선도를 동시 확보.',
+        publishedAt: '2022-03-15',
+      },
+    ],
+    confidence: 0.74,
+  },
+
   // --- 카카오 본사 (kakao) — 추천 ---
   {
     companySlug: 'kakao',

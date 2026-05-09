@@ -267,6 +267,26 @@ const PAYMENT_ARTICLES: SeedArticle[] = [
 // === 검색 도메인 시드 ===
 const SEARCH_ARTICLES: SeedArticle[] = [
   {
+    companySlug: 'line',
+    url: 'https://engineering.linecorp.com/ja/blog/using-elasticsearch-as-a-search-engine/',
+    title: 'Elasticsearch を検索エンジンとして利用する際のポイント',
+    summary: 'LINE Shop 35 ES 클러스터 + LINE MUSIC 86M 곡 검색 — 도메인별 클러스터 분리 + CPU 튜닝',
+    bodyMd: 'LINE은 LINE Shop, LINE MUSIC, IU Web Data Catalog, Demae-Can 등 다수 서비스에서 Elasticsearch를 검색 엔진으로 활용한다. LINE Shop은 list display와 search 용도로 35개 ES 클러스터를 운영하며, Search 요청 약 1500 QPS·키워드 검색 300 QPS·Get 400 QPS를 처리한다. LINE MUSIC은 86M 곡 검색에서 CPU 병목을 ES 노드 튜닝으로 해소했다. 도메인별 클러스터 분리가 핵심 운영 패턴.',
+    publishedAt: '2020-12-01',
+    domains: ['search'],
+    tags: ['search', 'elasticsearch'],
+  },
+  {
+    companySlug: 'line',
+    url: 'https://engineering.linecorp.com/ja/blog/improvement-in-the-search-accuracy-of-line-data-catalog/',
+    title: 'LINE Data Catalog 검색 정확도 개선',
+    summary: 'ES 7.10 + 일일 풀 reindex + 시간별 incremental 색인',
+    bodyMd: 'LINE의 IU Web 데이터 카탈로그는 Elasticsearch 7.10으로 DB/테이블 메타데이터를 색인한다. 매일 1회 전체 reindex + 매시간 incremental 색인 정책으로 정합성과 신선도를 동시 확보한다. 카탈로그 검색은 약어·동의어가 많아 한국어/일본어 분석기 커스터마이징이 정확도 핵심.',
+    publishedAt: '2022-03-15',
+    domains: ['search'],
+    tags: ['search', 'elasticsearch', 'data-pipeline'],
+  },
+  {
     companySlug: 'naver-d2',
     url: 'https://d2.naver.com/helloworld/search-architecture',
     title: '네이버 검색 인프라의 진화',

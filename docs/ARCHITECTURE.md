@@ -25,9 +25,15 @@
                                    ▼
                 ┌──────────────────────────────────────┐
                 │  web/ Next.js 15 (Vercel)            │
-                │  · /compare/[domain] (비교표)        │
-                │  · /search (FTS5 키워드 + 한국어 prefix) │
-                │  · /chat (V2 placeholder)            │
+                │  · /                홈 + 5축 미리보기   │
+                │  · /about           면접 진입 통합      │
+                │  · /compare/[domain] 비교표 5개         │
+                │  · /companies/[slug] 회사 프로필 11개   │
+                │  · /articles/[id]    글 상세 48편       │
+                │  · /search           FTS5 + 도메인 그룹 │
+                │  · /chat             자주 묻는 질문 8개 │
+                │  · /admin/cells      셀 검수 콘솔       │
+                │  · /sitemap.xml 67 URL + 동적 OG 62개  │
                 └──────────────────────────────────────┘
 ```
 

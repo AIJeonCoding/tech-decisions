@@ -146,8 +146,8 @@ export default async function ArticlePage({ params }: Props) {
           </section>
         )}
 
-        {/* 본문 markdown */}
-        <div className="prose prose-sm max-w-none text-fg/80 leading-relaxed [&_p]:my-4 [&_strong]:text-fg">
+        {/* 본문 markdown — globals.css의 .article-prose 스타일 적용 */}
+        <div className="article-prose">
           <ReactMarkdown>{article.bodyMd}</ReactMarkdown>
         </div>
 

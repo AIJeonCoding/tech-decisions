@@ -2,6 +2,60 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Article markdown — 코드/인용/리스트 가독성 */
+@layer components {
+  .article-prose h1,
+  .article-prose h2,
+  .article-prose h3 {
+    @apply font-bold tracking-tight text-fg mt-10 mb-4;
+  }
+  .article-prose h1 { @apply text-2xl; }
+  .article-prose h2 { @apply text-xl; }
+  .article-prose h3 { @apply text-lg; }
+  .article-prose p {
+    @apply my-4 leading-relaxed text-fg/85;
+  }
+  .article-prose strong { @apply text-fg font-semibold; }
+  .article-prose em { @apply italic; }
+  .article-prose ul,
+  .article-prose ol {
+    @apply my-4 pl-6 space-y-2 text-fg/85;
+  }
+  .article-prose ul { @apply list-disc; }
+  .article-prose ol { @apply list-decimal; }
+  .article-prose code {
+    @apply px-1.5 py-0.5 rounded bg-muted text-[0.9em] font-mono text-accent;
+  }
+  .article-prose pre {
+    @apply my-5 p-4 rounded-lg bg-muted/70 overflow-x-auto text-sm leading-relaxed;
+  }
+  .article-prose pre code {
+    @apply bg-transparent p-0 text-fg;
+  }
+  .article-prose blockquote {
+    @apply my-5 pl-4 border-l-4 border-accent/40 italic text-fg/70;
+  }
+  .article-prose a {
+    @apply text-accent underline decoration-accent/30 hover:decoration-accent;
+  }
+  .article-prose hr {
+    @apply my-8 border-border;
+  }
+  .article-prose img {
+    @apply my-5 rounded-lg max-w-full;
+  }
+  .article-prose table {
+    @apply my-5 w-full border-collapse text-sm;
+  }
+  .article-prose th,
+  .article-prose td {
+    @apply border border-border px-3 py-2 text-left;
+  }
+  .article-prose th {
+    @apply bg-muted/50 font-medium;
+  }
+}
+
 @layer base {
   :root {
     --bg: 0 0% 100%;

@@ -6,17 +6,16 @@ import { Search } from 'lucide-react';
 import { formatRelative, truncate } from '@/lib/utils';
 
 interface SearchResult {
-  chunkId: number;
   articleId: number;
-  text: string;
-  heading: string | null;
   title: string;
   url: string;
+  summary: string | null;
   publishedAt: string | null;
   companySlug: string;
   companyName: string;
   companyNameKo: string | null;
-  fusedScore: number;
+  snippet: string;
+  rank: number;
 }
 
 const DOMAINS = [
@@ -105,7 +104,7 @@ export function SearchClient() {
       <div className="space-y-3">
         {results.map((r) => (
           <a
-            key={r.chunkId}
+            key={r.articleId}
             href={r.url}
             target="_blank"
             rel="noreferrer"
@@ -115,18 +114,17 @@ export function SearchClient() {
               <span>{r.companyNameKo ?? r.companyName}</span>
               <span>·</span>
               <span>{formatRelative(r.publishedAt)}</span>
-              {r.heading && (
-                <>
-                  <span>·</span>
-                  <span className="text-accent/80">§ {truncate(r.heading, 30)}</span>
-                </>
-              )}
-              <span className="ml-auto text-fg/30">score {r.fusedScore.toFixed(3)}</span>
+              <span className="ml-auto text-fg/30">rank {r.rank.toFixed(2)}</span>
             </div>
             <h3 className="mt-1 font-medium">{r.title}</h3>
-            <p className="mt-2 text-sm text-fg/70 leading-relaxed line-clamp-3">
-              {r.text}
-            </p>
+            {r.summary && (
+              <p className="mt-1 text-sm text-fg/60 line-clamp-1">{r.summary}</p>
+            )}
+            <p
+              className="mt-2 text-sm text-fg/70 leading-relaxed line-clamp-3"
+              // FTS5 snippet returns HTML with <mark> tags around matched terms
+              dangerouslySetInnerHTML={{ __html: r.snippet || truncate(r.summary ?? '', 200) }}
+            />
           </a>
         ))}
         {!loading && results.length === 0 && initialQ && (

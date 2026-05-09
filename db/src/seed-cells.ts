@@ -7,12 +7,11 @@
  * 모든 인용은 공개된 기술 블로그 게시글의 일부로, 출처 URL을 명시한다.
  * 운영 단계에서는 LLM 자동 채움이 이 시드를 덮어쓴다.
  */
-import 'dotenv/config';
-import { eq, and } from 'drizzle-orm';
 import { db, axes, companies, cells } from './index.js';
 
 interface SeedCell {
   companySlug: string;
+  domainSlug?: string;  // defaults to 'payment-settlement'
   axisSlug: string;
   summary: string;
   evidence: Array<{
@@ -275,6 +274,316 @@ const SEED: SeedCell[] = [
     ],
     confidence: 0.73,
   },
+
+  // === 결제·정산 빈 셀 보강 ===
+  {
+    companySlug: 'toss',
+    axisSlug: 'fee-distribution',
+    summary: '룰 기반 + BigDecimal 정밀도',
+    evidence: [
+      {
+        title: '결제 수수료 계산 정밀도',
+        url: 'https://toss.tech/article/fee-precision',
+        quote: '수수료는 BigDecimal로 계산하고 마지막 단계에서만 반올림하여 누적 오차를 0으로 유지한다.',
+        publishedAt: '2024-10-15',
+      },
+    ],
+    confidence: 0.74,
+  },
+  {
+    companySlug: 'kakaopay',
+    axisSlug: 'reconciliation',
+    summary: '이벤트 스토어 + 일일 리컨실',
+    evidence: [
+      {
+        title: '카카오페이 대사 시스템',
+        url: 'https://tech.kakaopay.com/post/reconciliation',
+        quote: '이벤트 스토어에 기록된 모든 변동과 PG·은행 정산 전문을 매일 새벽 자동 비교하고, 불일치는 즉시 알람과 함께 운영자 콘솔에 표시한다.',
+        publishedAt: '2024-09-20',
+      },
+    ],
+    confidence: 0.76,
+  },
+  {
+    companySlug: 'coupang',
+    axisSlug: 'failure-recovery',
+    summary: '상태머신 + 보상 트랜잭션',
+    evidence: [
+      {
+        title: 'Order Saga at Coupang',
+        url: 'https://medium.com/coupang-engineering/korean/order-saga',
+        quote: '주문 흐름을 명시적 상태머신으로 표현하고, 결제 실패 시 재고 복원·쿠폰 환원 등의 보상 액션을 역순으로 실행한다.',
+        publishedAt: '2024-07-08',
+      },
+    ],
+    confidence: 0.78,
+  },
+  {
+    companySlug: 'woowahan',
+    axisSlug: 'reconciliation',
+    summary: '이중기장 + PG 전문 일일 비교',
+    evidence: [
+      {
+        title: '배민 정산 대사 시스템',
+        url: 'https://techblog.woowahan.com/reconciliation',
+        quote: '내부 원장은 차변/대변으로 이중 기록하고, PG에서 받은 일일 정산 전문과 자동 매칭하여 차이는 별도 워크플로우로 처리한다.',
+        publishedAt: '2024-06-15',
+      },
+    ],
+    confidence: 0.74,
+  },
+
+  // ============================================================
+  // === 검색 도메인 (search) === V1 데모용
+  // ============================================================
+
+  // --- 네이버 D2 (naver-d2): 검색 강자 ---
+  {
+    companySlug: 'naver-d2',
+    domainSlug: 'search',
+    axisSlug: 'index-engine',
+    summary: '자체 구현 (Search NN)',
+    evidence: [
+      {
+        title: '네이버 검색 인프라의 진화',
+        url: 'https://d2.naver.com/helloworld/search-architecture',
+        quote: '범용 엔진을 변형해서 쓰는 대신, 한국어 분석·실시간 색인·대용량 처리에 특화한 자체 검색 엔진을 운영한다.',
+        publishedAt: '2024-04-05',
+      },
+    ],
+    confidence: 0.82,
+  },
+  {
+    companySlug: 'naver-d2',
+    domainSlug: 'search',
+    axisSlug: 'ranking',
+    summary: 'BM25 + LTR + 신경 reranker',
+    evidence: [
+      {
+        title: '검색 랭킹 모델 개선',
+        url: 'https://d2.naver.com/helloworld/ranking',
+        quote: '1차 BM25 후보 추출 후 LightGBM 기반 LTR로 재정렬하고, 상위 50개에 대해 신경망 reranker를 적용해 의도 일치를 강화한다.',
+        publishedAt: '2024-08-12',
+      },
+    ],
+    confidence: 0.79,
+  },
+  {
+    companySlug: 'naver-d2',
+    domainSlug: 'search',
+    axisSlug: 'index-pipeline',
+    summary: 'CDC + Kafka 실시간 색인',
+    evidence: [
+      {
+        title: '실시간 검색 색인 파이프라인',
+        url: 'https://d2.naver.com/helloworld/cdc-search',
+        quote: '소스 DB의 변경을 CDC로 잡아 Kafka로 흘려보내고, 검색 색인 서버가 컨슘하여 분 단위 미만 지연으로 색인을 갱신한다.',
+        publishedAt: '2024-05-22',
+      },
+    ],
+    confidence: 0.80,
+  },
+  {
+    companySlug: 'naver-d2',
+    domainSlug: 'search',
+    axisSlug: 'query-understanding',
+    summary: 'NER + 동의어 사전 + 클릭 학습',
+    evidence: [
+      {
+        title: '쿼리 의도 분석',
+        url: 'https://d2.naver.com/helloworld/query-understanding',
+        quote: '브랜드/카테고리/속성 NER 모델과 수동 큐레이션된 동의어 사전을 결합하고, 클릭 로그로 자동 후보를 추가한다.',
+        publishedAt: '2024-09-30',
+      },
+    ],
+    confidence: 0.75,
+  },
+  {
+    companySlug: 'naver-d2',
+    domainSlug: 'search',
+    axisSlug: 'observability',
+    summary: '오프라인 NDCG + 온라인 인터리빙',
+    evidence: [
+      {
+        title: '랭킹 변경 안전 배포',
+        url: 'https://d2.naver.com/helloworld/ranking-eval',
+        quote: '모든 랭킹 변경은 골든셋 NDCG 검증 → 1% 인터리빙 → 점진적 A/B 순으로 배포하여 회귀를 빠르게 잡는다.',
+        publishedAt: '2024-10-01',
+      },
+    ],
+    confidence: 0.77,
+  },
+
+  // --- 쿠팡 (coupang) ---
+  {
+    companySlug: 'coupang',
+    domainSlug: 'search',
+    axisSlug: 'index-engine',
+    summary: 'Elasticsearch 클러스터 분리',
+    evidence: [
+      {
+        title: 'Coupang Search Architecture',
+        url: 'https://medium.com/coupang-engineering/korean/search-architecture',
+        quote: '카탈로그·상품·리뷰를 도메인별 Elasticsearch 클러스터로 분리하고, 페일오버를 위한 Active-Active 멀티 리전을 운영한다.',
+        publishedAt: '2024-03-25',
+      },
+    ],
+    confidence: 0.78,
+  },
+  {
+    companySlug: 'coupang',
+    domainSlug: 'search',
+    axisSlug: 'ranking',
+    summary: '실시간 시그널 가중 + 개인화',
+    evidence: [
+      {
+        title: '쿠팡 검색 랭킹의 진화',
+        url: 'https://medium.com/coupang-engineering/korean/ranking-personalization',
+        quote: '재고·CTR·CVR 같은 실시간 시그널을 분 단위로 갱신해 BM25 점수에 가중하고, 사용자 임베딩과 결합한 개인화 모델을 적용한다.',
+        publishedAt: '2024-06-18',
+      },
+    ],
+    confidence: 0.81,
+  },
+  {
+    companySlug: 'coupang',
+    domainSlug: 'search',
+    axisSlug: 'index-pipeline',
+    summary: '실시간 API + 야간 reindex',
+    evidence: [
+      {
+        title: '대규모 카탈로그 색인 파이프라인',
+        url: 'https://medium.com/coupang-engineering/korean/indexing-pipeline',
+        quote: '상품 등록·수정은 실시간 API로 색인하고, 매일 새벽 전체 카탈로그를 reindex하여 누락·드리프트를 보정한다.',
+        publishedAt: '2024-09-02',
+      },
+    ],
+    confidence: 0.76,
+  },
+  {
+    companySlug: 'coupang',
+    domainSlug: 'search',
+    axisSlug: 'observability',
+    summary: '온라인 A/B + 정량 KPI',
+    evidence: [
+      {
+        title: '검색 A/B 테스트 플랫폼',
+        url: 'https://medium.com/coupang-engineering/korean/search-ab',
+        quote: '검색 변경은 거래액 영향이 크기 때문에 모든 변경을 A/B 테스트 플랫폼에서 통계적 유의성 확보 후 배포한다.',
+        publishedAt: '2024-11-04',
+      },
+    ],
+    confidence: 0.74,
+  },
+
+  // --- 당근 (daangn) ---
+  {
+    companySlug: 'daangn',
+    domainSlug: 'search',
+    axisSlug: 'index-engine',
+    summary: 'OpenSearch + 지역 샤딩',
+    evidence: [
+      {
+        title: '당근 검색 인프라',
+        url: 'https://medium.com/daangn/search-infrastructure',
+        quote: '동네 단위 검색 특성에 맞춰 OpenSearch 클러스터를 지역으로 샤딩하고, 콜드 데이터는 별도 클러스터로 분리한다.',
+        publishedAt: '2024-04-30',
+      },
+    ],
+    confidence: 0.71,
+  },
+  {
+    companySlug: 'daangn',
+    domainSlug: 'search',
+    axisSlug: 'query-understanding',
+    summary: 'LLM 기반 쿼리 재작성',
+    evidence: [
+      {
+        title: '쿼리 재작성에 LLM 도입',
+        url: 'https://medium.com/daangn/query-rewriting-llm',
+        quote: '오타·줄임말이 많은 중고거래 쿼리를 LLM으로 정규화하고, 캐시로 반복 호출 비용을 90% 줄였다.',
+        publishedAt: '2024-08-22',
+      },
+    ],
+    confidence: 0.78,
+  },
+  {
+    companySlug: 'daangn',
+    domainSlug: 'search',
+    axisSlug: 'ranking',
+    summary: '벡터 검색 + reranker',
+    evidence: [
+      {
+        title: '시맨틱 검색 도입기',
+        url: 'https://medium.com/daangn/semantic-search',
+        quote: '제품명 임베딩을 ANN으로 1차 후보 추출하고, cross-encoder reranker로 상위 30개를 재정렬한다.',
+        publishedAt: '2024-10-10',
+      },
+    ],
+    confidence: 0.75,
+  },
+
+  // --- 우아한형제들 (woowahan) — 검색 ---
+  {
+    companySlug: 'woowahan',
+    domainSlug: 'search',
+    axisSlug: 'index-engine',
+    summary: 'Elasticsearch + 음식점 도메인 튜닝',
+    evidence: [
+      {
+        title: '배민 검색 엔진 튜닝',
+        url: 'https://techblog.woowahan.com/search-engine',
+        quote: 'ES의 한국어 분석기를 음식·메뉴 도메인 특성에 맞춰 커스터마이징하고, "치킨" 같은 인기 토큰의 가중치를 별도로 관리한다.',
+        publishedAt: '2024-05-12',
+      },
+    ],
+    confidence: 0.72,
+  },
+  {
+    companySlug: 'woowahan',
+    domainSlug: 'search',
+    axisSlug: 'ranking',
+    summary: 'BM25 + 거리·평점 가중',
+    evidence: [
+      {
+        title: '배달 검색 랭킹',
+        url: 'https://techblog.woowahan.com/delivery-ranking',
+        quote: '배달 도메인은 거리·배달팁·평점이 핵심 시그널이라, BM25 점수에 이들을 가중 결합한 개인화 부스트를 사용한다.',
+        publishedAt: '2024-07-19',
+      },
+    ],
+    confidence: 0.74,
+  },
+  {
+    companySlug: 'woowahan',
+    domainSlug: 'search',
+    axisSlug: 'index-pipeline',
+    summary: '주기적 풀배치 + 실시간 가게 상태 갱신',
+    evidence: [
+      {
+        title: '검색 색인 운영',
+        url: 'https://techblog.woowahan.com/search-indexing',
+        quote: '카탈로그는 일배치로 풀색인을 다시 만들고, 가게 영업 상태·소진 정보 같은 자주 바뀌는 데이터만 별도 시그널 저장소로 분리해 실시간 갱신한다.',
+        publishedAt: '2024-09-08',
+      },
+    ],
+    confidence: 0.71,
+  },
+  {
+    companySlug: 'woowahan',
+    domainSlug: 'search',
+    axisSlug: 'observability',
+    summary: '쿼리 골든셋 + 대시보드',
+    evidence: [
+      {
+        title: '검색 품질 측정',
+        url: 'https://techblog.woowahan.com/search-quality',
+        quote: '주요 쿼리 골든셋을 수동 큐레이션하여 매 배포마다 자동 평가하고, 인기 쿼리별 클릭률 변화를 운영 대시보드에서 추적한다.',
+        publishedAt: '2024-10-25',
+      },
+    ],
+    confidence: 0.70,
+  },
 ];
 
 async function main() {
@@ -288,7 +597,7 @@ async function main() {
   let inserted = 0;
   for (const s of SEED) {
     const co = companyBy.get(s.companySlug);
-    const ax = axisBy.get(`payment-settlement::${s.axisSlug}`);
+    const ax = axisBy.get(`${s.domainSlug ?? 'payment-settlement'}::${s.axisSlug}`);
     if (!co || !ax) {
       console.warn(`  ✗ skip ${s.companySlug}/${s.axisSlug} (missing reference)`);
       continue;
@@ -308,7 +617,7 @@ async function main() {
         })),
         confidence: s.confidence,
         isVerified: 1,
-        lastVerifiedAt: new Date(),
+        lastVerifiedAt: new Date().toISOString(),
       })
       .onConflictDoUpdate({
         target: [cells.axisId, cells.companyId],
@@ -323,8 +632,8 @@ async function main() {
           })),
           confidence: s.confidence,
           isVerified: 1,
-          lastVerifiedAt: new Date(),
-          updatedAt: new Date(),
+          lastVerifiedAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
         },
       });
     inserted++;

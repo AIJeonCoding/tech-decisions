@@ -33,7 +33,7 @@ export interface CellWithCompany {
   }> | null;
   confidence: number | null;
   isVerified: number;
-  lastVerifiedAt: Date | null;
+  lastVerifiedAt: string | null;
 }
 
 export async function getCellsForDomain(domainSlug: string): Promise<CellWithCompany[]> {
@@ -76,23 +76,26 @@ export async function getCompaniesWithDecisions(domainSlug: string) {
   return result;
 }
 
-export async function getDomainStats() {
-  const rows = await db.execute<{
-    domain: string; article_count: number; company_count: number; last_updated: Date | null;
+export async function getDomainStats(): Promise<Array<{
+  domain: string;
+  article_count: number;
+  company_count: number;
+  last_updated: string | null;
+}>> {
+  return db.all<{
+    domain: string; article_count: number; company_count: number; last_updated: string | null;
   }>(sql`
     SELECT
       d.slug AS domain,
-      COUNT(DISTINCT a.id)::int AS article_count,
-      COUNT(DISTINCT s.company_id)::int AS company_count,
+      COUNT(DISTINCT a.id) AS article_count,
+      COUNT(DISTINCT s.company_id) AS company_count,
       MAX(a.updated_at) AS last_updated
     FROM domains d
-    LEFT JOIN articles a ON a.domains && ARRAY[d.slug]::text[]
+    LEFT JOIN articles a
+      ON EXISTS (SELECT 1 FROM json_each(a.domains) j WHERE j.value = d.slug)
     LEFT JOIN sources s ON s.id = a.source_id
     GROUP BY d.slug
   `);
-  return rows as unknown as Array<{
-    domain: string; article_count: number; company_count: number; last_updated: Date | null;
-  }>;
 }
 
 export async function getRecentArticles(limit = 12) {

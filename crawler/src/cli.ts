@@ -49,12 +49,10 @@ Commands:
         Assign domain/tag categories.
   decisions [--limit N]
         Extract core architectural decisions (axis/choice/rationale).
-  embed [--limit N]
-        Chunk + embed articles into pgvector.
   cells [--domain payment-settlement]
         Aggregate decisions into comparison cells.
   all [--limit N]
-        Run crawl → summarize → tag → decisions → embed → cells.
+        Run crawl → summarize → tag → decisions → cells.
 
 Examples:
   pnpm crawl toss --limit 50
@@ -90,11 +88,6 @@ async function main() {
       await decisionsBatch({ limit: Number(args.flags.limit ?? 30) });
       return;
     }
-    case 'embed': {
-      const { embedBatch } = await import('./pipeline/embed.js');
-      await embedBatch({ limit: Number(args.flags.limit ?? 50) });
-      return;
-    }
     case 'cells': {
       const { buildCells } = await import('./pipeline/cells.js');
       await buildCells({ domain: String(args.flags.domain ?? 'payment-settlement') });
@@ -110,8 +103,6 @@ async function main() {
       await tagBatch({ limit });
       const { decisionsBatch } = await import('./pipeline/decisions.js');
       await decisionsBatch({ limit });
-      const { embedBatch } = await import('./pipeline/embed.js');
-      await embedBatch({ limit });
       const { buildCells } = await import('./pipeline/cells.js');
       await buildCells({ domain: 'payment-settlement' });
       return;

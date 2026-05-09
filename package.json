@@ -10,10 +10,14 @@
     "db"
   ],
   "scripts": {
-    "dev": "pnpm --filter web dev",
-    "build": "pnpm --filter web build",
-    "crawl": "pnpm --filter crawler start",
-    "db:migrate": "pnpm --filter db migrate",
-    "db:studio": "pnpm --filter db studio"
+    "dev": "pnpm --filter @td/web dev",
+    "build": "pnpm --filter @td/web build",
+    "crawl": "pnpm --filter @td/crawler start",
+    "db:init": "pnpm --filter @td/db db:init",
+    "db:seed": "pnpm --filter @td/db db:seed",
+    "db:seed-cells": "pnpm --filter @td/db db:seed-cells",
+    "db:seed-articles": "pnpm --filter @td/db db:seed-articles",
+    "db:reset": "pnpm --filter @td/db db:reset",
+    "db:studio": "pnpm --filter @td/db studio"
   }
 }

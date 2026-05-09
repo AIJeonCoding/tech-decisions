@@ -53,7 +53,7 @@ export async function buildCells({ domain }: BuildCellsOpts) {
         url: a.url,
         title: a.title,
         quote: d.quote ?? '',
-        publishedAt: a.publishedAt?.toISOString() ?? null,
+        publishedAt: a.publishedAt ?? null,
         choice: d.choice,
         rationale: d.rationale,
         confidence: d.confidence,
@@ -92,7 +92,7 @@ export async function buildCells({ domain }: BuildCellsOpts) {
           publishedAt: e.publishedAt,
         })),
         confidence: avgConf,
-        lastVerifiedAt: new Date(),
+        lastVerifiedAt: new Date().toISOString(),
       })
       .onConflictDoUpdate({
         target: [cells.axisId, cells.companyId],
@@ -106,8 +106,8 @@ export async function buildCells({ domain }: BuildCellsOpts) {
             publishedAt: e.publishedAt,
           })),
           confidence: avgConf,
-          lastVerifiedAt: new Date(),
-          updatedAt: new Date(),
+          lastVerifiedAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
         },
       });
 

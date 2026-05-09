@@ -69,7 +69,7 @@ export async function summarizeBatch({ limit = 50 }: { limit?: number }) {
           summary,
           llmCost: sql`coalesce(${articles.llmCost}, 0) + ${usage.costUsd}`,
           llmModel: MODELS.haiku,
-          processedAt: new Date(),
+          processedAt: new Date().toISOString(),
         })
         .where(eq(articles.id, a.id));
       await recordCost('summarize', 'haiku', usage);

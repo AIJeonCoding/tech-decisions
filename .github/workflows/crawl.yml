@@ -1,8 +1,9 @@
-name: Daily crawl + LLM pipeline
+name: Daily crawl + LLM pipeline (V2 — disabled in V1)
 
+# V1 uses static seed data curated via Claude Code, so the automated crawl
+# pipeline is not active. Re-enable the schedule trigger when the V2
+# automation track ships and a hosted Postgres + Anthropic key are wired up.
 on:
-  schedule:
-    - cron: '0 18 * * *'  # 03:00 KST daily
   workflow_dispatch:
     inputs:
       target:

@@ -86,7 +86,7 @@ export async function crawl(opts: CrawlOptions) {
                 urlHash,
                 title: art.title,
                 author: art.author,
-                publishedAt: art.publishedAt,
+                publishedAt: art.publishedAt?.toISOString() ?? null,
                 bodyMd: art.bodyMd,
                 bodyHash,
               })
@@ -96,7 +96,7 @@ export async function crawl(opts: CrawlOptions) {
                   title: art.title,
                   bodyMd: art.bodyMd,
                   bodyHash,
-                  updatedAt: new Date(),
+                  updatedAt: new Date().toISOString(),
                 },
               });
             fetched++;
@@ -109,7 +109,7 @@ export async function crawl(opts: CrawlOptions) {
       )
     );
 
-    await db.update(sources).set({ lastCrawledAt: new Date() }).where(eq(sources.id, src.sourceId));
+    await db.update(sources).set({ lastCrawledAt: new Date().toISOString() }).where(eq(sources.id, src.sourceId));
   }
 
   log.info(`Done. fetched=${fetched} skipped=${skipped} failed=${failed}`);

@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import { db, companies, sources, domains, axes } from './index.js';
 
 async function seed() {
@@ -97,6 +96,47 @@ async function seed() {
         name: '장애 복구·재처리',
         question: '실패한 거래는 어떻게 살리는가?',
         options: ['DLQ+수동', '보상 트랜잭션', '자동 재시도', '상태머신'],
+        sortOrder: 5,
+      },
+      // === 검색 도메인 (V1 데모용) ===
+      {
+        domainSlug: 'search',
+        slug: 'index-engine',
+        name: '검색 엔진 선택',
+        question: '색인·질의 엔진으로 무엇을 쓰는가?',
+        options: ['Elasticsearch', 'OpenSearch', 'Vespa', '자체 구현', 'Postgres FTS'],
+        sortOrder: 1,
+      },
+      {
+        domainSlug: 'search',
+        slug: 'ranking',
+        name: '랭킹 모델',
+        question: '검색 결과 정렬을 어떻게 학습/조정하는가?',
+        options: ['BM25 only', 'BM25 + LTR', '벡터 + reranker', '실시간 시그널 가중'],
+        sortOrder: 2,
+      },
+      {
+        domainSlug: 'search',
+        slug: 'index-pipeline',
+        name: '색인 파이프라인',
+        question: '상품/문서가 검색에 반영되는 경로는?',
+        options: ['CDC + Kafka', '주기적 풀배치', '실시간 API + reindex', '하이브리드'],
+        sortOrder: 3,
+      },
+      {
+        domainSlug: 'search',
+        slug: 'query-understanding',
+        name: '쿼리 의도 분석',
+        question: '오타/동의어/카테고리 의도를 어떻게 잡는가?',
+        options: ['사전 + 룰', 'NER 모델', 'LLM 파싱', '클릭 로그 기반 자동 학습'],
+        sortOrder: 4,
+      },
+      {
+        domainSlug: 'search',
+        slug: 'observability',
+        name: '검색 품질 측정',
+        question: '랭킹 변경의 품질을 어떻게 검증하는가?',
+        options: ['오프라인 NDCG', '온라인 A/B', '인터리빙', '쿼리 골든셋'],
         sortOrder: 5,
       },
     ])

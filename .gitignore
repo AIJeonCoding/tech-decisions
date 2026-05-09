@@ -12,3 +12,8 @@ coverage/
 .turbo/
 crawler/.cache/
 *.tsbuildinfo
+
+# SQLite (V1 정적 시드는 db:reset으로 재생성, 파일 자체는 커밋 X)
+tech-decisions.db
+tech-decisions.db-shm
+tech-decisions.db-wal

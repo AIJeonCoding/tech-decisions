@@ -9,22 +9,20 @@
     "./schema": "./src/schema.ts"
   },
   "scripts": {
-    "migrate": "drizzle-kit migrate",
-    "generate": "drizzle-kit generate",
-    "push": "drizzle-kit push",
-    "studio": "drizzle-kit studio",
-    "seed": "tsx src/seed.ts",
-    "seed:cells": "tsx src/seed-cells.ts",
-    "seed:all": "tsx src/seed.ts && tsx src/seed-cells.ts"
+    "db:init": "tsx src/init.ts",
+    "db:seed": "tsx src/seed.ts",
+    "db:seed-cells": "tsx src/seed-cells.ts",
+    "db:seed-articles": "tsx src/seed-articles.ts",
+    "db:reset": "rm -f ../tech-decisions.db && tsx src/init.ts && tsx src/seed.ts && tsx src/seed-cells.ts && tsx src/seed-articles.ts",
+    "studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "drizzle-orm": "^0.36.0",
-    "pg": "^8.13.0",
-    "postgres": "^3.4.5"
+    "better-sqlite3": "^11.5.0",
+    "drizzle-orm": "^0.36.0"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.11",
     "@types/node": "^22.10.0",
-    "@types/pg": "^8.11.10",
     "drizzle-kit": "^0.28.0",
     "tsx": "^4.19.0",
     "typescript": "^5.7.0"

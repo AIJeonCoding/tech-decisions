@@ -98,6 +98,25 @@ export async function getDomainStats(): Promise<Array<{
   `);
 }
 
+export async function getMyProjectCells(domainSlug: string) {
+  const result = await db
+    .select({
+      cellId: cells.id,
+      axisId: cells.axisId,
+      axisName: axes.name,
+      axisSortOrder: axes.sortOrder,
+      cellSummary: cells.cellSummary,
+      confidence: cells.confidence,
+      evidence: cells.evidence,
+    })
+    .from(cells)
+    .innerJoin(axes, eq(axes.id, cells.axisId))
+    .innerJoin(companies, eq(companies.id, cells.companyId))
+    .where(and(eq(axes.domainSlug, domainSlug), eq(companies.slug, 'my-project')))
+    .orderBy(axes.sortOrder);
+  return result;
+}
+
 export async function getRecentArticles(limit = 12) {
   return db
     .select({

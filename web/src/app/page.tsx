@@ -1,8 +1,11 @@
 import Link from 'next/link';
 import { sql, desc } from 'drizzle-orm';
-import { ArrowRight, MessageSquareText, Search, Layers, CheckCircle2, FileText, Building2 } from 'lucide-react';
-import { db, domains, cells, companies, articles } from '@/lib/db';
-import { getDomainStats, getRecentArticles } from '@/lib/queries';
+import {
+  ArrowRight, Search, Layers, CheckCircle2, FileText, Building2,
+  Star, ArrowUpRight,
+} from 'lucide-react';
+import { db, domains } from '@/lib/db';
+import { getDomainStats, getRecentArticles, getMyProjectCells } from '@/lib/queries';
 import { formatRelative } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
@@ -19,11 +22,12 @@ async function getOverallStats() {
 }
 
 export default async function Home() {
-  const [domainList, stats, recent, overall] = await Promise.all([
+  const [domainList, stats, recent, overall, myCells] = await Promise.all([
     db.select().from(domains).orderBy(desc(domains.priority)),
     getDomainStats(),
     getRecentArticles(8),
     getOverallStats(),
+    getMyProjectCells('payment-settlement'),
   ]);
 
   const statsBySlug: Record<string, typeof stats[number]> = Object.fromEntries(
@@ -99,6 +103,53 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {/* my-project 5축 미리보기 */}
+      {myCells.length > 0 && (
+        <section className="container-wide pb-12">
+          <div className="flex items-baseline justify-between mb-4">
+            <h2 className="text-sm uppercase tracking-wider text-accent flex items-center gap-2 font-semibold">
+              <Star className="w-4 h-4 fill-current" />
+              내 프로젝트 — 결제·정산 5축 매핑
+            </h2>
+            <Link href="/compare/payment-settlement" className="text-xs text-accent hover:underline inline-flex items-center gap-1">
+              전체 비교 보기 <ArrowUpRight className="w-3 h-3" />
+            </Link>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
+            {myCells.map((c) => (
+              <Link
+                key={c.cellId}
+                href="/compare/payment-settlement"
+                className="card p-4 bg-accent/5 border-accent/30 hover:border-accent/60 transition-colors block"
+              >
+                <div className="flex items-baseline gap-2 mb-2">
+                  <span className="text-[10px] font-mono text-accent/70">
+                    {String(c.axisSortOrder ?? 0).padStart(2, '0')}
+                  </span>
+                  <span className="text-[11px] uppercase tracking-wider text-accent/80 font-semibold">
+                    {c.axisName}
+                  </span>
+                </div>
+                <p className="text-sm font-medium leading-snug text-fg">
+                  {c.cellSummary}
+                </p>
+                <div className="mt-3 flex items-center gap-2 text-[11px] text-fg/45">
+                  <span className="inline-flex items-center gap-0.5 text-accent">
+                    <CheckCircle2 className="w-3 h-3" /> {Math.round((c.confidence ?? 0) * 100)}%
+                  </span>
+                  <span>·</span>
+                  <span>근거 {c.evidence?.length ?? 0}건</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+          <p className="mt-4 text-xs text-fg/55 leading-relaxed">
+            ★ 위 5개 셀이 결제·정산 비교 페이지의 첫 컬럼에 노출됩니다.
+            토스/카카오페이/쿠팡/우아한과 같은 비교축에 나란히 — 빅테크가 같은 문제를 어떻게 풀었는지 즉시 비교 가능.
+          </p>
+        </section>
+      )}
 
       <section className="container-wide pb-16">
         <h2 className="text-sm uppercase tracking-wider text-fg/50 mb-4 flex items-center gap-2">

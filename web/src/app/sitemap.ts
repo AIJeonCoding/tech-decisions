@@ -30,6 +30,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     { url: `${BASE}/`, lastModified: now, changeFrequency: 'daily', priority: 1 },
+    { url: `${BASE}/about`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
     { url: `${BASE}/search`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
     { url: `${BASE}/chat`, lastModified: now, changeFrequency: 'weekly', priority: 0.5 },
     ...domainSlugs.map((slug) => ({

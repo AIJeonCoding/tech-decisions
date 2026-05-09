@@ -36,6 +36,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               tech-decisions<span className="text-accent">.</span>
             </Link>
             <nav className="flex items-center gap-1 text-sm">
+              <Link href="/about" className="px-3 py-1.5 rounded hover:bg-muted">
+                소개
+              </Link>
               <Link href="/compare/payment-settlement" className="px-3 py-1.5 rounded hover:bg-muted">
                 비교
               </Link>

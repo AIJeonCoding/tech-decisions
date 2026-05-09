@@ -4,6 +4,7 @@ import {
   Layers, Search, MessageSquareText, ShieldCheck, ArrowRight,
   Star, ExternalLink, BookOpen, Github,
 } from 'lucide-react';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 
 export const metadata: Metadata = {
   title: '소개 — 왜 만들었고 어떻게 쓰는가',
@@ -76,6 +77,7 @@ const FIVE_AXES = [
 export default function AboutPage() {
   return (
     <div className="container-narrow py-12">
+      <Breadcrumbs items={[{ href: '/about', label: '소개' }]} />
       {/* Hero */}
       <header className="mb-12">
         <span className="chip mb-3">about</span>

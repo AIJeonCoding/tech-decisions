@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { MessageSquareText, Search, Layers, Sparkles } from 'lucide-react';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 
 export const metadata: Metadata = {
   title: '자주 묻는 질문 — 빅테크는 이 문제를 어떻게 풀었나',
@@ -73,6 +74,7 @@ const QUESTIONS: QA[] = [
 export default function ChatPage() {
   return (
     <div className="container-narrow py-10">
+      <Breadcrumbs items={[{ href: '/chat', label: '자주 묻는 질문' }]} />
       <header className="mb-8">
         <span className="chip mb-3 inline-flex items-center gap-1">
           <Sparkles className="w-3 h-3" /> V1.5 — 자주 묻는 질문

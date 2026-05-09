@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { CheckCircle2, AlertCircle, ExternalLink, Layers } from 'lucide-react';
 import { getAdminCells, getAdminStats } from '@/lib/admin-queries';
 import { formatDate, cn } from '@/lib/utils';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,6 +35,7 @@ export default async function AdminCellsPage() {
 
   return (
     <div className="container-wide py-10">
+      <Breadcrumbs items={[{ href: '/admin/cells', label: '셀 검수 콘솔' }]} />
       <header className="mb-8">
         <div className="text-sm text-fg/50 flex items-center gap-2 mb-2">
           <Layers className="w-4 h-4" /> Admin

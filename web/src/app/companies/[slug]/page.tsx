@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { ExternalLink, Calendar, Building2 } from 'lucide-react';
 import { getCompanyBySlug, getArticlesByCompanySlug } from '@/lib/queries';
 import { formatRelative } from '@/lib/utils';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 
 export const dynamic = 'force-dynamic';
 
@@ -77,6 +78,7 @@ export default async function CompanyPage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <div className="container-narrow py-10">
+        <Breadcrumbs items={[{ href: `/companies/${slug}`, label: name }]} />
         <header className="mb-8">
           <div className="flex items-center gap-2 text-sm text-accent mb-2">
             <Building2 className="w-4 h-4" /> 회사 프로필

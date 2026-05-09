@@ -4,7 +4,8 @@ import type { Metadata } from 'next';
 import { ExternalLink, ArrowLeft, Calendar, Building2, Tag } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { getArticleById } from '@/lib/queries';
-import { formatDate } from '@/lib/utils';
+import { formatDate, truncate } from '@/lib/utils';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 
 export const dynamic = 'force-dynamic';
 
@@ -87,6 +88,12 @@ export default async function ArticlePage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <article className="container-narrow py-10">
+        <Breadcrumbs
+          items={[
+            { href: `/companies/${article.companySlug}`, label: company },
+            { href: `/articles/${id}`, label: truncate(article.title, 40) },
+          ]}
+        />
         <Link
           href={`/companies/${article.companySlug}`}
           className="inline-flex items-center gap-1 text-sm text-fg/60 hover:text-accent mb-6"

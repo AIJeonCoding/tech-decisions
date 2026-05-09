@@ -8,6 +8,7 @@ import {
   getAllCompanies,
 } from '@/lib/queries';
 import { CompareTable } from '@/components/CompareTable';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 
 export const dynamic = 'force-dynamic';
 
@@ -69,6 +70,7 @@ export default async function ComparePage({ params }: Props) {
 
   return (
     <div className="container-wide py-10">
+      <Breadcrumbs items={[{ href: `/compare/${domain}`, label: d.name }]} />
       <header className="mb-8 max-w-3xl">
         <div className="text-sm text-accent mb-2">도메인 비교</div>
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">{d.name} 아키텍처 비교</h1>

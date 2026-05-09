@@ -378,6 +378,30 @@ const SEARCH_ARTICLES: SeedArticle[] = [
   },
 ];
 
+// === MSA 전환 / 캐시 추가 글 ===
+const PLATFORM_ARTICLES: SeedArticle[] = [
+  {
+    companySlug: 'coupang',
+    url: 'https://medium.com/coupang-engineering/how-coupang-built-a-microservice-architecture-fd584fff7f2b',
+    title: '쿠팡의 마이크로서비스 아키텍처 전환',
+    summary: 'Vitamin MQ로 트랜잭션을 메시지로 변환해 결제·배송 분리',
+    bodyMd: '쿠팡은 강결합된 모놀리식 시스템의 트랜잭션을 독립적인 마이크로서비스 메시지로 전환했다. 비타민 MQ(Vitamin MQ)는 안전하고 실수를 방지할 수 있는 방식으로 트랜잭션 모두를 마이크로서비스에서 처리 가능한 메시지 형태로 변환한다. 주문이 발생하면 비타민 MQ는 결제 요청, 배송 요청 등을 모두 메시지 또는 이벤트로 생성하여 트랜잭션을 분리한다. 이 전환으로 서비스 간 느슨한 결합과 장애 격리를 실현했고, 각 서비스가 독립적으로 확장·배포될 수 있게 됐다.',
+    publishedAt: '2022-08-03',
+    domains: ['msa-migration', 'realtime-data'],
+    tags: ['msa', 'kafka', 'monolith-decomposition', 'payment'],
+  },
+  {
+    companySlug: 'kakaopay',
+    url: 'https://tech.kakaopay.com/post/local-caching-in-distributed-systems/',
+    title: '분산 시스템에서 로컬 캐시 활용하기',
+    summary: '로컬 캐시 + Redis Pub/Sub 무효화로 분산 환경 정합성과 응답 지연 동시 잡기',
+    bodyMd: '카카오페이는 분산 환경에서 로컬 캐시와 Redis를 효과적으로 활용하는 전략을 정리했다. 변경 빈도가 낮은 메타 정보(상품, 통신사)는 로컬 캐시로, 동적 데이터는 Redis로 구분 운영한다. 데이터 정합성은 최종적 일관성(Eventual Consistency) 채택으로 실시간 동기화 필요성을 완화하고, Redis Pub/Sub을 통해 데이터 변경 이벤트를 서버 간 실시간 전파한다. 핵심 문제는 "서버 간 데이터 공유가 불가능하기 때문에 캐싱된 데이터에 따라 서버 간 데이터 불일치 문제"이며, 메시징 시스템으로 데이터 신선도를 유지하는 방식으로 해결한다.',
+    publishedAt: '2025-01-16',
+    domains: ['recommendation', 'realtime-data'],
+    tags: ['redis', 'observability', 'msa'],
+  },
+];
+
 // === 추천 도메인 시드 ===
 const RECOMMENDATION_ARTICLES: SeedArticle[] = [
   {
@@ -412,7 +436,12 @@ const RECOMMENDATION_ARTICLES: SeedArticle[] = [
   },
 ];
 
-const SEED_ARTICLES = [...PAYMENT_ARTICLES, ...SEARCH_ARTICLES, ...RECOMMENDATION_ARTICLES];
+const SEED_ARTICLES = [
+  ...PAYMENT_ARTICLES,
+  ...SEARCH_ARTICLES,
+  ...RECOMMENDATION_ARTICLES,
+  ...PLATFORM_ARTICLES,
+];
 
 async function main() {
   const allCompanies = await db.select().from(companies);

@@ -69,11 +69,12 @@ tech-decisions/
 ├── docs/
 │   ├── ARCHITECTURE.md          시스템·기술스택·데이터흐름
 │   ├── DOMAIN_MODEL.md          비교축·태그 분류 체계
-│   ├── ROADMAP.md               6주 일정
+│   ├── ROADMAP.md               V1 완료 / V2 계획
 │   ├── SOURCES.md               크롤 대상 10개 회사
-│   ├── SETUP.md                 ★ 로컬 셋업 5단계
-│   ├── DEMO_GUIDE.md            면접 시연 시나리오 4개
-│   └── PORTFOLIO.md             ★ 면접 talking points + 의사결정 4개
+│   ├── SETUP.md                 ★ 로컬 셋업 (30초)
+│   ├── DEMO_GUIDE.md            면접 시연 시나리오 6개
+│   ├── DEPLOYMENT.md            Vercel · Turso · CF Pages 배포 가이드
+│   └── PORTFOLIO.md             ★ 면접 talking points + 의사결정 5개
 ├── web/                         Next.js 앱
 │   └── src/
 │       ├── app/

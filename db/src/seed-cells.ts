@@ -804,6 +804,21 @@ const SEED: SeedCell[] = [
   {
     companySlug: 'coupang',
     domainSlug: 'msa-migration',
+    axisSlug: 'communication',
+    summary: 'Vitamin MQ — 자체 메시지 큐로 트랜잭션 → 이벤트 변환',
+    evidence: [
+      {
+        title: '쿠팡의 마이크로서비스 아키텍처 전환',
+        url: 'https://medium.com/coupang-engineering/how-coupang-built-a-microservice-architecture-fd584fff7f2b',
+        quote: '비타민 MQ는 안전하고 실수를 방지할 수 있는 방식으로 트랜잭션 모두를 마이크로서비스에서 처리가능한 메시지 형태로 변환한다. 주문이 발생하면 결제 요청·배송 요청 등을 모두 메시지 또는 이벤트로 생성하여 트랜잭션을 분리한다.',
+        publishedAt: '2022-08-03',
+      },
+    ],
+    confidence: 0.88,
+  },
+  {
+    companySlug: 'coupang',
+    domainSlug: 'msa-migration',
     axisSlug: 'distributed-transaction',
     summary: 'Saga + 명시적 상태머신 + 보상',
     evidence: [
@@ -835,6 +850,23 @@ const SEED: SeedCell[] = [
   // ============================================================
   // === 추천 도메인 (recommendation) === V1 추가
   // ============================================================
+
+  // --- 카카오페이 (kakaopay) ---
+  {
+    companySlug: 'kakaopay',
+    domainSlug: 'recommendation',
+    axisSlug: 'serving-latency',
+    summary: '로컬 캐시 + Redis 이중 + Pub/Sub 무효화',
+    evidence: [
+      {
+        title: '분산 시스템에서 로컬 캐시 활용하기',
+        url: 'https://tech.kakaopay.com/post/local-caching-in-distributed-systems/',
+        quote: '변경 빈도가 낮은 메타 정보(상품·통신사)는 로컬 캐시로, 동적 데이터는 Redis로 구분 운영하고, Redis Pub/Sub으로 데이터 변경 이벤트를 서버 간 실시간 전파한다.',
+        publishedAt: '2025-01-16',
+      },
+    ],
+    confidence: 0.85,
+  },
 
   // --- 당근 (daangn) ---
   {

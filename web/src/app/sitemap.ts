@@ -1,6 +1,8 @@
 import type { MetadataRoute } from 'next';
+import { ne } from 'drizzle-orm';
 import { db, domains, companies } from '@/lib/db';
 import { getAllArticleIds } from '@/lib/queries';
+import { shouldHideMyProject, MY_PROJECT_SLUG } from '@/lib/feature-flags';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,9 +15,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let articleIds: Array<{ id: number; updatedAt: string }> = [];
 
   try {
+    const companyQuery = shouldHideMyProject()
+      ? db.select({ slug: companies.slug }).from(companies).where(ne(companies.slug, MY_PROJECT_SLUG))
+      : db.select({ slug: companies.slug }).from(companies);
     const [d, c, a] = await Promise.all([
       db.select({ slug: domains.slug }).from(domains),
-      db.select({ slug: companies.slug }).from(companies),
+      companyQuery,
       getAllArticleIds(),
     ]);
     domainSlugs = d.map((x) => x.slug);

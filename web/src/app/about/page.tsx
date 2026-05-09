@@ -5,6 +5,7 @@ import {
   Star, ExternalLink, BookOpen, Github,
 } from 'lucide-react';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { includeMyProject } from '@/lib/feature-flags';
 
 export const metadata: Metadata = {
   title: '소개 — 왜 만들었고 어떻게 쓰는가',
@@ -78,17 +79,33 @@ export default function AboutPage() {
   return (
     <div className="container-narrow py-12">
       <Breadcrumbs items={[{ href: '/about', label: '소개' }]} />
-      {/* Hero */}
+      {/* Hero — my-project 노출 모드에 따라 메시지 분기 */}
       <header className="mb-12">
         <span className="chip mb-3">about</span>
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight">
-          빅테크 엔지니어링 비교 위에<br /> 내 정산 MSA를 같이 노출했습니다
-        </h1>
-        <p className="mt-5 text-lg text-fg/65 leading-relaxed">
-          토스/카카오페이/쿠팡/우아한형제들의 공개 글을 도메인별 비교축으로 묶고,
-          그 위에 <strong className="text-fg">제 정산 MSA 포트폴리오</strong>를 같은 비교축에 함께 노출했습니다.
-          제목 모음이 아니라, 본문에서 <strong className="text-fg">핵심 의사결정을 추출</strong>한 비교표입니다.
-        </p>
+        {includeMyProject() ? (
+          <>
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight">
+              빅테크 엔지니어링 비교 위에<br /> 내 정산 MSA를 같이 노출했습니다
+            </h1>
+            <p className="mt-5 text-lg text-fg/65 leading-relaxed">
+              토스/카카오페이/쿠팡/우아한형제들의 공개 글을 도메인별 비교축으로 묶고,
+              그 위에 <strong className="text-fg">제 정산 MSA 포트폴리오</strong>를 같은 비교축에 함께 노출했습니다.
+              제목 모음이 아니라, 본문에서 <strong className="text-fg">핵심 의사결정을 추출</strong>한 비교표입니다.
+            </p>
+          </>
+        ) : (
+          <>
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight">
+              한국 빅테크 엔지니어링 의사결정<br /> 비교 큐레이터
+            </h1>
+            <p className="mt-5 text-lg text-fg/65 leading-relaxed">
+              토스/카카오페이/쿠팡/우아한형제들/네이버/카카오/라인/당근의 공개 기술 블로그를
+              <strong className="text-fg"> 도메인별 비교축</strong>으로 묶고, 본문에서
+              <strong className="text-fg"> 핵심 의사결정을 추출</strong>해 같은 줄에 나란히 비교합니다.
+              결제·정산·검색·추천·MSA 전환·실시간 데이터 5개 도메인.
+            </p>
+          </>
+        )}
       </header>
 
       {/* 차별점 */}
@@ -110,7 +127,8 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* 5축 매핑 */}
+      {/* 5축 매핑 — my-project 모드 전용 */}
+      {includeMyProject() && (
       <section className="mb-12">
         <h2 className="text-sm uppercase tracking-wider text-fg/50 mb-1 inline-flex items-center gap-2">
           <Layers className="w-4 h-4" /> 결제·정산 5축 매핑
@@ -148,8 +166,10 @@ export default function AboutPage() {
           ))}
         </div>
       </section>
+      )}
 
-      {/* 시연 흐름 */}
+      {/* 시연 흐름 — my-project 모드 전용 */}
+      {includeMyProject() && (
       <section className="mb-12">
         <h2 className="text-sm uppercase tracking-wider text-fg/50 mb-4 inline-flex items-center gap-2">
           <BookOpen className="w-4 h-4" /> 면접 시연 흐름 (5분)
@@ -175,6 +195,7 @@ export default function AboutPage() {
           ))}
         </ol>
       </section>
+      )}
 
       {/* 도구 한눈에 */}
       <section className="mb-12">
@@ -217,19 +238,38 @@ export default function AboutPage() {
 
       {/* CTA */}
       <section className="card p-8 bg-gradient-to-br from-accent/10 via-accent/5 to-transparent border-accent/20">
-        <h2 className="text-xl font-bold tracking-tight">바로 시연을 시작하시려면</h2>
-        <p className="mt-2 text-fg/65 leading-relaxed">
-          결제·정산 비교 페이지에서 첫 컬럼이 ★ <strong className="text-accent">내 프로젝트</strong> 입니다.
-          5개 셀을 차례로 클릭하면 사이드 패널에 인용 근거 + 원문 링크가 나옵니다.
-        </p>
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Link href="/compare/payment-settlement" className="btn-primary">
-            결제·정산 비교 시작 <ArrowRight className="w-4 h-4" />
-          </Link>
-          <Link href="/companies/my-project" className="btn">
-            내 프로젝트 프로필 보기
-          </Link>
-        </div>
+        {includeMyProject() ? (
+          <>
+            <h2 className="text-xl font-bold tracking-tight">바로 시연을 시작하시려면</h2>
+            <p className="mt-2 text-fg/65 leading-relaxed">
+              결제·정산 비교 페이지에서 첫 컬럼이 ★ <strong className="text-accent">내 프로젝트</strong> 입니다.
+              5개 셀을 차례로 클릭하면 사이드 패널에 인용 근거 + 원문 링크가 나옵니다.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link href="/compare/payment-settlement" className="btn-primary">
+                결제·정산 비교 시작 <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link href="/companies/my-project" className="btn">
+                내 프로젝트 프로필 보기
+              </Link>
+            </div>
+          </>
+        ) : (
+          <>
+            <h2 className="text-xl font-bold tracking-tight">5개 도메인 중 어디부터 보시겠어요?</h2>
+            <p className="mt-2 text-fg/65 leading-relaxed">
+              결제·정산이 가장 풍부한 비교축 데이터를 갖고 있습니다. 검색·추천·MSA·실시간 데이터도 같은 형식.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link href="/compare/payment-settlement" className="btn-primary">
+                결제·정산 비교 시작 <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link href="/search" className="btn">
+                키워드로 검색
+              </Link>
+            </div>
+          </>
+        )}
       </section>
     </div>
   );

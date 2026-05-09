@@ -1,5 +1,6 @@
 import { sql } from 'drizzle-orm';
 import { db } from './db';
+import { shouldHideMyProject, MY_PROJECT_SLUG } from './feature-flags';
 
 /**
  * Build a SQLite FTS5 MATCH expression from raw user input.
@@ -65,6 +66,9 @@ export async function searchArticles(opts: SearchOpts): Promise<SearchResult[]> 
         SELECT 1 FROM json_each(a.domains) j WHERE j.value = ${domainSlug}
       )`
     : sql``;
+  const myProjectFilter = shouldHideMyProject()
+    ? sql`AND co.slug != ${MY_PROJECT_SLUG}`
+    : sql``;
 
   const rows = await db.all<{
     article_id: number;
@@ -97,6 +101,7 @@ export async function searchArticles(opts: SearchOpts): Promise<SearchResult[]> 
     JOIN companies co ON co.id = s.company_id
     WHERE articles_fts MATCH ${ftsQuery}
       ${domainFilter}
+      ${myProjectFilter}
     ORDER BY rank
     LIMIT ${limit}
   `);

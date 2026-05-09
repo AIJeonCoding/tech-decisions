@@ -9,6 +9,7 @@ import {
 } from '@/lib/queries';
 import { CompareTable } from '@/components/CompareTable';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { includeMyProject } from '@/lib/feature-flags';
 
 export const dynamic = 'force-dynamic';
 
@@ -54,7 +55,9 @@ export default async function ComparePage({ params }: Props) {
     'recommendation':     ['daangn', 'coupang', 'woowahan', 'naver-d2', 'kakaopay', 'toss', 'kakao'],
   };
   void NETKARAKUBE;
-  const pins = PER_DOMAIN_PINS[domain] ?? ['my-project'];
+  const rawPins = PER_DOMAIN_PINS[domain] ?? ['my-project'];
+  // 공개 모드(includeMyProject()=false)에선 PRIMARY 리스트에서도 my-project 제외.
+  const pins = includeMyProject() ? rawPins : rawPins.filter((s) => s !== 'my-project');
   const slugsWithCells = new Set(withDecisions.map((c) => c.slug));
   const allowed = new Set([...pins, ...slugsWithCells]);
   const companyList = all
@@ -83,8 +86,8 @@ export default async function ComparePage({ params }: Props) {
         </p>
       </header>
 
-      {/* my-project 강조 배너 — 결제·정산/MSA 도메인에만 노출 */}
-      {(domain === 'payment-settlement' || domain === 'msa-migration') && companyList.some((c) => c.slug === 'my-project') && (
+      {/* my-project 강조 배너 — 결제·정산/MSA 도메인 + includeMyProject() 켜진 경우 */}
+      {includeMyProject() && (domain === 'payment-settlement' || domain === 'msa-migration') && companyList.some((c) => c.slug === 'my-project') && (
         <div className="mb-6 p-4 rounded-lg bg-accent/8 border border-accent/30 flex items-start gap-3">
           <span className="shrink-0 w-7 h-7 rounded-full bg-accent text-white flex items-center justify-center text-sm font-bold">★</span>
           <div className="text-sm leading-relaxed">

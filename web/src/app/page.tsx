@@ -7,6 +7,7 @@ import {
 import { db, domains } from '@/lib/db';
 import { getDomainStats, getRecentArticles, getMyProjectCells } from '@/lib/queries';
 import { formatRelative } from '@/lib/utils';
+import { includeMyProject } from '@/lib/feature-flags';
 
 export const dynamic = 'force-dynamic';
 
@@ -47,18 +48,20 @@ export default async function Home() {
             같은 비교축에 나란히 두어 <strong className="text-fg">의사결정에 쓸 수 있게</strong> 정리했습니다.
             제목 모음이 아니라, 본문에서 핵심 의사결정을 추출한 비교표입니다.
           </p>
-          <div className="mt-6 p-4 rounded-lg bg-accent/5 border border-accent/20">
-            <div className="flex items-start gap-3">
-              <span className="shrink-0 w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center text-sm font-bold">★</span>
-              <div className="text-sm leading-relaxed">
-                <strong className="text-accent">내 정산 MSA 포트폴리오</strong>
-                <span className="text-fg/70">(settlement-msa)도 같은 비교축에 함께 노출됩니다 —</span>
-                <Link href="/compare/payment-settlement" className="text-accent hover:underline ml-1 font-medium">
-                  결제·정산 5축에서 빅테크와 나란히 보기 →
-                </Link>
+          {includeMyProject() && (
+            <div className="mt-6 p-4 rounded-lg bg-accent/5 border border-accent/20">
+              <div className="flex items-start gap-3">
+                <span className="shrink-0 w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center text-sm font-bold">★</span>
+                <div className="text-sm leading-relaxed">
+                  <strong className="text-accent">내 정산 MSA 포트폴리오</strong>
+                  <span className="text-fg/70">(settlement-msa)도 같은 비교축에 함께 노출됩니다 —</span>
+                  <Link href="/compare/payment-settlement" className="text-accent hover:underline ml-1 font-medium">
+                    결제·정산 5축에서 빅테크와 나란히 보기 →
+                  </Link>
+                </div>
               </div>
             </div>
-          </div>
+          )}
           <div className="mt-6 flex flex-wrap gap-3">
             <Link href="/compare/payment-settlement" className="btn-primary">
               결제·정산 비교 보기 <ArrowRight className="w-4 h-4" />

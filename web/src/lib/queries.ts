@@ -1,5 +1,16 @@
-import { eq, and, desc, sql, inArray } from 'drizzle-orm';
+import { eq, and, desc, sql, inArray, ne } from 'drizzle-orm';
 import { db, domains, axes, cells, companies, articles, sources } from './db';
+import { shouldHideMyProject, MY_PROJECT_SLUG } from './feature-flags';
+
+/**
+ * Returns a Drizzle SQL clause that excludes my-project when the env flag says so.
+ * Caller does: `.where(and(otherFilter, hideMyProjectClause()))`
+ */
+function hideMyProjectClause() {
+  return shouldHideMyProject()
+    ? sql`${companies.slug} != ${MY_PROJECT_SLUG}`
+    : undefined;
+}
 
 export async function getDomain(slug: string) {
   const rows = await db.select().from(domains).where(eq(domains.slug, slug)).limit(1);
@@ -11,6 +22,9 @@ export async function getAxesForDomain(slug: string) {
 }
 
 export async function getAllCompanies() {
+  if (shouldHideMyProject()) {
+    return db.select().from(companies).where(ne(companies.slug, MY_PROJECT_SLUG));
+  }
   return db.select().from(companies);
 }
 
@@ -37,6 +51,9 @@ export interface CellWithCompany {
 }
 
 export async function getCellsForDomain(domainSlug: string): Promise<CellWithCompany[]> {
+  const conditions = [eq(axes.domainSlug, domainSlug)];
+  const hide = hideMyProjectClause();
+  if (hide) conditions.push(hide);
   const result = await db
     .select({
       id: cells.id,
@@ -56,11 +73,14 @@ export async function getCellsForDomain(domainSlug: string): Promise<CellWithCom
     .from(cells)
     .innerJoin(axes, eq(axes.id, cells.axisId))
     .innerJoin(companies, eq(companies.id, cells.companyId))
-    .where(eq(axes.domainSlug, domainSlug));
+    .where(and(...conditions));
   return result;
 }
 
 export async function getCompaniesWithDecisions(domainSlug: string) {
+  const conditions = [eq(axes.domainSlug, domainSlug)];
+  const hide = hideMyProjectClause();
+  if (hide) conditions.push(hide);
   const result = await db
     .selectDistinct({
       id: companies.id,
@@ -72,7 +92,7 @@ export async function getCompaniesWithDecisions(domainSlug: string) {
     .from(cells)
     .innerJoin(axes, eq(axes.id, cells.axisId))
     .innerJoin(companies, eq(companies.id, cells.companyId))
-    .where(eq(axes.domainSlug, domainSlug));
+    .where(and(...conditions));
   return result;
 }
 
@@ -119,6 +139,8 @@ export async function getCellsByCompanySlug(slug: string) {
 }
 
 export async function getMyProjectCells(domainSlug: string) {
+  // 공개 SEO 모드일 땐 my-project 미리보기 자체를 숨긴다.
+  if (shouldHideMyProject()) return [];
   const result = await db
     .select({
       cellId: cells.id,
@@ -132,12 +154,15 @@ export async function getMyProjectCells(domainSlug: string) {
     .from(cells)
     .innerJoin(axes, eq(axes.id, cells.axisId))
     .innerJoin(companies, eq(companies.id, cells.companyId))
-    .where(and(eq(axes.domainSlug, domainSlug), eq(companies.slug, 'my-project')))
+    .where(and(eq(axes.domainSlug, domainSlug), eq(companies.slug, MY_PROJECT_SLUG)))
     .orderBy(axes.sortOrder);
   return result;
 }
 
 export async function getRecentArticles(limit = 12) {
+  const conditions = [sql`${articles.summary} IS NOT NULL`];
+  const hide = hideMyProjectClause();
+  if (hide) conditions.push(hide);
   return db
     .select({
       id: articles.id,
@@ -154,12 +179,15 @@ export async function getRecentArticles(limit = 12) {
     .from(articles)
     .innerJoin(sources, eq(sources.id, articles.sourceId))
     .innerJoin(companies, eq(companies.id, sources.companyId))
-    .where(sql`${articles.summary} IS NOT NULL`)
+    .where(and(...conditions))
     .orderBy(desc(articles.publishedAt))
     .limit(limit);
 }
 
 export async function getArticleById(id: number) {
+  const conditions = [eq(articles.id, id)];
+  const hide = hideMyProjectClause();
+  if (hide) conditions.push(hide);
   const rows = await db
     .select({
       id: articles.id,
@@ -181,16 +209,27 @@ export async function getArticleById(id: number) {
     .from(articles)
     .innerJoin(sources, eq(sources.id, articles.sourceId))
     .innerJoin(companies, eq(companies.id, sources.companyId))
-    .where(eq(articles.id, id))
+    .where(and(...conditions))
     .limit(1);
   return rows[0] ?? null;
 }
 
 export async function getAllArticleIds() {
+  // sitemap 생성용 — 공개 모드에선 my-project article ID 제외.
+  if (shouldHideMyProject()) {
+    return db
+      .select({ id: articles.id, updatedAt: articles.updatedAt })
+      .from(articles)
+      .innerJoin(sources, eq(sources.id, articles.sourceId))
+      .innerJoin(companies, eq(companies.id, sources.companyId))
+      .where(ne(companies.slug, MY_PROJECT_SLUG));
+  }
   return db.select({ id: articles.id, updatedAt: articles.updatedAt }).from(articles);
 }
 
 export async function getCompanyBySlug(slug: string) {
+  // 공개 모드일 땐 my-project 회사 페이지 자체를 보여주지 않는다.
+  if (shouldHideMyProject() && slug === MY_PROJECT_SLUG) return null;
   const rows = await db.select().from(companies).where(eq(companies.slug, slug)).limit(1);
   return rows[0] ?? null;
 }

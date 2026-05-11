@@ -48,7 +48,7 @@ export default async function ComparePage({ params }: Props) {
   // 네카라쿠배당토 + 뱅크샐러드 + my-project를 도메인별 관련 회사로 채운다.
   const NETKARAKUBE = ['my-project', 'naver-d2', 'kakao', 'kakaopay', 'line', 'coupang', 'woowahan', 'daangn', 'toss', 'banksalad'];
   const PER_DOMAIN_PINS: Record<string, string[]> = {
-    'payment-settlement': ['my-project', 'toss', 'kakaopay', 'coupang', 'woowahan', 'banksalad', 'line'],
+    'payment-settlement': ['my-project', 'kakaobank', 'toss', 'kakaopay', 'coupang', 'woowahan', 'banksalad', 'line'],
     'msa-migration':      ['my-project', 'toss', 'kakaopay', 'coupang', 'woowahan', 'line'],
     'realtime-data':      ['my-project', 'toss', 'kakaopay', 'coupang', 'woowahan'],
     'search':             ['naver-d2', 'coupang', 'daangn', 'woowahan', 'kakao'],

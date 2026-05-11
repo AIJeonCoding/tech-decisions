@@ -14,6 +14,7 @@ async function seed() {
       { slug: 'line', name: 'LINE Engineering', nameKo: '라인', blogUrl: 'https://engineering.linecorp.com/ko' },
       { slug: 'daangn', name: 'Daangn', nameKo: '당근', blogUrl: 'https://medium.com/daangn' },
       { slug: 'banksalad', name: 'Banksalad', nameKo: '뱅크샐러드', blogUrl: 'https://blog.banksalad.com/' },
+      { slug: 'kakaobank', name: 'Kakao Bank', nameKo: '카카오뱅크', blogUrl: 'https://tech.kakaobank.com/' },
       { slug: 'yanolja', name: 'Yanolja', nameKo: '야놀자', blogUrl: 'https://medium.com/yanolja' },
 
       // Global big tech — cells 단계적으로 채움 (Phase 2). Phase 1: 회사 + 블로그 URL만 노출.
@@ -44,6 +45,7 @@ async function seed() {
     { slug: 'naver-d2', feed: 'https://d2.naver.com/d2.atom', adapter: 'rss-readability', home: 'https://d2.naver.com/' },
     { slug: 'line', feed: 'https://engineering.linecorp.com/ko/blog/rss', adapter: 'rss-readability', home: 'https://engineering.linecorp.com/ko' },
     { slug: 'banksalad', feed: 'https://blog.banksalad.com/rss.xml', adapter: 'rss-readability', home: 'https://blog.banksalad.com/' },
+    { slug: 'kakaobank', feed: 'https://tech.kakaobank.com/index.xml', adapter: 'rss-readability', home: 'https://tech.kakaobank.com/' },
     { slug: 'coupang', feed: 'https://medium.com/feed/coupang-engineering/korean', adapter: 'medium-rss', home: 'https://medium.com/coupang-engineering/korean' },
     { slug: 'daangn', feed: 'https://medium.com/feed/daangn', adapter: 'medium-rss', home: 'https://medium.com/daangn' },
     { slug: 'yanolja', feed: 'https://medium.com/feed/yanolja', adapter: 'medium-rss', home: 'https://medium.com/yanolja' },

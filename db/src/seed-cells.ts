@@ -482,6 +482,53 @@ const SEED: SeedCell[] = [
     confidence: 0.74,
   },
 
+  // === 카카오뱅크 (kakaobank) — 결제·정산 + MSA 전환 ===
+  {
+    companySlug: 'kakaobank',
+    domainSlug: 'payment-settlement',
+    axisSlug: 'settlement-timing',
+    summary: 'Airflow 펀드 결산 배치 — 비즈니스 로직은 도메인에 두고 Airflow는 오케스트레이션만',
+    evidence: [
+      {
+        title: 'Airflow로 펀드 배치 시스템 완벽 구축하기',
+        url: 'https://tech.kakaobank.com/posts/2412-financial-batch-system-with-airflow/',
+        quote: '복잡한 비즈니스 로직을 파이썬 코드로 옮겨 다시 작성하게 되면, 테스트가 어려워지고 로직이 여기저기 분산됨에 따라 업무의 일관성과 무결성을 보장할 수 없게 된다. 비즈니스 로직은 기존 도메인 코드에 남기고 Airflow는 오케스트레이션만 담당하도록 분리했다.',
+        publishedAt: '2024-12-19',
+      },
+    ],
+    confidence: 0.88,
+  },
+  {
+    companySlug: 'kakaobank',
+    domainSlug: 'payment-settlement',
+    axisSlug: 'reconciliation',
+    summary: '계정계와 Oslo 이중 시스템 dual-run + 두 결과 지속 비교로 데이터 정합성 검증',
+    evidence: [
+      {
+        title: 'R.I.P. 내가 만든 시스템이 무지개 다리를 건넌 이야기 (Oslo Project)',
+        url: 'https://tech.kakaobank.com/posts/2505-rip-goodbye-oslo-project/',
+        quote: '계정계와 Oslo의 이중 개발 및 데이터 정합성 검증 프로세스 — 두 시스템에서 동일하게 제공하는 API로 병행 운영하면서 두 시스템의 결과를 지속적으로 비교해 차이를 추적했다.',
+        publishedAt: '2025-05-16',
+      },
+    ],
+    confidence: 0.92,
+  },
+  {
+    companySlug: 'kakaobank',
+    domainSlug: 'payment-settlement',
+    axisSlug: 'failure-recovery',
+    summary: '계정계 장애 시에도 첫 화면이 동작하는 장애 격리 시스템 (Oslo)',
+    evidence: [
+      {
+        title: 'R.I.P. 내가 만든 시스템이 무지개 다리를 건넌 이야기 (Oslo Project)',
+        url: 'https://tech.kakaobank.com/posts/2505-rip-goodbye-oslo-project/',
+        quote: '계정계 시스템 장애 시에도 모바일 앱 첫 화면이 동작하도록 만든 장애 격리 시스템. NRT로 계정 정보·잔액을 Oslo로 복제해 첫 화면 안정성을 계정계 장애로부터 분리시켰다.',
+        publishedAt: '2025-05-16',
+      },
+    ],
+    confidence: 0.88,
+  },
+
   // ============================================================
   // === 검색 도메인 (search) === V1 데모용
   // ============================================================
@@ -1071,6 +1118,68 @@ const SEED: SeedCell[] = [
       },
     ],
     confidence: 0.70,
+  },
+
+  // --- 카카오뱅크 (kakaobank) — MSA 전환 ---
+  {
+    companySlug: 'kakaobank',
+    domainSlug: 'msa-migration',
+    axisSlug: 'decomposition-unit',
+    summary: 'Spring Modulith 체리픽 — ApplicationModule로 모듈 경계 컴파일타임 강제',
+    evidence: [
+      {
+        title: 'MSA로의 여정에서 만난 Spring Modulith 체리픽 해본 후기',
+        url: 'https://tech.kakaobank.com/posts/2504-spring-modulith-cherry-pick/',
+        quote: 'ApplicationModule 어노테이션과 의존성 규칙 검증으로 도메인 간 직접 의존을 컴파일 타임에 차단해, 향후 MSA로 분리할 때 모듈을 그대로 떼어낼 수 있는 경계를 미리 정립했다. Modulith의 모든 기능을 통째로 받아들이지 않고 필요한 부분만 체리픽해 도입했다.',
+        publishedAt: '2025-04-21',
+      },
+    ],
+    confidence: 0.92,
+  },
+  {
+    companySlug: 'kakaobank',
+    domainSlug: 'msa-migration',
+    axisSlug: 'data-separation',
+    summary: '단일 헥사고날 → 멀티모듈 헥사고날 — 같은 DB·이벤트 공유 문제 해결',
+    evidence: [
+      {
+        title: '유일한 멀티모듈 헥사고날 아키텍처: 메시지 허브 적용기',
+        url: 'https://tech.kakaobank.com/posts/2311-hexagonal-architecture-in-messaging-hub/',
+        quote: '단일 헥사고날로 묶여 있던 4개 서비스가 모두 같은 데이터베이스에 접근하고 같은 이벤트 브로커 메시지를 중복 수신하는 문제를 겪었다. 한 프로젝트에서 소스를 공유하면서도 4개 서비스가 각자 다른 어댑터 조합을 갖는 멀티모듈 헥사고날로 분리했다.',
+        publishedAt: '2023-11-30',
+      },
+    ],
+    confidence: 0.86,
+  },
+  {
+    companySlug: 'kakaobank',
+    domainSlug: 'msa-migration',
+    axisSlug: 'communication',
+    summary: 'Consul 기반 서비스 디스커버리 — 멀티 데이터센터 동적 라우팅 + 헬스체크',
+    evidence: [
+      {
+        title: '정적 그만! 은행에 서비스 디스커버리 도입하기',
+        url: 'https://tech.kakaobank.com/posts/2502-implementing-service-discovery-in-banking/',
+        quote: 'Consul 기반 서비스 디스커버리를 도입했다. 멀티 데이터센터 환경에서 안정적 확장이 필수였고, 서비스 메시 없이도 동적 라우팅과 헬스체크를 운영팀이 직접 관리할 수 있어야 했다.',
+        publishedAt: '2025-02-15',
+      },
+    ],
+    confidence: 0.88,
+  },
+  {
+    companySlug: 'kakaobank',
+    domainSlug: 'msa-migration',
+    axisSlug: 'safe-migration',
+    summary: '신구 시스템 병행 → 부분 트래픽 전환 → 전체 전환 단계적 마이그레이션',
+    evidence: [
+      {
+        title: '카드 청구금액 알림 서비스의 홀로서기 대모험',
+        url: 'https://tech.kakaobank.com/posts/2501-card-openbanking-migration-project/',
+        quote: '마이그레이션은 신구 시스템 병행 운영 → 일부 트래픽 전환 → 전체 전환의 단계적 방식으로 진행해, 운영 영향 없이 배치 도메인을 분리해냈다.',
+        publishedAt: '2025-01-03',
+      },
+    ],
+    confidence: 0.90,
   },
 
   // ============================================================

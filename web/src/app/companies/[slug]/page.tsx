@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { ExternalLink, Calendar, Building2, Layers, CheckCircle2 } from 'lucide-react';
+import { ExternalLink, Calendar, Building2, Layers, CheckCircle2, Download } from 'lucide-react';
 import { getCompanyBySlug, getArticlesByCompanySlug, getCellsByCompanySlug } from '@/lib/queries';
 import { formatRelative } from '@/lib/utils';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
@@ -105,6 +105,15 @@ export default async function CompanyPage({ params }: Props) {
               {company.blogUrl} <ExternalLink className="w-3 h-3" />
             </a>
           )}
+          <div className="mt-4 flex flex-wrap gap-2">
+            <a
+              href={`/api/companies/${slug}/markdown`}
+              className="inline-flex items-center gap-1.5 text-sm chip hover:bg-accent/10 hover:text-accent transition-colors"
+              title="tech-decisions가 정리한 비교축 의사결정 + 블로그 글 요약을 한 마크다운으로 다운로드. 원문 전체가 아니라 의사결정 중심 요약본입니다."
+            >
+              <Download className="w-3.5 h-3.5" /> 요약본 .md 다운로드 (AI 입력용)
+            </a>
+          </div>
         </header>
 
         <section className="mb-8 grid grid-cols-2 sm:grid-cols-4 gap-3">

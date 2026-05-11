@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "dev": "pnpm --filter @td/web dev",
-    "build": "pnpm --filter @td/web build",
+    "build": "pnpm --filter @td/db db:reset && pnpm --filter @td/web build",
     "crawl": "pnpm --filter @td/crawler start",
     "db:init": "pnpm --filter @td/db db:init",
     "db:seed": "pnpm --filter @td/db db:seed",

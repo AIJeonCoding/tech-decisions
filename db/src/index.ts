@@ -29,15 +29,16 @@ const candidates = [
 const dbPath = candidates.find((p) => existsSync(p)) ?? DEFAULT_PATH;
 const onVercel = !!process.env.VERCEL;
 
-const sqlite = new Database(dbPath, onVercel ? { readonly: true, fileMustExist: false } : {});
-// Skip WAL on serverless read-only filesystems.
+// In Vercel runtime the filesystem is read-only and WAL is not supported.
+// In build/dev we want full read-write + WAL.
+const sqlite = new Database(dbPath);
 try {
   if (!onVercel) {
     sqlite.pragma('journal_mode = WAL');
   }
   sqlite.pragma('foreign_keys = ON');
 } catch {
-  // ignore pragma errors in read-only mode
+  // ignore pragma errors on read-only filesystems
 }
 
 export const db = drizzle(sqlite, { schema, logger: process.env.DB_LOG === '1' });

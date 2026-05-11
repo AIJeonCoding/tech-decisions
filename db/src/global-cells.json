@@ -1,0 +1,156 @@
+[
+  {
+    "companySlug": "stripe",
+    "axisSlug": "concurrency-control",
+    "summary": "Idempotency Key를 뮤팅 엔드포인트에 적용해 클라이언트 재시도 시 결제 중복을 방지. 서버 상태 수렴을 보장하는 lockless 방식.",
+    "evidence": [
+      {
+        "title": "Designing robust and predictable APIs with idempotency",
+        "url": "https://stripe.com/blog/idempotency",
+        "quote": "When a client sees any kind of error, it can ensure the convergence of its own state with the server's by retrying, and can continue to retry until it verifiably succeeds.",
+        "publishedAt": "2017-02-22"
+      }
+    ],
+    "confidence": 0.95
+  },
+  {
+    "companySlug": "stripe",
+    "axisSlug": "reconciliation",
+    "summary": "Ledger 시스템으로 모든 자금 이동을 추적·검증. 더블 엔트리 원칙 기반의 내부 회계 인프라.",
+    "evidence": [
+      {
+        "title": "Ledger: Stripe's system for tracking and validating money movement",
+        "url": "https://stripe.dev/blog/ledger-stripe-system-for-tracking-and-validating-money-movement",
+        "quote": "Ledger: Stripe's system for tracking and validating money movement",
+        "publishedAt": "2024-02-16"
+      }
+    ],
+    "confidence": 0.75
+  },
+  {
+    "companySlug": "netflix",
+    "axisSlug": "decomposition-unit",
+    "summary": "2008년 DB 장애를 계기로 단일 Java 모놀리스에서 AWS 기반 마이크로서비스로 7년간 전환. 현재 700개 이상 서비스 운영.",
+    "evidence": [
+      {
+        "title": "A Microscope on Microservices",
+        "url": "https://netflixtechblog.com/a-microscope-on-microservices-923b906103f4",
+        "quote": "Netflix has been at the forefront of a microservice-based cloud architecture and has amassed a large number of services.",
+        "publishedAt": "2015-02-18"
+      }
+    ],
+    "confidence": 0.8
+  },
+  {
+    "companySlug": "netflix",
+    "axisSlug": "stream-processing",
+    "summary": "Keystone 플랫폼이 Kafka 기반 이벤트 라우팅과 Apache Flink 기반 스트림 처리를 통합. 초당 800만 이벤트를 처리.",
+    "evidence": [
+      {
+        "title": "Keystone Real-time Stream Processing Platform",
+        "url": "https://netflixtechblog.com/keystone-real-time-stream-processing-platform-a3ee651812a",
+        "quote": "We are currently focusing on leveraging Apache Flink and build an ecosystem around it for Keystone analytic use cases.",
+        "publishedAt": "2018-09-14"
+      }
+    ],
+    "confidence": 0.85
+  },
+  {
+    "companySlug": "netflix",
+    "axisSlug": "candidate-generation",
+    "summary": "홈페이지를 단순 row 랭킹 대신 stage-wise 접근으로 구성. 다양성과 개인화를 동시에 달성하는 greedy row 선택 알고리즘 사용.",
+    "evidence": [
+      {
+        "title": "Learning a Personalized Homepage",
+        "url": "https://netflixtechblog.com/learning-a-personalized-homepage-aa8ec670359a",
+        "quote": "A simple row-ranking approach would lack any notion of diversity, so someone could easily get a page full of slight variations of their interests.",
+        "publishedAt": "2015-04-09"
+      }
+    ],
+    "confidence": 0.82
+  },
+  {
+    "companySlug": "spotify",
+    "axisSlug": "candidate-generation",
+    "summary": "BaRT(Bandits for Recommendations as Treatments)로 홈 화면 추천에 탐색-활용 균형을 적용. 비-bandit 방식 대비 스트림 비율 유의미하게 향상.",
+    "evidence": [
+      {
+        "title": "Explore, Exploit, Explain: Personalizing Explainable Recommendations with Bandits",
+        "url": "https://research.atspotify.com/publications/explore-exploit-explain-personalizing-explainable-recommendations-with-bandits",
+        "quote": "Experiments on the Home page of Spotify show a significant improvement in stream rate over non-bandit methods.",
+        "publishedAt": "2018-10-02"
+      }
+    ],
+    "confidence": 0.85
+  },
+  {
+    "companySlug": "spotify",
+    "axisSlug": "decomposition-unit",
+    "summary": "Squad 모델로 각 팀이 마이크로서비스를 독립 소유·배포. Backstage 개발자 포털로 수천 개 서비스를 중앙에서 탐색·프로비저닝.",
+    "evidence": [
+      {
+        "title": "What the Heck is Backstage Anyway?",
+        "url": "https://engineering.atspotify.com/2020/03/what-the-heck-is-backstage-anyway",
+        "quote": "Creating any new software component at Spotify, such as a new microservice, is done with a few clicks in Backstage.",
+        "publishedAt": "2020-03-17"
+      }
+    ],
+    "confidence": 0.82
+  },
+  {
+    "companySlug": "uber",
+    "axisSlug": "decomposition-unit",
+    "summary": "2,200개 마이크로서비스를 70개 도메인으로 재정리한 DOMA 아키텍처 도입. 도메인 게이트웨이 단일 진입점으로 플랫폼 지원 비용 대폭 절감.",
+    "evidence": [
+      {
+        "title": "Introducing Domain-Oriented Microservice Architecture",
+        "url": "https://www.uber.com/us/en/blog/microservice-architecture/",
+        "quote": "Instead of orienting around single microservices, we oriented around collections of related microservices. We call these domains.",
+        "publishedAt": "2020-07-23"
+      }
+    ],
+    "confidence": 0.92
+  },
+  {
+    "companySlug": "uber",
+    "axisSlug": "stream-processing",
+    "summary": "Apache Flink과 Spark로 실시간 요금 산정·배차·사기 탐지 파이프라인 운영. Kappa 아키텍처로 배치와 스트리밍 파이프라인을 통합.",
+    "evidence": [
+      {
+        "title": "Designing a Production-Ready Kappa Architecture for Timely Data Stream Processing",
+        "url": "https://www.uber.com/us/en/blog/kappa-architecture-data-stream-processing/",
+        "quote": "At Uber, we use robust data processing systems such as Apache Flink and Apache Spark to power the streaming applications that helps us calculate up-to-date pricing, enhance driver dispatching...",
+        "publishedAt": "2020-01-23"
+      }
+    ],
+    "confidence": 0.92
+  },
+  {
+    "companySlug": "youtube",
+    "axisSlug": "candidate-generation",
+    "summary": "딥러닝 기반 two-stage 아키텍처: 후보 생성 DNN이 수백만 콘텐츠 중 수백 개를 추출하고, 별도의 랭킹 DNN이 최종 순위 결정.",
+    "evidence": [
+      {
+        "title": "Deep Neural Networks for YouTube Recommendations",
+        "url": "https://research.google/pubs/deep-neural-networks-for-youtube-recommendations/",
+        "quote": "The paper is split according to the classic two-stage information retrieval dichotomy: first, we detail a deep candidate generation model and then describe a separate deep ranking model.",
+        "publishedAt": "2016-09-15"
+      }
+    ],
+    "confidence": 0.95
+  },
+  {
+    "companySlug": "youtube",
+    "axisSlug": "stream-processing",
+    "summary": "Google Dataflow 모델(Apache Beam 전신)로 무한 데이터 스트림의 정확성·지연·비용 균형 처리. 2015년 VLDB 발표 후 Apache Beam으로 오픈소스화.",
+    "evidence": [
+      {
+        "title": "The Dataflow Model: A Practical Approach to Balancing Correctness, Latency, and Cost in Massive-Scale, Unbounded, Out-of-Order Data Processing",
+        "url": "https://research.google/pubs/pub43864",
+        "quote": "We will never know if or when we have seen all of our data, only that new data will arrive, old data may be retracted, and the only way to make this problem tractable is via principled abstractions.",
+        "publishedAt": "2015-01-01"
+      }
+    ],
+    "confidence": 0.88
+  }
+]

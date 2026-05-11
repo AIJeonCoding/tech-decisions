@@ -27,11 +27,11 @@ export default function Image() {
             다른 회사는<br /> 어떻게 풀었지?
           </div>
           <div style={{ fontSize: 28, opacity: 0.7 }}>
-            한국 빅테크 엔지니어링 의사결정 비교 큐레이터
+            한국·글로벌 빅테크는 같은 문제를 어떻게 풀었나
           </div>
         </div>
-        <div style={{ display: 'flex', gap: 12, fontSize: 22, opacity: 0.6 }}>
-          <span>토스</span>·<span>카카오페이</span>·<span>쿠팡</span>·<span>우아한형제들</span>·<span>+6</span>
+        <div style={{ display: 'flex', gap: 12, fontSize: 22, opacity: 0.6, flexWrap: 'wrap' }}>
+          <span>토스</span>·<span>카카오페이</span>·<span>Netflix</span>·<span>Stripe</span>·<span>Spotify</span>·<span>+10</span>
         </div>
       </div>
     ),

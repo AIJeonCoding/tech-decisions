@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { ExternalLink, ArrowLeft, Calendar, Building2, Tag } from 'lucide-react';
+import { ExternalLink, ArrowLeft, Calendar, Building2, Tag, Download } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { getArticleById } from '@/lib/queries';
 import { formatDate, truncate } from '@/lib/utils';
@@ -184,14 +184,23 @@ export default async function ArticlePage({ params }: Props) {
             이 글은 {company}의 공개 기술 블로그를 참고로 정리되었습니다.
             전체 내용은 원문에서 확인할 수 있습니다.
           </p>
-          <a
-            href={article.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-primary inline-flex"
-          >
-            원문 글 읽기 <ExternalLink className="w-4 h-4" />
-          </a>
+          <div className="flex flex-wrap gap-3">
+            <a
+              href={article.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary inline-flex"
+            >
+              원문 글 읽기 <ExternalLink className="w-4 h-4" />
+            </a>
+            <a
+              href={`/api/articles/${id}/markdown`}
+              className="btn inline-flex"
+              download
+            >
+              MD 다운로드 <Download className="w-4 h-4" />
+            </a>
+          </div>
         </section>
 
         {/* 다른 도메인 비교로 유도 */}

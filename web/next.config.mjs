@@ -5,8 +5,9 @@ const nextConfig = {
   },
   transpilePackages: ['@td/db'],
   // Bundle the seeded SQLite file into Vercel function output so runtime can read it.
+  // Include both monorepo-root and web/ copies for resilience across cwd setups.
   outputFileTracingIncludes: {
-    '/**': ['../tech-decisions.db'],
+    '/**': ['../tech-decisions.db', './tech-decisions.db'],
   },
   // better-sqlite3 is a native module — exclude from server bundle so Next can still resolve it.
   serverExternalPackages: ['better-sqlite3'],

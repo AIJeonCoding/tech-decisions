@@ -91,7 +91,7 @@ export default async function Image({ params }: { params: { id: string } }) {
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 20, opacity: 0.5 }}>
-          <div style={{ display: 'flex' }}>한국 빅테크 엔지니어링 비교 큐레이터</div>
+          <div style={{ display: 'flex' }}>한국 빅테크 기술 블로그 비교</div>
           <div style={{ display: 'flex' }}>{article.publishedAt ? article.publishedAt.slice(0, 10) : ''}</div>
         </div>
       </div>

@@ -10,10 +10,12 @@ import { includeMyProject } from '@/lib/feature-flags';
 export const metadata: Metadata = {
   title: '소개 — 왜 만들었고 어떻게 쓰는가',
   description:
-    'tech-decisions는 한국 빅테크 엔지니어링 의사결정을 비교축으로 묶어주는 큐레이터입니다. 면접용 데모와 시연 흐름, 5축 매핑을 한 페이지에 정리.',
+    'tech-decisions는 토스·카카오페이·쿠팡·우아한 등 한국 빅테크가 같은 문제를 어떻게 풀었는지 본문에서 핵심 의사결정을 추출해 회사별 비교축에 나란히 정렬한 비교 사이트입니다.',
   keywords: ['포트폴리오', '면접 데모', '한국 빅테크', '엔지니어링 비교', '결제 시스템', 'MSA'],
   alternates: { canonical: '/about' },
 };
+
+export const dynamic = 'force-dynamic';
 
 const FIVE_AXES = [
   {
@@ -96,13 +98,13 @@ export default function AboutPage() {
         ) : (
           <>
             <h1 className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight">
-              한국 빅테크 엔지니어링 의사결정<br /> 비교 큐레이터
+              한국·글로벌 빅테크는<br /> 같은 문제를 어떻게 풀었나
             </h1>
             <p className="mt-5 text-lg text-fg/65 leading-relaxed">
-              토스/카카오페이/쿠팡/우아한형제들/네이버/카카오/라인/당근의 공개 기술 블로그를
-              <strong className="text-fg"> 도메인별 비교축</strong>으로 묶고, 본문에서
-              <strong className="text-fg"> 핵심 의사결정을 추출</strong>해 같은 줄에 나란히 비교합니다.
-              결제·정산·검색·추천·MSA 전환·실시간 데이터 5개 도메인.
+              토스·카카오페이·쿠팡·우아한·네이버·카카오·라인·당근 +
+              Netflix·YouTube·Spotify·Uber·Stripe의 공개 기술 글에서
+              <strong className="text-fg"> 핵심 의사결정을 본문에서 직접 추출</strong>해,
+              결제·정산·검색·추천·MSA 전환·실시간 데이터 5개 도메인의 같은 비교축에 회사별로 나란히 정렬합니다.
             </p>
           </>
         )}
@@ -111,17 +113,19 @@ export default function AboutPage() {
       {/* 차별점 */}
       <section className="mb-12">
         <h2 className="text-sm uppercase tracking-wider text-fg/50 mb-4 inline-flex items-center gap-2">
-          <ShieldCheck className="w-4 h-4" /> Velopers·코드너리와 다른 점
+          <ShieldCheck className="w-4 h-4" /> 이 사이트가 다른 이유
         </h2>
         <div className="grid sm:grid-cols-2 gap-4">
           <div className="card p-5">
-            <div className="text-xs uppercase tracking-wider text-fg/50 mb-1">기존 큐레이션</div>
-            <p className="font-medium leading-relaxed">제목·태그·날짜만 모음. 본문 분석 없음. 회사별로 흩어진 글을 도메인 단위로 비교 못 함.</p>
+            <div className="text-xs uppercase tracking-wider text-fg/50 mb-1">기존 기술 블로그 모음</div>
+            <p className="font-medium leading-relaxed">
+              글 목록·태그·날짜를 모아주는 데서 끝. <span className="text-fg/55">같은 문제를 회사별로 어떻게 풀었는지 한 줄에 비교할 수 없습니다.</span>
+            </p>
           </div>
           <div className="card p-5 ring-1 ring-accent/30 bg-accent/5">
             <div className="text-xs uppercase tracking-wider text-accent mb-1">tech-decisions</div>
             <p className="font-medium leading-relaxed">
-              본문에서 의사결정 추출 → 같은 도메인의 회사들을 한 줄에 나란히 → 셀마다 인용 근거 + 출처 URL.
+              본문에서 <strong>의사결정을 직접 추출</strong>해 도메인별 비교축에 회사를 같은 줄로 정렬. <span className="text-fg/65">셀마다 인용 근거 + 원문 링크로 검증 가능.</span>
             </p>
           </div>
         </div>
@@ -131,10 +135,11 @@ export default function AboutPage() {
       {includeMyProject() && (
       <section className="mb-12">
         <h2 className="text-sm uppercase tracking-wider text-fg/50 mb-1 inline-flex items-center gap-2">
-          <Layers className="w-4 h-4" /> 결제·정산 5축 매핑
+          <Layers className="w-4 h-4" /> 결제·정산 핵심 5가지 — 빅테크와 어디서 같고 어디서 다른가
         </h2>
         <p className="text-fg/60 mb-6 text-sm">
-          내 프로젝트(<code className="text-xs bg-muted px-1 rounded">settlement-msa</code>)가 빅테크 어디와 같고 어디서 다른지 한 페이지로.
+          내 프로젝트(<code className="text-xs bg-muted px-1 rounded">settlement-msa</code>)를
+          토스·카카오페이·쿠팡·우아한과 같은 비교축에 올려, 같은 문제 다섯 가지에 대한 선택을 한 화면에 정리했습니다.
         </p>
         <div className="space-y-4">
           {FIVE_AXES.map((ax) => (

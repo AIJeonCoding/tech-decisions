@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     template: '%s · tech-decisions',
   },
   description:
-    '토스, 카카오페이, 쿠팡, 우아한형제들 등 한국 빅테크가 같은 문제를 어떻게 다르게 풀었는지 비교·검색·질의하는 서비스. 결제·정산·검색·추천·MSA 전환·실시간 데이터 5개 도메인 비교축.',
+    '토스·카카오페이·쿠팡·우아한 + Netflix·YouTube·Spotify·Uber·Stripe — 한국과 글로벌 빅테크가 같은 문제를 어떻게 다르게 풀었는지 본문에서 의사결정만 추출해 비교·검색·질의하는 서비스. 결제·정산·검색·추천·MSA 전환·실시간 데이터 5개 도메인 비교축.',
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tech-decisions.app'),
   keywords: [
     '한국 빅테크', '엔지니어링 비교', '아키텍처 비교', '토스', '카카오페이', '쿠팡',

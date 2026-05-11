@@ -108,6 +108,56 @@
   .chip {
     @apply inline-flex items-center px-2 py-0.5 rounded-full bg-muted text-xs text-fg/70;
   }
+
+  /* Gradient text — used on hero accent words */
+  .gradient-text {
+    background: linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(280 90% 70%) 50%, hsl(195 90% 60%) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    background-size: 200% 200%;
+    animation: gradient-pan 8s ease-in-out infinite;
+  }
+  @keyframes gradient-pan {
+    0%, 100% { background-position: 0% 50%; }
+    50%      { background-position: 100% 50%; }
+  }
+
+  /* Hero ambient glow orbs */
+  .hero-glow {
+    position: relative;
+    isolation: isolate;
+  }
+  .hero-glow::before,
+  .hero-glow::after {
+    content: '';
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(80px);
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: -1;
+  }
+  .hero-glow::before {
+    width: 480px; height: 480px;
+    background: hsl(var(--accent));
+    top: -120px; left: -80px;
+  }
+  .hero-glow::after {
+    width: 380px; height: 380px;
+    background: hsl(280 90% 60%);
+    top: 80px; right: -60px;
+    opacity: 0.22;
+  }
+
+  /* Stat card — larger, more prominent */
+  .stat-card {
+    @apply rounded-xl border border-border bg-bg/60 backdrop-blur-sm p-5 transition-all
+           hover:border-accent/40 hover:bg-bg;
+  }
+  .stat-number {
+    @apply mt-2 text-4xl sm:text-5xl font-bold tracking-tight tabular-nums;
+  }
 }
 
 /* Streaming chat caret */

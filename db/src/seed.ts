@@ -15,6 +15,14 @@ async function seed() {
       { slug: 'daangn', name: 'Daangn', nameKo: '당근', blogUrl: 'https://medium.com/daangn' },
       { slug: 'banksalad', name: 'Banksalad', nameKo: '뱅크샐러드', blogUrl: 'https://blog.banksalad.com/' },
       { slug: 'yanolja', name: 'Yanolja', nameKo: '야놀자', blogUrl: 'https://medium.com/yanolja' },
+
+      // Global big tech — cells 단계적으로 채움 (Phase 2). Phase 1: 회사 + 블로그 URL만 노출.
+      { slug: 'netflix', name: 'Netflix', nameKo: '넷플릭스', blogUrl: 'https://netflixtechblog.com/', description: '글로벌 스트리밍 — 추천·MSA·Chaos Engineering·Realtime data 분야 표준 사례.' },
+      { slug: 'youtube', name: 'YouTube / Google', nameKo: '유튜브 / 구글', blogUrl: 'https://research.google/blog/', description: '검색·추천·대규모 분산 시스템 — Google Research/Engineering 블로그.' },
+      { slug: 'spotify', name: 'Spotify', nameKo: '스포티파이', blogUrl: 'https://engineering.atspotify.com/', description: '추천(BaRT)·검색·플랫폼 엔지니어링(Backstage).' },
+      { slug: 'uber', name: 'Uber', nameKo: '우버', blogUrl: 'https://www.uber.com/blog/engineering/', description: 'MSA 전환·실시간 데이터·결제·지오 인프라.' },
+      { slug: 'stripe', name: 'Stripe', nameKo: '스트라이프', blogUrl: 'https://stripe.com/blog/engineering', description: '결제·정산·멱등성·API 신뢰성 표준 사례.' },
+
       {
         slug: 'my-project',
         name: 'settlement-msa',

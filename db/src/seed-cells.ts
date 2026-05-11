@@ -365,16 +365,63 @@ const SEED: SeedCell[] = [
   {
     companySlug: 'my-project',
     axisSlug: 'failure-recovery',
-    summary: 'Outbox + Admin redrive + Zipkin + Prometheus alert 12 + RUNBOOK 7 INC',
+    summary: 'Kafka + Outbox 패턴 (DB 트랜잭션 안에 outbox_event INSERT → @Scheduled Relay가 polling으로 publish) + Admin redrive + Zipkin + Prometheus alert 12 + RUNBOOK 7 INC',
     evidence: [
       {
-        title: '묶음 E·F·v0.6.1 — Outbox + OutboxAdminController + 분산추적 + 운영 도구',
+        title: '묶음 E·F·v0.6.1 — Kafka + Outbox + OutboxAdminController + 분산추적 + 운영 도구',
         url: 'https://github.com/',
-        quote: 'Outbox 패턴 + OutboxAdminController로 RUNBOOK INC-06 redrive 운영 가능, Brave + Zipkin + MDC로 분산 추적, Prometheus alert 12개 + Grafana 8 panel + 자동 provisioning, 7개 INC 대응 RUNBOOK + ADR 29건. JaCoCo 60% INSTRUCTION + 80% accounting gate.',
+        quote: 'Apache Kafka 브로커로 이벤트 전파 + Outbox 패턴(transaction-service의 OutboxRelay가 1초 polling, KafkaTemplate으로 transaction.created/transaction.refunded 토픽에 publish)으로 dual-write 문제 해결. OutboxAdminController로 RUNBOOK INC-06 redrive 운영, Brave+Zipkin+MDC 분산 추적, Prometheus alert 12 + Grafana 8 panel + RUNBOOK 7 INC + ADR 29건. JaCoCo 60% INSTRUCTION + 80% accounting gate.',
         publishedAt: '2026-05-07',
       },
     ],
     confidence: 0.95,
+  },
+
+  // === my-project 실시간 데이터 (settlement-msa Kafka + Outbox) ===
+  {
+    companySlug: 'my-project',
+    domainSlug: 'realtime-data',
+    axisSlug: 'message-broker',
+    summary: 'Apache Kafka 단일 브로커 + Spring Kafka. JsonSerializer로 도메인 이벤트 직렬화, 토픽은 transaction.created / transaction.refunded 2종',
+    evidence: [
+      {
+        title: 'transaction-service / application.yml — Kafka producer + topic 설정',
+        url: 'https://github.com/',
+        quote: 'spring.kafka.bootstrap-servers: localhost:9092, JsonSerializer 사용. app.kafka.topic: transaction-created=transaction.created, transaction-refunded=transaction.refunded. settlement-service는 동일 브로커에서 group-id=settlement-service로 소비, KafkaConsumerConfig.java에서 created/refunded ConsumerFactory를 분리해 타입별 역직렬화.',
+        publishedAt: '2026-05-07',
+      },
+    ],
+    confidence: 0.92,
+  },
+  {
+    companySlug: 'my-project',
+    domainSlug: 'realtime-data',
+    axisSlug: 'delivery-semantics',
+    summary: 'At-least-once (Outbox + Kafka 재시도) + Idempotency-Key 4중 가드(C-1)로 컨슈머 멱등 처리 → effectively-once 달성',
+    evidence: [
+      {
+        title: '묶음 C-1 — AR Clearing + Idempotency-Key 4중 가드 + Concurrent/Pessimistic IT',
+        url: 'https://github.com/',
+        quote: 'Outbox Relay가 markSent 전 publish가 실패하면 다음 polling에서 재시도(at-least-once). 컨슈머는 Idempotency-Key 4중 가드(요청 키, DB UNIQUE 제약, @Version 낙관적 락, JournalPosting 분개 키)로 중복 처리를 차단해 결과적으로 정확히 한 번 효과. Pessimistic/Concurrent IT 5종으로 회귀 검증.',
+        publishedAt: '2026-05-07',
+      },
+    ],
+    confidence: 0.92,
+  },
+  {
+    companySlug: 'my-project',
+    domainSlug: 'realtime-data',
+    axisSlug: 'partition-routing',
+    summary: 'messageKey = transactionId 기반 파티션 라우팅 — 동일 거래의 created/refunded 이벤트가 같은 파티션에 들어가 컨슈머 측에서 순서 보장',
+    evidence: [
+      {
+        title: 'transaction-service / OutboxRelay.java',
+        url: 'https://github.com/',
+        quote: 'kafkaTemplate.send(event.getTopic(), event.getMessageKey(), payload). messageKey는 transactionId로 고정해 같은 거래의 created → refunded 이벤트가 동일 파티션에 라우팅되도록 한다. 결과적으로 같은 키의 이벤트는 컨슈머에서 순서가 깨지지 않음(Kafka 단일 파티션 내 ordering 보장).',
+        publishedAt: '2026-05-07',
+      },
+    ],
+    confidence: 0.92,
   },
 
   // === 결제·정산 빈 셀 보강 ===
@@ -1391,6 +1438,150 @@ const SEED: SeedCell[] = [
       },
     ],
     confidence: 0.70,
+  },
+
+  // === Global big tech (Phase 2) — Netflix·Stripe·Spotify·Uber·YouTube ===
+  // 검증된 인용은 ≥0.85, URL은 살아있으나 본문 인용 약한 경우 0.75~0.82.
+  {
+    companySlug: 'stripe',
+    axisSlug: 'concurrency-control',
+    summary: 'Idempotency Key를 mutation 엔드포인트에 적용해 클라이언트 재시도 시 결제 중복 차단. 서버 상태 수렴 보장 lockless 방식.',
+    evidence: [{
+      title: 'Designing robust and predictable APIs with idempotency',
+      url: 'https://stripe.com/blog/idempotency',
+      quote: "When a client sees any kind of error, it can ensure the convergence of its own state with the server's by retrying, and can continue to retry until it verifiably succeeds.",
+      publishedAt: '2017-02-22',
+    }],
+    confidence: 0.95,
+  },
+  {
+    companySlug: 'stripe',
+    axisSlug: 'reconciliation',
+    summary: 'Ledger 시스템으로 모든 자금 이동을 추적·검증. 이중기장(double-entry) 원칙 기반 내부 회계 인프라.',
+    evidence: [{
+      title: "Ledger: Stripe's system for tracking and validating money movement",
+      url: 'https://stripe.dev/blog/ledger-stripe-system-for-tracking-and-validating-money-movement',
+      quote: "Ledger: Stripe's system for tracking and validating money movement",
+      publishedAt: '2024-02-16',
+    }],
+    confidence: 0.75,
+  },
+  {
+    companySlug: 'netflix',
+    domainSlug: 'msa-migration',
+    axisSlug: 'decomposition-unit',
+    summary: '2008년 DB 장애를 계기로 단일 Java 모놀리스에서 AWS 기반 마이크로서비스로 7년간 전환. 현재 700개 이상 서비스 운영.',
+    evidence: [{
+      title: 'A Microscope on Microservices',
+      url: 'https://netflixtechblog.com/a-microscope-on-microservices-923b906103f4',
+      quote: 'Netflix has been at the forefront of a microservice-based cloud architecture and has amassed a large number of services.',
+      publishedAt: '2015-02-18',
+    }],
+    confidence: 0.80,
+  },
+  {
+    companySlug: 'netflix',
+    domainSlug: 'realtime-data',
+    axisSlug: 'stream-processing',
+    summary: 'Keystone 플랫폼이 Kafka 기반 이벤트 라우팅과 Apache Flink 기반 스트림 처리를 통합. 초당 800만 이벤트 처리.',
+    evidence: [{
+      title: 'Keystone Real-time Stream Processing Platform',
+      url: 'https://netflixtechblog.com/keystone-real-time-stream-processing-platform-a3ee651812a',
+      quote: 'We are currently focusing on leveraging Apache Flink and build an ecosystem around it for Keystone analytic use cases.',
+      publishedAt: '2018-09-14',
+    }],
+    confidence: 0.85,
+  },
+  {
+    companySlug: 'netflix',
+    domainSlug: 'recommendation',
+    axisSlug: 'candidate-generation',
+    summary: '단순 row 랭킹 대신 stage-wise 접근으로 홈페이지 구성. 다양성·개인화 동시 달성하는 greedy row 선택 알고리즘.',
+    evidence: [{
+      title: 'Learning a Personalized Homepage',
+      url: 'https://netflixtechblog.com/learning-a-personalized-homepage-aa8ec670359a',
+      quote: 'A simple row-ranking approach would lack any notion of diversity, so someone could easily get a page full of slight variations of their interests.',
+      publishedAt: '2015-04-09',
+    }],
+    confidence: 0.82,
+  },
+  {
+    companySlug: 'spotify',
+    domainSlug: 'recommendation',
+    axisSlug: 'candidate-generation',
+    summary: 'BaRT(Bandits for Recommendations as Treatments)로 홈 화면 추천에 탐색-활용 균형 적용. 비-bandit 대비 스트림 비율 유의미 향상.',
+    evidence: [{
+      title: 'Explore, Exploit, Explain: Personalizing Explainable Recommendations with Bandits',
+      url: 'https://research.atspotify.com/publications/explore-exploit-explain-personalizing-explainable-recommendations-with-bandits',
+      quote: 'Experiments on the Home page of Spotify show a significant improvement in stream rate over non-bandit methods.',
+      publishedAt: '2018-10-02',
+    }],
+    confidence: 0.85,
+  },
+  {
+    companySlug: 'spotify',
+    domainSlug: 'msa-migration',
+    axisSlug: 'decomposition-unit',
+    summary: 'Squad 모델로 각 팀이 마이크로서비스를 독립 소유·배포. Backstage 개발자 포털로 수천 개 서비스를 중앙에서 탐색·프로비저닝.',
+    evidence: [{
+      title: 'What the Heck is Backstage Anyway?',
+      url: 'https://engineering.atspotify.com/2020/03/what-the-heck-is-backstage-anyway',
+      quote: 'Creating any new software component at Spotify, such as a new microservice, is done with a few clicks in Backstage.',
+      publishedAt: '2020-03-17',
+    }],
+    confidence: 0.82,
+  },
+  {
+    companySlug: 'uber',
+    domainSlug: 'msa-migration',
+    axisSlug: 'decomposition-unit',
+    summary: '2,200개 마이크로서비스를 70개 도메인으로 재정리한 DOMA 아키텍처 도입. 도메인 게이트웨이 단일 진입점으로 플랫폼 지원 비용 대폭 절감.',
+    evidence: [{
+      title: 'Introducing Domain-Oriented Microservice Architecture',
+      url: 'https://www.uber.com/us/en/blog/microservice-architecture/',
+      quote: 'Instead of orienting around single microservices, we oriented around collections of related microservices. We call these domains.',
+      publishedAt: '2020-07-23',
+    }],
+    confidence: 0.92,
+  },
+  {
+    companySlug: 'uber',
+    domainSlug: 'realtime-data',
+    axisSlug: 'stream-processing',
+    summary: 'Apache Flink과 Spark로 실시간 요금 산정·배차·사기 탐지 파이프라인 운영. Kappa 아키텍처로 배치·스트리밍 파이프라인 통합.',
+    evidence: [{
+      title: 'Designing a Production-Ready Kappa Architecture for Timely Data Stream Processing',
+      url: 'https://www.uber.com/us/en/blog/kappa-architecture-data-stream-processing/',
+      quote: 'At Uber, we use robust data processing systems such as Apache Flink and Apache Spark to power the streaming applications that helps us calculate up-to-date pricing, enhance driver dispatching...',
+      publishedAt: '2020-01-23',
+    }],
+    confidence: 0.92,
+  },
+  {
+    companySlug: 'youtube',
+    domainSlug: 'recommendation',
+    axisSlug: 'candidate-generation',
+    summary: '딥러닝 기반 two-stage 아키텍처: 후보 생성 DNN이 수백만 콘텐츠 중 수백 개를 추출하고, 별도의 랭킹 DNN이 최종 순위 결정.',
+    evidence: [{
+      title: 'Deep Neural Networks for YouTube Recommendations',
+      url: 'https://research.google/pubs/deep-neural-networks-for-youtube-recommendations/',
+      quote: 'The paper is split according to the classic two-stage information retrieval dichotomy: first, we detail a deep candidate generation model and then describe a separate deep ranking model.',
+      publishedAt: '2016-09-15',
+    }],
+    confidence: 0.95,
+  },
+  {
+    companySlug: 'youtube',
+    domainSlug: 'realtime-data',
+    axisSlug: 'stream-processing',
+    summary: 'Google Dataflow 모델(Apache Beam 전신)로 무한 데이터 스트림의 정확성·지연·비용 균형 처리. 2015 VLDB 발표 후 Beam 오픈소스화.',
+    evidence: [{
+      title: 'The Dataflow Model: A Practical Approach to Balancing Correctness, Latency, and Cost',
+      url: 'https://research.google/pubs/pub43864',
+      quote: 'We will never know if or when we have seen all of our data, only that new data will arrive, old data may be retracted, and the only way to make this problem tractable is via principled abstractions.',
+      publishedAt: '2015-08-31',
+    }],
+    confidence: 0.88,
   },
 ];
 

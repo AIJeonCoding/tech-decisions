@@ -606,11 +606,115 @@ const RECOMMENDATION_ARTICLES: SeedArticle[] = [
   },
 ];
 
+// === V1.1 추가: 컬리/무신사/오늘의집/Airbnb/Shopify ===
+const NEW_COMPANIES_ARTICLES: SeedArticle[] = [
+  // --- 컬리 (kurly) ---
+  {
+    companySlug: 'kurly',
+    url: 'https://helloworld.kurly.com/blog/oms-msa-architecture-1/',
+    title: 'OMS의 최적화된 마이크로서비스 아키텍처 디자인',
+    summary: '판매몰과 컬리 풀필먼트 사이 게이트웨이 역할의 OMS를 도메인 단위 12개 MSA로 분리',
+    bodyMd: '컬리의 OMS(주문관리 시스템)는 판매몰과 컬리 풀필먼트의 게이트웨이 역할로써 각 판매처의 결제완료 주문을 컬리 풀필먼트가 이해할 수 있는 주문 정보로 변환하는 역할을 한다. 일종의 "주문 인터프리터" 역할로, 기능과 역할 그리고 관리 비용에 초점을 맞춰 도메인별로 분리해 별도의 MSA로 구성했다. PM 1명 + 엔지니어 3명의 OMS팀이 12개 MSA를 운영하며, 도메인 경계를 명확히 한 분해 단위 덕에 작은 팀으로도 대량의 서비스 운영이 가능하다.',
+    publishedAt: '2024-09-01',
+    domains: ['msa-migration', 'payment-settlement'],
+    tags: ['msa', 'oms', 'order'],
+  },
+  {
+    companySlug: 'kurly',
+    url: 'https://helloworld.kurly.com/blog/market-kurly-service-architecture/',
+    title: '마켓컬리 서비스 구조를 소개합니다',
+    summary: '회원·상품·주문·결제·정산·검색 등 도메인을 MSA로 분리한 마켓컬리 전체 서비스 구조',
+    bodyMd: '마켓컬리는 새벽배송이라는 운영 특성상 주문·결제·재고·정산 흐름이 짧은 시간 안에 동기·비동기로 맞물려야 한다. 회원/상품/주문/결제/정산/검색/배송/CS 등 도메인을 MSA로 분리하고, 서비스 간 통신은 동기 REST + 비동기 이벤트(Kafka)로 분리했다. 새벽배송 마감 시간에 트래픽 피크가 몰리는 패턴에 맞춰 동기/비동기 통신과 데이터 일관성 보장 방식을 세분화했다.',
+    publishedAt: '2022-04-13',
+    domains: ['msa-migration'],
+    tags: ['msa', 'architecture'],
+  },
+
+  // --- 무신사 (musinsa) ---
+  {
+    companySlug: 'musinsa',
+    url: 'https://medium.com/musinsa-tech/musinsapay-d7dd5a22db12',
+    title: '무신사페이 & 무신사 현대카드 도입 비하인드',
+    summary: '토스페이먼츠와 협력한 자체 간편결제 무신사페이 — 21년 1월 오픈, PLCC 개발기',
+    bodyMd: '무신사 결제 시스템은 자체 결제 서비스 "무신사페이"와 타사 PG 서비스를 연동한 "일반결제"로 나뉜다. 무신사페이는 토스페이먼츠와 협력해 개발한 자체 간편결제 시스템으로 2021년 1월 오픈했다. 무신사 서비스는 MSA 구조로 되어 있으며 상품, 주문, 결제, 회원, 검색, 전시 등 독립적인 서비스로 구성된다. PLCC(현대카드)는 회원·혜택 적립을 결제 도메인 안에서 처리하기 위해 결제·정산 흐름과 통합 설계했다.',
+    publishedAt: '2022-08-25',
+    domains: ['payment-settlement', 'msa-migration'],
+    tags: ['payment', 'msa', 'plcc'],
+  },
+  {
+    companySlug: 'musinsa',
+    url: 'https://medium.com/musinsa-tech/%EA%B2%80%EC%83%89%EC%96%B4-%EB%B6%84%EC%84%9D%EC%9D%84-%ED%86%B5%ED%95%9C-%EC%83%81%ED%92%88-%EC%A0%95%EB%A0%AC-%EA%B0%9C%EC%84%A0-b92ded2923c3',
+    title: '검색어 분석을 통한 상품 정렬 개선',
+    summary: '검색어 의도 분석으로 추천순 랭킹 점수 + 브랜드·카테고리 적합도 결합',
+    bodyMd: '무신사 추천순 시스템 아키텍처는 랭킹 점수뿐만 아니라 브랜드나 카테고리 필드에서 적합도 점수 산출을 위한 데이터도 함께 상품 인덱스에 저장한다. 검색어를 형태소·브랜드·카테고리로 분해해 의도를 파악하고, 각 의도 신호에 가중치를 결합해 정렬 점수를 만든다. 인덱스 갱신은 주문/리뷰/재고 등 시그널을 주기적으로 반영하는 파이프라인으로 유지한다.',
+    publishedAt: '2023-05-15',
+    domains: ['search', 'recommendation'],
+    tags: ['search', 'ranking', 'es'],
+  },
+
+  // --- 오늘의집 (bucketplace) ---
+  {
+    companySlug: 'bucketplace',
+    url: 'https://www.bucketplace.com/post/2023-07-13-%EC%9C%A0%EC%82%AC-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%B6%94%EC%B2%9C-%EA%B0%9C%EB%B0%9C-2-%EB%B9%84%EC%8A%B7%ED%95%9C-%EC%83%81%ED%92%88/',
+    title: '유사 이미지 추천 개발 #2 비슷한 상품',
+    summary: 'Hyperbolic Vision Transformers + 카테고리 taxonomy 인지 유사 상품 추천',
+    bodyMd: '오늘의집의 비슷한 상품 추천에서는 시드 이미지에 해당하는 상품과 동일한 카테고리 안의 상품들을 추천해야 하고, 세부 카테고리뿐 아니라 category taxonomy 상 유사 카테고리 안의 상품도 함께 고려해야 한다. Metric Learning 모델로 CVPR2022에 소개된 Hyperbolic Vision Transformers를 선택했다. 온라인 상품 데이터셋에서 좋은 성능을 보였고, 카테고리 계층 구조와 거리(distance) 기반 유사도가 자연스럽게 매칭되기 때문에 채택했다.',
+    publishedAt: '2023-07-13',
+    domains: ['recommendation', 'search'],
+    tags: ['recommendation', 'ml', 'image', 'metric-learning'],
+  },
+
+  // --- Airbnb ---
+  {
+    companySlug: 'airbnb',
+    url: 'https://medium.com/airbnb-engineering/listing-embeddings-for-similar-listing-recommendations-and-real-time-personalization-in-search-601172f7603e',
+    title: 'Listing Embeddings in Search Ranking',
+    summary: '검색 세션 기반 32차원 listing embedding — 검색 + 유사 추천이 예약 전환의 99% 견인',
+    bodyMd: 'Airbnb는 검색 세션에서 학습된 listing의 벡터 표현(listing embedding)을 사용해 유사 listing 추천과 검색 랭킹에서 실시간 개인화를 구현한다. 32 float 차원만으로 위치·가격·listing 유형·건축 스타일 같은 속성을 효과적으로 인코딩한다. 검색 랭킹과 유사 추천이 합쳐 Airbnb 예약 전환의 99%를 견인한다는 점에서, 임베딩이 단순한 보조 기능이 아니라 비즈니스 KPI의 핵심임을 보여준다.',
+    publishedAt: '2018-04-04',
+    domains: ['search', 'recommendation'],
+    tags: ['search', 'embedding', 'ml', 'personalization'],
+  },
+  {
+    companySlug: 'airbnb',
+    url: 'https://medium.com/airbnb-engineering/improving-search-ranking-for-maps-13b03f2c2cca',
+    title: 'Improving Search Ranking for Maps',
+    summary: '리스트 결과 vs 지도 결과의 차이에 맞춰 랭킹 모델을 별도로 적응',
+    bodyMd: 'Airbnb 검색 결과는 두 가지 인터페이스(list-results와 map-results)로 표시된다. 두 인터페이스에서 게스트가 클릭·예약하는 패턴이 다르기 때문에, 단일 랭킹 모델로는 둘 다 최적화하기 어려웠다. 지도 결과 전용으로 랭킹 모델을 재조정해 클릭률과 예약 전환을 개선했다. 같은 데이터에서 다른 표시 방식이 다른 사용자 행동을 만들기 때문에 모델도 표시별로 분리해야 한다는 교훈을 공유한다.',
+    publishedAt: '2024-02-15',
+    domains: ['search', 'recommendation'],
+    tags: ['search', 'ranking', 'maps'],
+  },
+
+  // --- Shopify ---
+  {
+    companySlug: 'shopify',
+    url: 'https://shopify.engineering/building-resilient-payment-systems',
+    title: '10 Tips for Building Resilient Payment Systems',
+    summary: 'Correlation ID + Idempotency Key(ULID) + Pods 격리 + 안전한 재시도로 결제 회복성 확보',
+    bodyMd: 'Shopify 규모에서는 백만분의 1 확률의 네트워크 이벤트가 결제 처리 중에 하루에도 여러 번 발생하기 때문에, 모든 결제 호출은 안전한 재시도(safe retry)가 가능해야 한다. 결제 시도에는 correlation_id를 생성해 모든 컴포넌트에 전파하고, Idempotency Key는 ULID(48-bit 타임스탬프 + 80-bit 랜덤)로 생성해 결제 프로세서가 동일 키 요청을 무시하도록 한다. 인프라는 flat shard 모델 대신 Pods로 분리 — 각 Pod는 독립된 MySQL/Redis/Memcached 인스턴스를 갖는 완전 격리 슬라이스다. Redis는 webhook 전송, 이메일 발송, 결제 재시도, 재고 동기화 같은 비동기 워크플로의 큐로 사용된다.',
+    publishedAt: '2021-11-04',
+    domains: ['payment-settlement', 'msa-migration'],
+    tags: ['payment', 'idempotency', 'resilience'],
+  },
+  {
+    companySlug: 'shopify',
+    url: 'https://shopify.engineering/commerce-payments-protocol',
+    title: 'Introducing the Commerce Payments Protocol',
+    summary: '결제 흐름을 표준 프로토콜로 추상화해 PG·결제 수단·정산 로직을 plug-in 구조로 분리',
+    bodyMd: 'Shopify가 도입한 commerce payments protocol은 결제 흐름(승인·취소·환불·정산)을 표준 프로토콜로 추상화해 결제 수단·PG·정산 로직을 plug-in 구조로 분리한다. 새로운 결제 수단 추가가 코어 변경 없이 가능해지고, 결제 처리 컴포넌트 사이의 책임 경계가 명확해진다.',
+    publishedAt: '2025-02-10',
+    domains: ['payment-settlement'],
+    tags: ['payment', 'protocol', 'plugin'],
+  },
+];
+
 const SEED_ARTICLES = [
   ...PAYMENT_ARTICLES,
   ...SEARCH_ARTICLES,
   ...RECOMMENDATION_ARTICLES,
   ...PLATFORM_ARTICLES,
+  ...NEW_COMPANIES_ARTICLES,
 ];
 
 async function main() {

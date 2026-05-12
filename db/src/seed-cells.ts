@@ -1750,6 +1750,231 @@ async function main() {
   process.exit(0);
 }
 
+// V1.1 새 회사 셀 — SEED 끝에 합쳐서 main()이 호출되기 전에 push.
+const NEW_COMPANY_CELLS: SeedCell[] = [
+  // --- 컬리 (kurly) ---
+  {
+    companySlug: 'kurly',
+    domainSlug: 'msa-migration',
+    axisSlug: 'decomposition-unit',
+    summary: '도메인 단위 12개 MSA — 작은 팀이 운영 가능한 분해 단위',
+    evidence: [
+      {
+        title: 'OMS의 최적화된 마이크로서비스 아키텍처 디자인',
+        url: 'https://helloworld.kurly.com/blog/oms-msa-architecture-1/',
+        quote: '판매몰과 컬리 풀필먼트의 게이트웨이 역할로써 결제완료 주문을 풀필먼트가 이해할 수 있는 주문 정보로 변환하는 OMS를 기능과 역할, 관리 비용에 초점을 맞춰 도메인 분리해 별도의 MSA로 구성. PM 1명 + 엔지니어 3명이 12개 MSA 운영.',
+        publishedAt: '2024-09-01',
+      },
+    ],
+    confidence: 0.86,
+  },
+  {
+    companySlug: 'kurly',
+    domainSlug: 'msa-migration',
+    axisSlug: 'communication',
+    summary: '동기 REST + 비동기 이벤트(Kafka) 통신 분리',
+    evidence: [
+      {
+        title: '마켓컬리 서비스 구조를 소개합니다',
+        url: 'https://helloworld.kurly.com/blog/market-kurly-service-architecture/',
+        quote: '회원/상품/주문/결제/정산/검색/배송/CS 등 도메인을 MSA로 분리하고, 서비스 간 통신은 동기 REST + 비동기 이벤트(Kafka)로 분리.',
+        publishedAt: '2022-04-13',
+      },
+    ],
+    confidence: 0.78,
+  },
+
+  // --- 무신사 (musinsa) ---
+  {
+    companySlug: 'musinsa',
+    domainSlug: 'payment-settlement',
+    axisSlug: 'concurrency-control',
+    summary: '자체 간편결제 무신사페이 + 토스페이먼츠 협력 — 결제 정합성을 PG와 분리해 책임 경계 명확화',
+    evidence: [
+      {
+        title: '무신사페이 & 무신사 현대카드 도입 비하인드',
+        url: 'https://medium.com/musinsa-tech/musinsapay-d7dd5a22db12',
+        quote: '결제 시스템은 자체 결제 서비스 무신사페이와 타사 PG를 연동한 일반결제로 나뉜다. 무신사페이는 토스페이먼츠와 협력해 개발한 자체 간편결제 시스템.',
+        publishedAt: '2022-08-25',
+      },
+    ],
+    confidence: 0.76,
+  },
+  {
+    companySlug: 'musinsa',
+    domainSlug: 'search',
+    axisSlug: 'ranking',
+    summary: '추천순 랭킹 점수 + 브랜드·카테고리 적합도 결합 점수',
+    evidence: [
+      {
+        title: '검색어 분석을 통한 상품 정렬 개선',
+        url: 'https://medium.com/musinsa-tech/%EA%B2%80%EC%83%89%EC%96%B4-%EB%B6%84%EC%84%9D%EC%9D%84-%ED%86%B5%ED%95%9C-%EC%83%81%ED%92%88-%EC%A0%95%EB%A0%AC-%EA%B0%9C%EC%84%A0-b92ded2923c3',
+        quote: '추천순 시스템 아키텍처에서는 랭킹 점수뿐만 아니라, 브랜드나 카테고리 필드에서 적합도 점수 산출을 위한 데이터도 함께 상품 인덱스에 저장.',
+        publishedAt: '2023-05-15',
+      },
+    ],
+    confidence: 0.82,
+  },
+  {
+    companySlug: 'musinsa',
+    domainSlug: 'search',
+    axisSlug: 'query-understanding',
+    summary: '검색어 의도 분해(형태소·브랜드·카테고리) + 의도별 가중치 결합',
+    evidence: [
+      {
+        title: '검색어 분석을 통한 상품 정렬 개선',
+        url: 'https://medium.com/musinsa-tech/%EA%B2%80%EC%83%89%EC%96%B4-%EB%B6%84%EC%84%9D%EC%9D%84-%ED%86%B5%ED%95%9C-%EC%83%81%ED%92%88-%EC%A0%95%EB%A0%AC-%EA%B0%9C%EC%84%A0-b92ded2923c3',
+        quote: '검색어를 형태소·브랜드·카테고리로 분해해 의도를 파악하고, 각 의도 신호에 가중치를 결합해 정렬 점수를 만든다.',
+        publishedAt: '2023-05-15',
+      },
+    ],
+    confidence: 0.78,
+  },
+
+  // --- 오늘의집 (bucketplace) ---
+  {
+    companySlug: 'bucketplace',
+    domainSlug: 'recommendation',
+    axisSlug: 'candidate-generation',
+    summary: 'Hyperbolic Vision Transformer 임베딩 + 카테고리 taxonomy 인지 유사도',
+    evidence: [
+      {
+        title: '유사 이미지 추천 개발 #2 비슷한 상품',
+        url: 'https://www.bucketplace.com/post/2023-07-13-%EC%9C%A0%EC%82%AC-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%B6%94%EC%B2%9C-%EA%B0%9C%EB%B0%9C-2-%EB%B9%84%EC%8A%B7%ED%95%9C-%EC%83%81%ED%92%88/',
+        quote: 'Metric Learning 모델로 CVPR2022의 Hyperbolic Vision Transformers를 선택. 카테고리 taxonomy 상 세부 카테고리뿐만 아니라 유사 카테고리 안의 상품도 함께 고려.',
+        publishedAt: '2023-07-13',
+      },
+    ],
+    confidence: 0.84,
+  },
+  {
+    companySlug: 'bucketplace',
+    domainSlug: 'recommendation',
+    axisSlug: 'reranker',
+    summary: 'Metric Learning 거리 기반 재정렬 — 계층적 카테고리 거리가 유사도와 자연스럽게 매칭',
+    evidence: [
+      {
+        title: '유사 이미지 추천 개발 #2 비슷한 상품',
+        url: 'https://www.bucketplace.com/post/2023-07-13-%EC%9C%A0%EC%82%AC-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%B6%94%EC%B2%9C-%EA%B0%9C%EB%B0%9C-2-%EB%B9%84%EC%8A%B7%ED%95%9C-%EC%83%81%ED%92%88/',
+        quote: '카테고리 계층 구조와 거리(distance) 기반 유사도가 자연스럽게 매칭되기 때문에 Hyperbolic 모델을 채택.',
+        publishedAt: '2023-07-13',
+      },
+    ],
+    confidence: 0.78,
+  },
+
+  // --- Airbnb ---
+  {
+    companySlug: 'airbnb',
+    domainSlug: 'search',
+    axisSlug: 'ranking',
+    summary: '검색 세션 기반 32차원 listing embedding — 검색·유사 추천이 booking 99% 견인',
+    evidence: [
+      {
+        title: 'Listing Embeddings in Search Ranking',
+        url: 'https://medium.com/airbnb-engineering/listing-embeddings-for-similar-listing-recommendations-and-real-time-personalization-in-search-601172f7603e',
+        quote: '32 float 차원만으로 위치·가격·listing 유형·건축 스타일 같은 속성을 효과적으로 인코딩한다. 검색 랭킹과 유사 추천이 합쳐 Airbnb 예약 전환의 99%를 견인.',
+        publishedAt: '2018-04-04',
+      },
+    ],
+    confidence: 0.90,
+  },
+  {
+    companySlug: 'airbnb',
+    domainSlug: 'search',
+    axisSlug: 'index-engine',
+    summary: 'Embedding-Based Retrieval (EBR) — 임베딩으로 1차 후보 좁히고 ML 모델로 재정렬',
+    evidence: [
+      {
+        title: 'Embedding-Based Retrieval for Airbnb Search',
+        url: 'https://airbnb.tech/uncategorized/embedding-based-retrieval-for-airbnb-search/',
+        quote: 'EBR은 초기 적격 listing 집합을 작은 풀로 좁히고, 이후 compute-intensive ML 모델로 검색 랭킹에서 스코어링하는 시스템.',
+        publishedAt: '2023-06-01',
+      },
+    ],
+    confidence: 0.82,
+  },
+  {
+    companySlug: 'airbnb',
+    domainSlug: 'recommendation',
+    axisSlug: 'candidate-generation',
+    summary: 'Listing embedding ANN — 실시간 개인화 검색의 후보 생성에 32차원 벡터 사용',
+    evidence: [
+      {
+        title: 'Listing Embeddings in Search Ranking',
+        url: 'https://medium.com/airbnb-engineering/listing-embeddings-for-similar-listing-recommendations-and-real-time-personalization-in-search-601172f7603e',
+        quote: 'listing 임베딩 벡터로 유사 listing 추천과 실시간 개인화 검색을 동시에 처리.',
+        publishedAt: '2018-04-04',
+      },
+    ],
+    confidence: 0.86,
+  },
+
+  // --- Shopify ---
+  {
+    companySlug: 'shopify',
+    domainSlug: 'payment-settlement',
+    axisSlug: 'concurrency-control',
+    summary: 'Idempotency Key를 ULID로 생성해 결제 프로세서가 동일 키 재요청을 무시',
+    evidence: [
+      {
+        title: '10 Tips for Building Resilient Payment Systems',
+        url: 'https://shopify.engineering/building-resilient-payment-systems',
+        quote: 'Idempotency Key는 ULID(48-bit 타임스탬프 + 80-bit 랜덤)로 생성. 결제 프로세서가 동일 키의 후속 요청을 무시해 이중 청구를 최소화.',
+        publishedAt: '2021-11-04',
+      },
+    ],
+    confidence: 0.92,
+  },
+  {
+    companySlug: 'shopify',
+    domainSlug: 'payment-settlement',
+    axisSlug: 'failure-recovery',
+    summary: 'Correlation ID 전파 + Pods 격리 + 안전한 재시도로 네트워크 장애 흡수',
+    evidence: [
+      {
+        title: '10 Tips for Building Resilient Payment Systems',
+        url: 'https://shopify.engineering/building-resilient-payment-systems',
+        quote: '결제 시도마다 correlation_id를 생성해 모든 컴포넌트에 전파. 백만분의 1 확률 네트워크 이벤트도 매일 여러 번 발생하므로 모든 API 호출은 안전한 재시도가 가능해야 함.',
+        publishedAt: '2021-11-04',
+      },
+    ],
+    confidence: 0.90,
+  },
+  {
+    companySlug: 'shopify',
+    domainSlug: 'msa-migration',
+    axisSlug: 'data-separation',
+    summary: 'Pods — flat shard 대신 MySQL/Redis/Memcached 독립 인스턴스로 완전 격리',
+    evidence: [
+      {
+        title: '10 Tips for Building Resilient Payment Systems',
+        url: 'https://shopify.engineering/building-resilient-payment-systems',
+        quote: 'flat shard 모델을 Pods로 대체. 각 Pod는 자체 MySQL 인스턴스·Redis 노드·Memcached 클러스터를 가진 완전 격리 슬라이스.',
+        publishedAt: '2021-11-04',
+      },
+    ],
+    confidence: 0.88,
+  },
+  {
+    companySlug: 'shopify',
+    domainSlug: 'payment-settlement',
+    axisSlug: 'fee-distribution',
+    summary: 'Commerce Payments Protocol — 결제 흐름을 표준 프로토콜로 추상화해 PG·정산 로직 plug-in 분리',
+    evidence: [
+      {
+        title: 'Introducing the Commerce Payments Protocol',
+        url: 'https://shopify.engineering/commerce-payments-protocol',
+        quote: '결제 흐름(승인·취소·환불·정산)을 표준 프로토콜로 추상화해 결제 수단·PG·정산 로직을 plug-in 구조로 분리. 새 결제 수단 추가가 코어 변경 없이 가능.',
+        publishedAt: '2025-02-10',
+      },
+    ],
+    confidence: 0.80,
+  },
+];
+
+(SEED as SeedCell[]).push(...NEW_COMPANY_CELLS);
+
 main().catch((e) => {
   console.error(e);
   process.exit(1);

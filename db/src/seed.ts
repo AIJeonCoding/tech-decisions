@@ -16,6 +16,9 @@ async function seed() {
       { slug: 'banksalad', name: 'Banksalad', nameKo: '뱅크샐러드', blogUrl: 'https://blog.banksalad.com/' },
       { slug: 'kakaobank', name: 'Kakao Bank', nameKo: '카카오뱅크', blogUrl: 'https://tech.kakaobank.com/' },
       { slug: 'yanolja', name: 'Yanolja', nameKo: '야놀자', blogUrl: 'https://medium.com/yanolja' },
+      { slug: 'kurly', name: 'Kurly', nameKo: '컬리', blogUrl: 'https://helloworld.kurly.com/', description: '새벽배송 컬리 — OMS MSA·검색·추천·재고 정산 사례.' },
+      { slug: 'musinsa', name: 'MUSINSA', nameKo: '무신사', blogUrl: 'https://medium.com/musinsa-tech', description: '패션 e-commerce — 무신사페이 간편결제·검색·추천·MSA.' },
+      { slug: 'bucketplace', name: 'Bucketplace (Ohou.se)', nameKo: '오늘의집', blogUrl: 'https://www.bucketplace.com/post/', description: '라이프스타일 슈퍼앱 — 이미지 검색·유사 상품 추천(Hyperbolic ViT).' },
 
       // Global big tech — cells 단계적으로 채움 (Phase 2). Phase 1: 회사 + 블로그 URL만 노출.
       { slug: 'netflix', name: 'Netflix', nameKo: '넷플릭스', blogUrl: 'https://netflixtechblog.com/', description: '글로벌 스트리밍 — 추천·MSA·Chaos Engineering·Realtime data 분야 표준 사례.' },
@@ -23,6 +26,8 @@ async function seed() {
       { slug: 'spotify', name: 'Spotify', nameKo: '스포티파이', blogUrl: 'https://engineering.atspotify.com/', description: '추천(BaRT)·검색·플랫폼 엔지니어링(Backstage).' },
       { slug: 'uber', name: 'Uber', nameKo: '우버', blogUrl: 'https://www.uber.com/blog/engineering/', description: 'MSA 전환·실시간 데이터·결제·지오 인프라.' },
       { slug: 'stripe', name: 'Stripe', nameKo: '스트라이프', blogUrl: 'https://stripe.com/blog/engineering', description: '결제·정산·멱등성·API 신뢰성 표준 사례.' },
+      { slug: 'airbnb', name: 'Airbnb', nameKo: '에어비앤비', blogUrl: 'https://airbnb.tech/', description: '검색 랭킹·임베딩·추천·글로벌 결제(Pay as a Local).' },
+      { slug: 'shopify', name: 'Shopify', nameKo: '쇼피파이', blogUrl: 'https://shopify.engineering/', description: '결제 회복성·Idempotency Keys(ULIDs)·Pods 아키텍처.' },
 
       {
         slug: 'my-project',
@@ -49,6 +54,11 @@ async function seed() {
     { slug: 'coupang', feed: 'https://medium.com/feed/coupang-engineering/korean', adapter: 'medium-rss', home: 'https://medium.com/coupang-engineering/korean' },
     { slug: 'daangn', feed: 'https://medium.com/feed/daangn', adapter: 'medium-rss', home: 'https://medium.com/daangn' },
     { slug: 'yanolja', feed: 'https://medium.com/feed/yanolja', adapter: 'medium-rss', home: 'https://medium.com/yanolja' },
+    { slug: 'kurly', feed: 'https://helloworld.kurly.com/feed.xml', adapter: 'rss-readability', home: 'https://helloworld.kurly.com/' },
+    { slug: 'musinsa', feed: 'https://medium.com/feed/musinsa-tech', adapter: 'medium-rss', home: 'https://medium.com/musinsa-tech' },
+    { slug: 'bucketplace', feed: 'https://www.bucketplace.com/post/feed', adapter: 'rss-readability', home: 'https://www.bucketplace.com/post/' },
+    { slug: 'airbnb', feed: 'https://medium.com/feed/airbnb-engineering', adapter: 'medium-rss', home: 'https://airbnb.tech/' },
+    { slug: 'shopify', feed: 'https://shopify.engineering/feed', adapter: 'rss-readability', home: 'https://shopify.engineering/' },
   ];
   for (const s of srcs) {
     const cid = bySlug[s.slug];

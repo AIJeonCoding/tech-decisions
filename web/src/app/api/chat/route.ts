@@ -1,11 +1,31 @@
 import { NextRequest } from 'next/server';
 import { z } from 'zod';
-import { localLlmEnabled } from '@/lib/feature-flags';
+import { chatBackendEnabled } from '@/lib/feature-flags';
 import { hybridSearch, type RagHit } from '@/lib/hybrid-search';
 import { generateStream } from '@/lib/local-llm';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+
+/**
+ * Allowed Origins for `/api/chat`. Adding a new public URL? Update this list.
+ * Origin verification is CSRF defense — without it, any third-party page could
+ * trick a logged-in user's browser into burning our Ollama quota.
+ */
+const ALLOWED_ORIGINS = new Set([
+  'https://tech-decisions.vercel.app',
+  'https://tech-decisions-portfolio.vercel.app',
+  'https://tech-decisions-public.vercel.app',
+  'http://localhost:3000',
+  'http://localhost:3001',
+]);
+
+function isOriginAllowed(req: NextRequest): boolean {
+  const origin = req.headers.get('origin');
+  // Same-origin requests in dev tools or curl may omit Origin — allow then.
+  if (!origin) return true;
+  return ALLOWED_ORIGINS.has(origin);
+}
 
 const Body = z.object({
   message: z.string().min(1).max(500),
@@ -35,9 +55,12 @@ function buildContext(hits: RagHit[]): string {
 }
 
 export async function POST(req: NextRequest) {
-  if (!localLlmEnabled()) {
+  if (!isOriginAllowed(req)) {
+    return Response.json({ error: 'forbidden origin' }, { status: 403 });
+  }
+  if (!chatBackendEnabled()) {
     return Response.json(
-      { error: 'LOCAL_LLM_ENABLED=true 환경변수와 ollama 서버가 필요합니다.' },
+      { error: 'LOCAL_LLM_ENABLED 또는 CLOUD_LLM_ENABLED=true 환경변수가 필요합니다.' },
       { status: 503 },
     );
   }

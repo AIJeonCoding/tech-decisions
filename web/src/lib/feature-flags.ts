@@ -27,3 +27,18 @@ export function localLlmEnabled(): boolean {
   return (process.env.LOCAL_LLM_ENABLED ?? 'false').toLowerCase() === 'true';
 }
 
+/**
+ * Whether `/api/chat` should reach out to a Tailscale-Funnel-exposed Ollama
+ * (via a Caddy reverse proxy with Bearer auth) instead of localhost.
+ * Activates the cloud path: `OLLAMA_URL` should point to the Funnel URL and
+ * `LLM_BEARER_TOKEN` must be set.
+ */
+export function cloudLlmEnabled(): boolean {
+  return (process.env.CLOUD_LLM_ENABLED ?? 'false').toLowerCase() === 'true';
+}
+
+/** Either local or cloud mode active. */
+export function chatBackendEnabled(): boolean {
+  return localLlmEnabled() || cloudLlmEnabled();
+}
+

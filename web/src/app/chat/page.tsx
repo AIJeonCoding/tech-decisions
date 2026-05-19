@@ -2,7 +2,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { MessageSquareText, Search, Layers, Sparkles } from 'lucide-react';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
-import { localLlmEnabled } from '@/lib/feature-flags';
+import { chatBackendEnabled } from '@/lib/feature-flags';
 import ChatRoom from './ChatRoom';
 
 export const metadata: Metadata = {
@@ -74,7 +74,7 @@ const QUESTIONS: QA[] = [
 ];
 
 export default function ChatPage() {
-  const enableLocalLlm = localLlmEnabled();
+  const enableLocalLlm = chatBackendEnabled();
 
   return (
     <div className="container-narrow py-10">

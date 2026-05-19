@@ -10,10 +10,20 @@ export const OLLAMA_MODELS = {
   generate: process.env.OLLAMA_GENERATE_MODEL ?? 'qwen3:1.7b',
 } as const;
 
+/**
+ * Build headers — adds Bearer token only when `LLM_BEARER_TOKEN` is set
+ * (cloud mode through a Caddy auth proxy). For pure localhost dev the env is
+ * absent and the header is omitted (Ollama has no auth anyway).
+ */
+function authHeaders(): Record<string, string> {
+  const token = process.env.LLM_BEARER_TOKEN;
+  return token ? { authorization: `Bearer ${token}` } : {};
+}
+
 export async function embedQuery(text: string): Promise<number[]> {
   const res = await fetch(`${BASE_URL}/api/embeddings`, {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
+    headers: { 'content-type': 'application/json', ...authHeaders() },
     body: JSON.stringify({ model: OLLAMA_MODELS.embed, prompt: text }),
   });
   if (!res.ok) throw new Error(`embed HTTP ${res.status}: ${await res.text()}`);
@@ -31,7 +41,7 @@ export async function* generateStream(opts: {
 }): AsyncGenerator<string, void, unknown> {
   const res = await fetch(`${BASE_URL}/api/generate`, {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
+    headers: { 'content-type': 'application/json', ...authHeaders() },
     body: JSON.stringify({
       model: OLLAMA_MODELS.generate,
       prompt: opts.prompt,

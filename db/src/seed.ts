@@ -5,29 +5,40 @@ async function seed() {
   await db
     .insert(companies)
     .values([
-      { slug: 'toss', name: 'Toss', nameKo: '토스', blogUrl: 'https://toss.tech/' },
-      { slug: 'kakaopay', name: 'Kakao Pay', nameKo: '카카오페이', blogUrl: 'https://tech.kakaopay.com/' },
-      { slug: 'coupang', name: 'Coupang Engineering', nameKo: '쿠팡', blogUrl: 'https://medium.com/coupang-engineering/korean' },
-      { slug: 'woowahan', name: 'Woowa Brothers', nameKo: '우아한형제들', blogUrl: 'https://techblog.woowahan.com/' },
-      { slug: 'kakao', name: 'Kakao', nameKo: '카카오', blogUrl: 'https://tech.kakao.com/' },
-      { slug: 'naver-d2', name: 'Naver D2', nameKo: '네이버 D2', blogUrl: 'https://d2.naver.com/' },
-      { slug: 'line', name: 'LINE Engineering', nameKo: '라인', blogUrl: 'https://engineering.linecorp.com/ko' },
-      { slug: 'daangn', name: 'Daangn', nameKo: '당근', blogUrl: 'https://medium.com/daangn' },
-      { slug: 'banksalad', name: 'Banksalad', nameKo: '뱅크샐러드', blogUrl: 'https://blog.banksalad.com/' },
-      { slug: 'kakaobank', name: 'Kakao Bank', nameKo: '카카오뱅크', blogUrl: 'https://tech.kakaobank.com/' },
-      { slug: 'yanolja', name: 'Yanolja', nameKo: '야놀자', blogUrl: 'https://medium.com/yanolja' },
-      { slug: 'kurly', name: 'Kurly', nameKo: '컬리', blogUrl: 'https://helloworld.kurly.com/', description: '새벽배송 컬리 — OMS MSA·검색·추천·재고 정산 사례.' },
-      { slug: 'musinsa', name: 'MUSINSA', nameKo: '무신사', blogUrl: 'https://medium.com/musinsa-tech', description: '패션 e-commerce — 무신사페이 간편결제·검색·추천·MSA.' },
-      { slug: 'bucketplace', name: 'Bucketplace (Ohou.se)', nameKo: '오늘의집', blogUrl: 'https://www.bucketplace.com/post/', description: '라이프스타일 슈퍼앱 — 이미지 검색·유사 상품 추천(Hyperbolic ViT).' },
+      // === Korean bigtech (네카라쿠배당토 + 카카오뱅크) ===
+      { slug: 'toss', name: 'Toss', nameKo: '토스', blogUrl: 'https://toss.tech/', tier: 'bigtech' },
+      { slug: 'kakaopay', name: 'Kakao Pay', nameKo: '카카오페이', blogUrl: 'https://tech.kakaopay.com/', tier: 'bigtech' },
+      { slug: 'coupang', name: 'Coupang Engineering', nameKo: '쿠팡', blogUrl: 'https://medium.com/coupang-engineering/korean', tier: 'bigtech' },
+      { slug: 'woowahan', name: 'Woowa Brothers', nameKo: '우아한형제들', blogUrl: 'https://techblog.woowahan.com/', tier: 'bigtech' },
+      { slug: 'kakao', name: 'Kakao', nameKo: '카카오', blogUrl: 'https://tech.kakao.com/', tier: 'bigtech' },
+      { slug: 'naver-d2', name: 'Naver D2', nameKo: '네이버 D2', blogUrl: 'https://d2.naver.com/', tier: 'bigtech' },
+      { slug: 'line', name: 'LINE Engineering', nameKo: '라인', blogUrl: 'https://engineering.linecorp.com/ko', tier: 'bigtech' },
+      { slug: 'kakaobank', name: 'Kakao Bank', nameKo: '카카오뱅크', blogUrl: 'https://tech.kakaobank.com/', tier: 'bigtech' },
 
-      // Global big tech — cells 단계적으로 채움 (Phase 2). Phase 1: 회사 + 블로그 URL만 노출.
-      { slug: 'netflix', name: 'Netflix', nameKo: '넷플릭스', blogUrl: 'https://netflixtechblog.com/', description: '글로벌 스트리밍 — 추천·MSA·Chaos Engineering·Realtime data 분야 표준 사례.' },
-      { slug: 'youtube', name: 'YouTube / Google', nameKo: '유튜브 / 구글', blogUrl: 'https://research.google/blog/', description: '검색·추천·대규모 분산 시스템 — Google Research/Engineering 블로그.' },
-      { slug: 'spotify', name: 'Spotify', nameKo: '스포티파이', blogUrl: 'https://engineering.atspotify.com/', description: '추천(BaRT)·검색·플랫폼 엔지니어링(Backstage).' },
-      { slug: 'uber', name: 'Uber', nameKo: '우버', blogUrl: 'https://www.uber.com/blog/engineering/', description: 'MSA 전환·실시간 데이터·결제·지오 인프라.' },
-      { slug: 'stripe', name: 'Stripe', nameKo: '스트라이프', blogUrl: 'https://stripe.com/blog/engineering', description: '결제·정산·멱등성·API 신뢰성 표준 사례.' },
-      { slug: 'airbnb', name: 'Airbnb', nameKo: '에어비앤비', blogUrl: 'https://airbnb.tech/', description: '검색 랭킹·임베딩·추천·글로벌 결제(Pay as a Local).' },
-      { slug: 'shopify', name: 'Shopify', nameKo: '쇼피파이', blogUrl: 'https://shopify.engineering/', description: '결제 회복성·Idempotency Keys(ULIDs)·Pods 아키텍처.' },
+      // === Korean scale-ups (공신력 있는 유니콘·중견 스타트업) ===
+      { slug: 'daangn', name: 'Daangn', nameKo: '당근', blogUrl: 'https://medium.com/daangn', tier: 'scaleup' },
+      { slug: 'banksalad', name: 'Banksalad', nameKo: '뱅크샐러드', blogUrl: 'https://blog.banksalad.com/', tier: 'scaleup' },
+      { slug: 'yanolja', name: 'Yanolja', nameKo: '야놀자', blogUrl: 'https://medium.com/yanolja', tier: 'scaleup' },
+      { slug: 'kurly', name: 'Kurly', nameKo: '컬리', blogUrl: 'https://helloworld.kurly.com/', description: '새벽배송 컬리 — OMS MSA·검색·추천·재고 정산 사례.', tier: 'scaleup' },
+      { slug: 'musinsa', name: 'MUSINSA', nameKo: '무신사', blogUrl: 'https://medium.com/musinsa-tech', description: '패션 e-commerce — 무신사페이 간편결제·검색·추천·MSA.', tier: 'scaleup' },
+      { slug: 'bucketplace', name: 'Bucketplace (Ohou.se)', nameKo: '오늘의집', blogUrl: 'https://www.bucketplace.com/post/', description: '라이프스타일 슈퍼앱 — 이미지 검색·유사 상품 추천(Hyperbolic ViT).', tier: 'scaleup' },
+
+      // === Korean scale-ups (신규 추가, 2026-05-20) ===
+      { slug: 'hyperconnect', name: 'Hyperconnect', nameKo: '하이퍼커넥트', blogUrl: 'https://hyperconnect.github.io/', description: 'Azar 영상통화 1B+ 글로벌 사용자 — WebRTC SFU·실시간 ML 매칭·시그널링 인프라.', tier: 'scaleup' },
+      { slug: 'devsisters', name: 'Devsisters', nameKo: '데브시스터즈', blogUrl: 'https://tech.devsisters.com/', description: '쿠키런 글로벌 게임 — Erlang/Elixir 백엔드·게임 서버 아키텍처·실시간 동기화.', tier: 'scaleup' },
+      { slug: 'riiid', name: 'Riiid', nameKo: '뤼이드', blogUrl: 'https://medium.com/riiid-teamblog-kr', description: '산타토익 AI 학습 유니콘 — DKT(Deep Knowledge Tracing)·학습 진도 임베딩·MLOps.', tier: 'scaleup' },
+      { slug: 'socar', name: 'Socar', nameKo: '쏘카', blogUrl: 'https://tech.socarcorp.kr/', description: '카쉐어링 1위 KOSPI 상장 — 차량 예약 동시성·IoT 스트리밍·위치 기반 매칭.', tier: 'scaleup' },
+      { slug: 'mathpresso', name: 'Mathpresso (QANDA)', nameKo: '매스프레소(콴다)', blogUrl: 'https://medium.com/mathpresso', description: '수식 OCR 학습 AI 유니콘 — 수학 문제 검색 임베딩·온디바이스 추론 최적화.', tier: 'scaleup' },
+      { slug: 'bunjang', name: 'Bunjang', nameKo: '번개장터', blogUrl: 'https://medium.com/bunjang-tech-blog', description: '중고거래 플랫폼 — Elasticsearch 상품 검색·이상거래(사기) 탐지 ML·결제 정산.', tier: 'scaleup' },
+
+      // === Global big tech (Phase 1: 회사 + 블로그 URL만 노출) ===
+      { slug: 'netflix', name: 'Netflix', nameKo: '넷플릭스', blogUrl: 'https://netflixtechblog.com/', description: '글로벌 스트리밍 — 추천·MSA·Chaos Engineering·Realtime data 분야 표준 사례.', tier: 'bigtech' },
+      { slug: 'youtube', name: 'YouTube / Google', nameKo: '유튜브 / 구글', blogUrl: 'https://research.google/blog/', description: '검색·추천·대규모 분산 시스템 — Google Research/Engineering 블로그.', tier: 'bigtech' },
+      { slug: 'spotify', name: 'Spotify', nameKo: '스포티파이', blogUrl: 'https://engineering.atspotify.com/', description: '추천(BaRT)·검색·플랫폼 엔지니어링(Backstage).', tier: 'bigtech' },
+      { slug: 'uber', name: 'Uber', nameKo: '우버', blogUrl: 'https://www.uber.com/blog/engineering/', description: 'MSA 전환·실시간 데이터·결제·지오 인프라.', tier: 'bigtech' },
+      { slug: 'stripe', name: 'Stripe', nameKo: '스트라이프', blogUrl: 'https://stripe.com/blog/engineering', description: '결제·정산·멱등성·API 신뢰성 표준 사례.', tier: 'bigtech' },
+      { slug: 'airbnb', name: 'Airbnb', nameKo: '에어비앤비', blogUrl: 'https://airbnb.tech/', description: '검색 랭킹·임베딩·추천·글로벌 결제(Pay as a Local).', tier: 'bigtech' },
+      { slug: 'shopify', name: 'Shopify', nameKo: '쇼피파이', blogUrl: 'https://shopify.engineering/', description: '결제 회복성·Idempotency Keys(ULIDs)·Pods 아키텍처.', tier: 'bigtech' },
 
       {
         slug: 'my-project',
@@ -35,6 +46,7 @@ async function seed() {
         nameKo: '내 프로젝트',
         blogUrl: 'https://github.com/',
         description: 'PG 정산 MSA 포트폴리오 — Spring Boot + Spring Cloud + JPA + Outbox + Prometheus. 회계 항등식 자동 검증 + SRE-ready 운영 도구.',
+        tier: 'personal',
       },
     ])
     .onConflictDoNothing();
@@ -59,6 +71,13 @@ async function seed() {
     { slug: 'bucketplace', feed: 'https://www.bucketplace.com/post/feed', adapter: 'rss-readability', home: 'https://www.bucketplace.com/post/' },
     { slug: 'airbnb', feed: 'https://medium.com/feed/airbnb-engineering', adapter: 'medium-rss', home: 'https://airbnb.tech/' },
     { slug: 'shopify', feed: 'https://shopify.engineering/feed', adapter: 'rss-readability', home: 'https://shopify.engineering/' },
+    // === Korean scale-ups 신규 (2026-05-20) ===
+    { slug: 'hyperconnect', feed: 'https://hyperconnect.github.io/feed.xml', adapter: 'rss-readability', home: 'https://hyperconnect.github.io/' },
+    { slug: 'devsisters', feed: 'https://tech.devsisters.com/rss', adapter: 'rss-readability', home: 'https://tech.devsisters.com/' },
+    { slug: 'riiid', feed: 'https://medium.com/feed/riiid-teamblog-kr', adapter: 'medium-rss', home: 'https://medium.com/riiid-teamblog-kr' },
+    { slug: 'socar', feed: 'https://tech.socarcorp.kr/feed.xml', adapter: 'rss-readability', home: 'https://tech.socarcorp.kr/' },
+    { slug: 'mathpresso', feed: 'https://medium.com/feed/mathpresso', adapter: 'medium-rss', home: 'https://medium.com/mathpresso' },
+    { slug: 'bunjang', feed: 'https://medium.com/feed/bunjang-tech-blog', adapter: 'medium-rss', home: 'https://medium.com/bunjang-tech-blog' },
   ];
   for (const s of srcs) {
     const cid = bySlug[s.slug];

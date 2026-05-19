@@ -9,8 +9,9 @@ const nextConfig = {
   outputFileTracingIncludes: {
     '/**': ['../tech-decisions.db', './tech-decisions.db'],
   },
-  // better-sqlite3 is a native module — exclude from server bundle so Next can still resolve it.
-  serverExternalPackages: ['better-sqlite3'],
+  // Native modules — exclude from server bundle so Node can resolve them via real require.resolve.
+  // sqlite-vec loads its platform-specific .dylib via dynamic require, which webpack stubs.
+  serverExternalPackages: ['better-sqlite3', 'sqlite-vec'],
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'static.toss.im' },

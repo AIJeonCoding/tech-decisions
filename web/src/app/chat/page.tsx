@@ -2,6 +2,8 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { MessageSquareText, Search, Layers, Sparkles } from 'lucide-react';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { localLlmEnabled } from '@/lib/feature-flags';
+import ChatRoom from './ChatRoom';
 
 export const metadata: Metadata = {
   title: '자주 묻는 질문 — 빅테크는 이 문제를 어떻게 풀었나',
@@ -72,64 +74,73 @@ const QUESTIONS: QA[] = [
 ];
 
 export default function ChatPage() {
+  const enableLocalLlm = localLlmEnabled();
+
   return (
     <div className="container-narrow py-10">
-      <Breadcrumbs items={[{ href: '/chat', label: '자주 묻는 질문' }]} />
-      <header className="mb-8">
-        <span className="chip mb-3 inline-flex items-center gap-1">
-          <Sparkles className="w-3 h-3" /> V1.5 — 자주 묻는 질문
-        </span>
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight">
-          빅테크는 이 문제를<br /> 어떻게 풀었지?
-        </h1>
-        <p className="mt-4 text-fg/65 leading-relaxed">
-          자연어 RAG 챗봇은 V2 예정. 그동안 자주 묻는 질문 8개를 정리해뒀습니다.
-          질문 카드를 클릭하면 관련 비교 페이지 + 검색 결과로 이동합니다.
-        </p>
-      </header>
+      <Breadcrumbs items={[{ href: '/chat', label: enableLocalLlm ? '챗봇' : '자주 묻는 질문' }]} />
 
-      <section className="space-y-3">
-        {QUESTIONS.map((qa, i) => (
-          <article key={i} className="card p-5 hover:border-accent/50 transition-colors">
-            <div className="flex items-start gap-3">
-              <span className="shrink-0 w-7 h-7 rounded-full bg-accent/10 text-accent text-xs flex items-center justify-center font-semibold mt-0.5">
-                Q
-              </span>
-              <div className="flex-1 min-w-0">
-                <h2 className="font-semibold text-lg leading-snug">{qa.q}</h2>
-                <p className="mt-2 text-sm text-fg/70 leading-relaxed">{qa.hint}</p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {qa.domain && (
-                    <Link
-                      href={`/compare/${qa.domain}`}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-accent/10 text-accent text-xs font-medium hover:bg-accent/15"
-                    >
-                      <Layers className="w-3 h-3" /> 비교 페이지로
-                    </Link>
-                  )}
-                  <Link
-                    href={`/search?q=${encodeURIComponent(qa.keywords)}${qa.domain ? `&domain=${qa.domain}` : ''}`}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-border text-fg/70 text-xs font-medium hover:bg-muted"
-                  >
-                    <Search className="w-3 h-3" /> 검색 결과 보기
-                  </Link>
+      {enableLocalLlm ? (
+        <ChatRoom />
+      ) : (
+        <>
+          <header className="mb-8">
+            <span className="chip mb-3 inline-flex items-center gap-1">
+              <Sparkles className="w-3 h-3" /> V1.5 — 자주 묻는 질문
+            </span>
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight">
+              빅테크는 이 문제를<br /> 어떻게 풀었지?
+            </h1>
+            <p className="mt-4 text-fg/65 leading-relaxed">
+              자연어 RAG 챗봇은 V2 예정. 그동안 자주 묻는 질문 8개를 정리해뒀습니다.
+              질문 카드를 클릭하면 관련 비교 페이지 + 검색 결과로 이동합니다.
+            </p>
+          </header>
+
+          <section className="space-y-3">
+            {QUESTIONS.map((qa, i) => (
+              <article key={i} className="card p-5 hover:border-accent/50 transition-colors">
+                <div className="flex items-start gap-3">
+                  <span className="shrink-0 w-7 h-7 rounded-full bg-accent/10 text-accent text-xs flex items-center justify-center font-semibold mt-0.5">
+                    Q
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <h2 className="font-semibold text-lg leading-snug">{qa.q}</h2>
+                    <p className="mt-2 text-sm text-fg/70 leading-relaxed">{qa.hint}</p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {qa.domain && (
+                        <Link
+                          href={`/compare/${qa.domain}`}
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-accent/10 text-accent text-xs font-medium hover:bg-accent/15"
+                        >
+                          <Layers className="w-3 h-3" /> 비교 페이지로
+                        </Link>
+                      )}
+                      <Link
+                        href={`/search?q=${encodeURIComponent(qa.keywords)}${qa.domain ? `&domain=${qa.domain}` : ''}`}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-border text-fg/70 text-xs font-medium hover:bg-muted"
+                      >
+                        <Search className="w-3 h-3" /> 검색 결과 보기
+                      </Link>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </article>
-        ))}
-      </section>
+              </article>
+            ))}
+          </section>
 
-      <section className="mt-10 card p-6 bg-accent/5 border-accent/20">
-        <h2 className="font-semibold text-lg flex items-center gap-2">
-          <MessageSquareText className="w-5 h-5 text-accent" /> V2 RAG 챗봇 (준비 중)
-        </h2>
-        <p className="mt-2 text-sm text-fg/65 leading-relaxed">
-          질문을 자유롭게 입력하면 인덱싱된 모든 글에서 출처와 함께 답변하는 챗봇은 V2 예정입니다.
-          코드는 <code className="text-xs bg-muted px-1 py-0.5 rounded">crawler/</code>에 준비되어 있고,
-          ANTHROPIC_API_KEY와 임베딩 인덱스를 활성화하면 바로 동작합니다.
-        </p>
-      </section>
+          <section className="mt-10 card p-6 bg-accent/5 border-accent/20">
+            <h2 className="font-semibold text-lg flex items-center gap-2">
+              <MessageSquareText className="w-5 h-5 text-accent" /> V2 RAG 챗봇 (준비 중)
+            </h2>
+            <p className="mt-2 text-sm text-fg/65 leading-relaxed">
+              질문을 자유롭게 입력하면 인덱싱된 모든 글에서 출처와 함께 답변하는 챗봇은 V2 예정입니다.
+              로컬 Ollama + Gemma E2B 셋업 후 <code className="text-xs bg-muted px-1 py-0.5 rounded">LOCAL_LLM_ENABLED=true</code>로
+              켜면 바로 동작합니다 — 가이드는 <code className="text-xs bg-muted px-1 py-0.5 rounded">docs/LOCAL_RAG.md</code>.
+            </p>
+          </section>
+        </>
+      )}
     </div>
   );
 }

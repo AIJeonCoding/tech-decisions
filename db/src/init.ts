@@ -5,6 +5,10 @@
  */
 import { sqliteHandle } from './index.js';
 
+// nomic-embed-text outputs 768-dim float32. If you switch to bge-m3 (1024)
+// drop the vec tables first — vec0 dims are fixed at create time.
+const EMBED_DIM = 768;
+
 const DDL = `
 CREATE TABLE IF NOT EXISTS companies (
   id          INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -15,6 +19,7 @@ CREATE TABLE IF NOT EXISTS companies (
   github_url  TEXT,
   logo_url    TEXT,
   description TEXT,
+  tier        TEXT NOT NULL DEFAULT 'scaleup',
   created_at  TEXT NOT NULL DEFAULT (datetime('now'))
 );
 CREATE UNIQUE INDEX IF NOT EXISTS companies_slug_idx ON companies(slug);
@@ -117,5 +122,41 @@ CREATE UNIQUE INDEX IF NOT EXISTS cells_axis_company_idx ON cells(axis_id, compa
 
 console.log('Running DDL...');
 sqliteHandle.exec(DDL);
+
+// vec0 virtual tables — require the sqlite-vec extension which is loaded in
+// db/src/index.ts. Mapping tables (article_chunks / cell_chunk_ref) keep the
+// original ids alongside the chunk index so query results can join back.
+const VEC_DDL = `
+CREATE VIRTUAL TABLE IF NOT EXISTS article_embeddings USING vec0(
+  embedding float[${EMBED_DIM}]
+);
+
+CREATE TABLE IF NOT EXISTS article_chunks (
+  rowid       INTEGER PRIMARY KEY,
+  article_id  INTEGER NOT NULL REFERENCES articles(id) ON DELETE CASCADE,
+  chunk_idx   INTEGER NOT NULL,
+  chunk_text  TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS article_chunks_article_idx ON article_chunks(article_id);
+
+CREATE VIRTUAL TABLE IF NOT EXISTS cell_embeddings USING vec0(
+  embedding float[${EMBED_DIM}]
+);
+
+CREATE TABLE IF NOT EXISTS cell_chunks (
+  rowid     INTEGER PRIMARY KEY,
+  cell_id   INTEGER NOT NULL REFERENCES cells(id) ON DELETE CASCADE,
+  chunk_text TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS cell_chunks_cell_idx ON cell_chunks(cell_id);
+`;
+
+try {
+  sqliteHandle.exec(VEC_DDL);
+  console.log('vec0 tables created.');
+} catch (e) {
+  console.warn(`vec0 DDL skipped (extension unavailable): ${(e as Error).message}`);
+}
+
 console.log('DB initialized.');
 process.exit(0);

@@ -18,3 +18,4 @@ tech-decisions.db
 tech-decisions.db-shm
 tech-decisions.db-wal
 .vercel
+.vercel.bak.*

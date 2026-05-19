@@ -10,6 +10,7 @@
     "tag": "tsx src/cli.ts tag",
     "decisions": "tsx src/cli.ts decisions",
     "all": "tsx src/cli.ts all",
+    "embed": "tsx src/cli.ts embed",
     "test": "vitest run",
     "test:watch": "vitest"
   },

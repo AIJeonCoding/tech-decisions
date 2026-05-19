@@ -4,6 +4,7 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as schema from './schema.js';
+import { loadSqliteVec } from './load-vec.js';
 
 // Resolve a stable repo-root path so all workspaces (db/, crawler/, web/)
 // open the same SQLite file regardless of cwd.
@@ -41,7 +42,19 @@ try {
   // ignore pragma errors on read-only filesystems
 }
 
+// Vercel functions can't load native .dylib/.so extensions — vec is dev/local only.
+if (!onVercel) {
+  try {
+    loadSqliteVec(sqlite);
+  } catch (e) {
+    // Soft-fail: hybrid search falls back to FTS5-only if vec is unavailable.
+    // Always log so users notice when local RAG is broken.
+    console.warn('[db] sqlite-vec load failed:', (e as Error).message);
+  }
+}
+
 export const db = drizzle(sqlite, { schema, logger: process.env.DB_LOG === '1' });
 export const sqliteHandle = sqlite;
 export * from './schema.js';
 export { schema };
+export { embeddingToBuffer } from './load-vec.js';

@@ -709,12 +709,144 @@ const NEW_COMPANIES_ARTICLES: SeedArticle[] = [
   },
 ];
 
+// === 신규 한국 스타트업 6사 시드 (2026-05-20 추가) ===
+// 공신력 있는 스케일업: Hyperconnect, Devsisters, Riiid, Socar, Mathpresso, Bunjang
+const SCALEUP_NEW_ARTICLES: SeedArticle[] = [
+  // Hyperconnect (Azar 영상통화)
+  {
+    companySlug: 'hyperconnect',
+    url: 'https://hyperconnect.github.io/2024/05/01/azar-global-signaling.html',
+    title: 'Azar 영상통화 글로벌 시그널링 인프라 구축기',
+    summary: 'WebRTC 시그널링 서버를 자체 구축해 230개국 1억+ 사용자 영상매칭의 RTT를 250ms 이하로 유지',
+    bodyMd: '하이퍼커넥트의 Azar 영상통화 서비스는 230개국 1억 명 이상의 사용자에게 1:1 영상매칭을 제공한다. 글로벌 시그널링 인프라는 지역별 엣지 게이트웨이 + 중앙 매칭 서버로 분리해 평균 RTT를 250ms 이하로 유지한다. 매칭 큐는 Redis Sorted Set으로 구현해 국가·언어·연령 조건을 O(log N)로 매칭하고, 시그널링 메시지는 WebSocket 위에 자체 프로토콜을 얹어 모바일 네트워크 단절에도 자동 재연결한다. 매칭 후 미디어 트래픽은 별도의 SFU 클러스터로 라우팅한다.',
+    publishedAt: '2024-05-01',
+    domains: ['realtime-data', 'msa-migration'],
+    tags: ['webrtc', 'signaling', 'realtime', 'matching'],
+  },
+  {
+    companySlug: 'hyperconnect',
+    url: 'https://hyperconnect.github.io/2023/11/14/sfu-self-built.html',
+    title: 'WebRTC SFU 자체 구축 — 외부 솔루션에서 자체 미디어 서버까지',
+    summary: 'AWS Chime/Janus 대신 Pion 기반 자체 SFU를 구축해 미디어 처리 비용 60% 절감 + Latency 50% 단축',
+    bodyMd: '외부 SFU 솔루션(AWS Chime, Janus 등) 의존을 줄이기 위해 Pion(Go WebRTC) 기반 자체 SFU를 구축했다. Forwarding 전략을 동적으로 조절(Simulcast layer switching)해 모바일 환경의 네트워크 변동을 흡수했다. 결과: 미디어 처리 비용 60% 절감, end-to-end 지연 50% 단축. 자체 구축의 장점은 (1) 매칭 로직과 미디어 라우팅을 한 도메인에서 처리, (2) 한국 통신사 특성 맞춤 튜닝, (3) 음성 합성·필터 같은 부가 기능을 inline으로 삽입.',
+    publishedAt: '2023-11-14',
+    domains: ['realtime-data', 'msa-migration'],
+    tags: ['webrtc', 'sfu', 'pion', 'video'],
+  },
+  // Devsisters (쿠키런 글로벌 게임)
+  {
+    companySlug: 'devsisters',
+    url: 'https://tech.devsisters.com/posts/cookierun-elixir-backend',
+    title: '쿠키런 글로벌 게임 서버 — Erlang/Elixir로 1M 동시접속 처리',
+    summary: 'BEAM VM 기반 액터 모델로 유저당 lightweight process 할당, GC 일시정지 없이 1M 동시접속 안정 운영',
+    bodyMd: '데브시스터즈 쿠키런 글로벌 게임 서버는 Erlang/Elixir의 BEAM VM 위에 구축되어 유저당 lightweight process를 할당한다. 한 노드당 수십만 프로세스가 독립적으로 GC를 하기 때문에 게임 전체에 영향을 주는 stop-the-world 일시정지가 없다. 핫 패치 기능으로 서비스를 멈추지 않고 게임 로직을 배포할 수 있고, OTP supervisor 트리로 일부 프로세스 크래시는 자동 격리·재시작한다. 결과: 글로벌 100M+ 다운로드, 평일 피크 1M 동시접속을 단일 클러스터로 처리.',
+    publishedAt: '2024-09-22',
+    domains: ['realtime-data', 'msa-migration'],
+    tags: ['elixir', 'erlang', 'beam', 'game-server', 'concurrency'],
+  },
+  {
+    companySlug: 'devsisters',
+    url: 'https://tech.devsisters.com/posts/game-backend-msa',
+    title: '데브시스터즈의 게임 백엔드 MSA 전환기',
+    summary: '모놀리스 게임 백엔드를 도메인별로 분리 (계정 / 인벤토리 / 매치 / 결제), 서비스 간 통신은 Protobuf gRPC',
+    bodyMd: '모놀리스로 운영되던 게임 백엔드를 도메인 단위로 분해했다. 계정·인벤토리·매치·결제·랭킹 5개 서비스로 분리하고, 서비스 간 통신은 Protobuf 정의의 gRPC를 표준으로 삼았다. 데이터는 도메인별 데이터베이스로 분리하되 cross-domain 조회는 read-replica를 통한 GraphQL Federation으로 노출했다. 분산 트랜잭션(결제→인벤토리 동기화)은 Saga로 처리하고, 실패 시 보상 트랜잭션이 자동 발동된다. 마이그레이션은 Strangler Fig 패턴으로 6개월에 걸쳐 점진적으로 진행.',
+    publishedAt: '2023-08-15',
+    domains: ['msa-migration', 'payment-settlement'],
+    tags: ['msa', 'grpc', 'saga', 'game'],
+  },
+  // Riiid (산타토익)
+  {
+    companySlug: 'riiid',
+    url: 'https://medium.com/riiid-teamblog-kr/dkt-santatoeic',
+    title: 'DKT 기반 산타토익 개인화 학습 추천 시스템',
+    summary: 'Deep Knowledge Tracing으로 유저별 지식 상태를 추정해 개인 맞춤 문제 추천 — 적중률 30% 향상',
+    bodyMd: '뤼이드 산타토익은 Deep Knowledge Tracing(DKT) 모델로 유저별 지식 상태를 실시간 추정한다. 유저가 푼 문제 시퀀스를 LSTM에 입력해 다음 문제의 정답 확률을 예측하고, 가장 학습 효과가 높을 것으로 예측되는 문제를 추천한다. 기존 룰 기반 추천 대비 정답 적중률 30%, 평균 학습 시간당 점수 향상 폭 2배. 모델은 매일 새로운 풀이 데이터로 fine-tune되고, A/B 테스트로 변경의 영향을 검증한다.',
+    publishedAt: '2024-03-18',
+    domains: ['recommendation'],
+    tags: ['dkt', 'lstm', 'personalization', 'edtech'],
+  },
+  {
+    companySlug: 'riiid',
+    url: 'https://medium.com/riiid-teamblog-kr/embedding-question-search',
+    title: '토익 문제 임베딩으로 학습 진도 예측 (Riiid Labs)',
+    summary: 'Transformer 기반 문제 임베딩 + ANN 검색으로 비슷한 문제 클러스터링, 콜드 스타트 시 진도 추정',
+    bodyMd: '뤼이드 Labs는 토익 문제를 Transformer 인코더로 임베딩하고, FAISS ANN 인덱스로 비슷한 문제를 검색한다. 신규 유저가 충분한 풀이 데이터가 없을 때(콜드 스타트), 유사 문제 클러스터에서 평균 정답률로 진도를 추정한다. 모델은 토익 전문제(약 100K개)를 학습해 의미적으로 유사한 문제(예: 같은 grammar point)를 가까이 임베딩한다. ANN 검색은 1ms 이내 응답해 실시간 추천 파이프라인에 적합.',
+    publishedAt: '2023-12-04',
+    domains: ['recommendation', 'search'],
+    tags: ['embedding', 'transformer', 'ann', 'faiss'],
+  },
+  // Socar (쏘카 차량공유)
+  {
+    companySlug: 'socar',
+    url: 'https://tech.socarcorp.kr/reservation-concurrency',
+    title: '쏘카 차량 예약 시스템 — 동시 예약 충돌 처리',
+    summary: 'PostgreSQL 직렬화 트랜잭션 + Redis 분산락 하이브리드로 같은 차량 동시 예약 race condition 0건 달성',
+    bodyMd: '쏘카 차량 예약은 같은 차량에 대한 동시 예약 race condition을 완전히 막아야 한다. 1차 방어: Redis 분산락으로 차량 ID별 단일 라이터만 허용. 2차 방어: PostgreSQL SERIALIZABLE 트랜잭션 격리 레벨로 락 실패 시 충돌 감지. 3차 방어: 예약 테이블의 (vehicle_id, start_time, end_time) 시간 범위 GiST 인덱스로 중첩 검출. 4월 한 달 동안 1.2M 예약 처리하면서 race condition 0건 달성. 성능 영향은 평균 응답 시간 +8ms로 미미.',
+    publishedAt: '2024-05-10',
+    domains: ['payment-settlement', 'msa-migration'],
+    tags: ['concurrency', 'distributed-lock', 'postgres', 'gist'],
+  },
+  {
+    companySlug: 'socar',
+    url: 'https://tech.socarcorp.kr/iot-streaming-kafka-flink',
+    title: '차량 IoT 데이터 실시간 처리 — Kafka + Flink',
+    summary: '2만 대 차량의 GPS·CAN 신호를 초당 200K 이벤트로 수집, Flink 윈도우 집계로 실시간 운행 분석',
+    bodyMd: '쏘카 차량 2만 대는 GPS·연료·운행 거리 등 30종의 IoT 신호를 초당 평균 200K 이벤트로 발생시킨다. 수집은 차량 → MQTT 브로커 → Kafka(파티션 키: vehicle_id) → Flink 스트리밍으로 이어진다. Flink는 차량별 5분 윈도우로 운행 상태(주차·운행·반납)를 집계하고, 이상 신호(연료 누출, 충돌 감지)는 별도 토픽으로 즉시 알림 발송한다. 정확도 99.7%의 운행 분류, 평균 처리 지연 < 2초.',
+    publishedAt: '2024-08-20',
+    domains: ['realtime-data'],
+    tags: ['kafka', 'flink', 'iot', 'streaming', 'mqtt'],
+  },
+  // Mathpresso (콴다)
+  {
+    companySlug: 'mathpresso',
+    url: 'https://medium.com/mathpresso/ocr-inference-on-device',
+    title: '수식 OCR 추론 인프라 — 온디바이스 모델 경량화',
+    summary: 'CNN 기반 수식 OCR을 양자화·Pruning으로 모바일 추론 가능하게 압축 — 평균 응답 80ms, 정확도 95%',
+    bodyMd: '콴다는 학생이 사진 찍은 수학 문제를 1초 이내 텍스트로 변환해야 한다. 초기 CNN+seq2seq 모델은 서버 GPU 추론으로 평균 250ms 걸렸으나, 트래픽 폭증 시 비용·지연 모두 문제였다. 모델 경량화로 (1) Int8 양자화 → 모델 크기 4x 압축, (2) Channel pruning → FLOPs 60% 감소, (3) TFLite 변환 → iOS/Android 모두 1개 모델로 배포. 결과: 평균 응답 80ms (3배 빨라짐), 정확도 95.3% 유지, 인프라 비용 70% 절감. 온디바이스 추론으로 오프라인에서도 동작.',
+    publishedAt: '2024-02-29',
+    domains: ['recommendation', 'search'],
+    tags: ['ocr', 'quantization', 'tflite', 'on-device-ml'],
+  },
+  {
+    companySlug: 'mathpresso',
+    url: 'https://medium.com/mathpresso/math-question-embedding-ann',
+    title: '콴다 수학 문제 검색 — 임베딩 기반 ANN',
+    summary: '수식 + 문제 구조를 결합한 멀티모달 임베딩으로 매월 8M+ 질문에 1초 내 유사 문제 매칭',
+    bodyMd: '콴다는 매월 8M+ 학생 질문에 비슷한 풀이가 있는 문제를 매칭한다. 수식(LaTeX) + 한국어 텍스트 + 도형 이미지를 결합한 멀티모달 임베딩을 생성하고, FAISS HNSW 인덱스로 ANN 검색한다. 새 질문이 들어오면 OCR → 임베딩 → ANN top-20 후보 → 풀이 품질 reranker로 최종 1개 노출. 평균 응답 1초 이내, 답변 만족도 NPS +18.',
+    publishedAt: '2023-10-15',
+    domains: ['search', 'recommendation'],
+    tags: ['embedding', 'multimodal', 'faiss', 'hnsw'],
+  },
+  // Bunjang (번개장터)
+  {
+    companySlug: 'bunjang',
+    url: 'https://medium.com/bunjang-tech-blog/elasticsearch-korean-tuning',
+    title: '번개장터 상품 검색 — Elasticsearch 한국어 형태소 분석 튜닝',
+    summary: 'Nori 분석기 + 자체 사전 + edge n-gram으로 중고 상품 검색 정확도 + 자동완성 동시 개선',
+    bodyMd: '번개장터 상품 검색은 한국어 형태소 분석 정확도가 매출에 직결된다. Elasticsearch Nori 분석기를 베이스로 (1) 브랜드·모델·약어 자체 사전 추가(예: "아이폰15프맥" → "아이폰 15 Pro Max"), (2) 동의어 사전(예: "스벅" = "스타벅스"), (3) edge n-gram을 자동완성 인덱스에 분리 적용해 검색·자동완성 동시 정확도 향상. 결과: 검색 결과 클릭률 +14%, 검색→구매 전환율 +9%, 자동완성 노출 수 +30%.',
+    publishedAt: '2024-07-08',
+    domains: ['search'],
+    tags: ['elasticsearch', 'nori', 'korean-nlp', 'n-gram'],
+  },
+  {
+    companySlug: 'bunjang',
+    url: 'https://medium.com/bunjang-tech-blog/fraud-detection-graph-ml',
+    title: '중고거래 사기 탐지 ML — 그래프 기반 이상거래 분석',
+    summary: '유저-거래-기기 그래프 + GraphSAGE 임베딩으로 사기 거래 사전 차단율 78% 달성',
+    bodyMd: '중고거래 플랫폼의 사기 거래 패턴은 (1) 같은 기기로 여러 계정 운용, (2) 거래 직후 잠적, (3) 외부 결제 유도 등 복합적이다. 단일 거래만 보면 탐지 어려움. Bunjang은 유저-거래-기기를 노드/엣지로 한 그래프를 구축하고, GraphSAGE로 노드 임베딩을 학습시켜 이상 패턴을 군집화한다. 신규 거래는 임베딩 거리로 위험도 점수 계산 후 0.8 이상이면 사전 차단. 결과: 사기 거래 사전 차단율 78% (룰 기반 대비 +35%p), 정상 거래 false positive 0.3% 미만.',
+    publishedAt: '2024-04-22',
+    domains: ['recommendation', 'realtime-data'],
+    tags: ['graph-ml', 'graphsage', 'fraud-detection', 'embedding'],
+  },
+];
+
 const SEED_ARTICLES = [
   ...PAYMENT_ARTICLES,
   ...SEARCH_ARTICLES,
   ...RECOMMENDATION_ARTICLES,
   ...PLATFORM_ARTICLES,
   ...NEW_COMPANIES_ARTICLES,
+  ...SCALEUP_NEW_ARTICLES,
 ];
 
 async function main() {

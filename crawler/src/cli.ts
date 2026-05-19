@@ -53,11 +53,15 @@ Commands:
         Aggregate decisions into comparison cells.
   all [--limit N]
         Run crawl → summarize → tag → decisions → cells.
+  embed [--force] [--limit N]
+        Generate local Ollama embeddings for articles + cells (RAG index).
 
 Examples:
   pnpm crawl toss --limit 50
   pnpm crawl all --limit 30
   pnpm summarize --limit 100
+  pnpm embed
+  pnpm embed --force
 `;
 
 async function main() {
@@ -105,6 +109,14 @@ async function main() {
       await decisionsBatch({ limit });
       const { buildCells } = await import('./pipeline/cells.js');
       await buildCells({ domain: 'payment-settlement' });
+      return;
+    }
+    case 'embed': {
+      const { embedAll } = await import('./pipeline/embed-local.js');
+      await embedAll({
+        force: Boolean(args.flags.force),
+        limit: args.flags.limit !== undefined ? Number(args.flags.limit) : undefined,
+      });
       return;
     }
     case 'help':

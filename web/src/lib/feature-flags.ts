@@ -18,3 +18,12 @@ export function shouldHideMyProject(): boolean {
   return !includeMyProject();
 }
 
+/**
+ * Whether the /chat page should run as a real RAG chatbot backed by a local
+ * Ollama server. Must stay off in Vercel production (no Ollama there) — the
+ * /chat page falls back to its FAQ-card stub when this is false.
+ */
+export function localLlmEnabled(): boolean {
+  return (process.env.LOCAL_LLM_ENABLED ?? 'false').toLowerCase() === 'true';
+}
+

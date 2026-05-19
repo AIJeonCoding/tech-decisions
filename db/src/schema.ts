@@ -22,6 +22,9 @@ export const companies = sqliteTable(
     githubUrl: text('github_url'),
     logoUrl: text('logo_url'),
     description: text('description'),
+    // 'bigtech' = 네카라쿠배당토 + 글로벌 빅테크 / 'scaleup' = 공신력 유니콘·중견 스타트업
+    // / 'personal' = my-project. 검색 결과 정렬·필터링에 사용.
+    tier: text('tier', { enum: ['bigtech', 'scaleup', 'personal'] }).notNull().default('scaleup'),
     createdAt: text('created_at').default(sql`(datetime('now'))`).notNull(),
   },
   (t) => ({

@@ -7,7 +7,8 @@ import {
 import { db, domains } from '@/lib/db';
 import { getDomainStats, getRecentArticles, getMyProjectCells } from '@/lib/queries';
 import { formatRelative } from '@/lib/utils';
-import { includeMyProject } from '@/lib/feature-flags';
+import { includeMyProject, chatBackendEnabled } from '@/lib/feature-flags';
+import HeroChatCTA from '@/components/HeroChatCTA';
 
 export const dynamic = 'force-dynamic';
 
@@ -83,6 +84,9 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {/* AI 챗봇 강조 — 메인 페이지 hero 바로 아래 */}
+      {chatBackendEnabled() && <HeroChatCTA />}
 
       {/* 첫 화면 예시 — 실제 비교 한 줄 그대로 */}
       {heroRow.length > 0 && (

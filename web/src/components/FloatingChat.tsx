@@ -51,6 +51,20 @@ export default function FloatingChat() {
     }
   }, [open, turns.length]);
 
+  // External components (HeroChatCTA, etc.) open the panel via a custom event.
+  useEffect(() => {
+    function onOpen(e: Event) {
+      setOpen(true);
+      const detail = (e as CustomEvent<{ prompt?: string }>).detail;
+      if (detail?.prompt) {
+        // Auto-fire the question if a prompt was passed in
+        setTimeout(() => ask(detail.prompt!), 350);
+      }
+    }
+    window.addEventListener('open-chat', onOpen);
+    return () => window.removeEventListener('open-chat', onOpen);
+  }, []);
+
   async function ask(question: string) {
     if (!question.trim()) return;
     const turnIdx = turns.length;

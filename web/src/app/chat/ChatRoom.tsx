@@ -44,33 +44,61 @@ export default function ChatRoom() {
     requestAnimationFrame(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }));
 
     try {
-      const res = await fetch('/api/chat', {
+      // Stage 1: Vercel-side init — fast (<1s). Returns HMAC token + RAG context.
+      const initRes = await fetch('/api/chat-init', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ message: question }),
       });
-      if (!res.ok || !res.body) {
-        const txt = await res.text();
+      if (!initRes.ok) {
+        const txt = await initRes.text();
         setTurns((t) =>
-          t.map((tr, i) => (i === turnIdx ? { ...tr, streaming: false, error: txt || `HTTP ${res.status}` } : tr)),
+          t.map((tr, i) => (i === turnIdx ? { ...tr, streaming: false, error: txt || `HTTP ${initRes.status}` } : tr)),
         );
         return;
       }
-      await consumeSse(res.body, (event, data) => {
-        if (event === 'citations') {
-          setTurns((t) => t.map((tr, i) => (i === turnIdx ? { ...tr, citations: data as Citation[] } : tr)));
-        } else if (event === 'token') {
+      const init = (await initRes.json()) as {
+        funnelUrl: string;
+        token: string;
+        model: string;
+        prompt: string;
+        system: string;
+        options?: Record<string, unknown>;
+        citations: Citation[];
+      };
+
+      setTurns((t) => t.map((tr, i) => (i === turnIdx ? { ...tr, citations: init.citations } : tr)));
+
+      // Stage 2: browser → Funnel directly (no 10s Vercel cap). NDJSON streaming.
+      const genRes = await fetch(`${init.funnelUrl}/api/generate`, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          authorization: `Bearer ${init.token}`,
+        },
+        body: JSON.stringify({
+          model: init.model,
+          prompt: init.prompt,
+          system: init.system,
+          stream: true,
+          options: init.options,
+        }),
+      });
+      if (!genRes.ok || !genRes.body) {
+        const txt = await genRes.text().catch(() => '');
+        setTurns((t) =>
+          t.map((tr, i) => (i === turnIdx ? { ...tr, streaming: false, error: txt || `funnel HTTP ${genRes.status}` } : tr)),
+        );
+        return;
+      }
+      await consumeNdjson(genRes.body, (obj) => {
+        if (typeof obj.response === 'string') {
           setTurns((t) =>
-            t.map((tr, i) => (i === turnIdx ? { ...tr, answer: tr.answer + (data as string) } : tr)),
+            t.map((tr, i) => (i === turnIdx ? { ...tr, answer: tr.answer + obj.response } : tr)),
           );
-        } else if (event === 'done') {
+        }
+        if (obj.done) {
           setTurns((t) => t.map((tr, i) => (i === turnIdx ? { ...tr, streaming: false } : tr)));
-        } else if (event === 'error') {
-          setTurns((t) =>
-            t.map((tr, i) =>
-              i === turnIdx ? { ...tr, streaming: false, error: (data as { message: string }).message } : tr,
-            ),
-          );
         }
       });
     } catch (e) {
@@ -90,7 +118,7 @@ export default function ChatRoom() {
           빅테크는 이 문제를<br /> 어떻게 풀었지?
         </h1>
         <p className="mt-3 text-fg/65 text-sm leading-relaxed">
-          모든 추론은 노트북에서 도는 <code className="text-xs bg-muted px-1 py-0.5 rounded">gemma3n:e2b</code> +
+          모든 추론은 노트북에서 도는 <code className="text-xs bg-muted px-1 py-0.5 rounded">qwen3:1.7b</code> +
           <code className="text-xs bg-muted px-1 py-0.5 rounded ml-1">nomic-embed-text</code>로 처리합니다. API 키 0개.
         </p>
       </header>
@@ -199,6 +227,31 @@ function citationLink(c: Citation) {
     );
   }
   return <span>{c.title}</span>;
+}
+
+async function consumeNdjson(
+  body: ReadableStream<Uint8Array>,
+  onObj: (obj: { response?: string; done?: boolean }) => void,
+): Promise<void> {
+  const reader = body.getReader();
+  const decoder = new TextDecoder();
+  let buf = '';
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buf += decoder.decode(value, { stream: true });
+    let nl: number;
+    while ((nl = buf.indexOf('\n')) >= 0) {
+      const line = buf.slice(0, nl).trim();
+      buf = buf.slice(nl + 1);
+      if (!line) continue;
+      try {
+        onObj(JSON.parse(line));
+      } catch {
+        // ignore partial json
+      }
+    }
+  }
 }
 
 async function consumeSse(

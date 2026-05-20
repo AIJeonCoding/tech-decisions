@@ -7,7 +7,7 @@ const BASE_URL = process.env.OLLAMA_URL ?? 'http://localhost:11434';
 
 export const OLLAMA_MODELS = {
   embed: process.env.OLLAMA_EMBED_MODEL ?? 'nomic-embed-text',
-  generate: process.env.OLLAMA_GENERATE_MODEL ?? 'qwen3:1.7b',
+  generate: process.env.OLLAMA_GENERATE_MODEL ?? 'gemma3:1b',
 } as const;
 
 /**

@@ -7,7 +7,7 @@ const BASE_URL = process.env.OLLAMA_URL ?? 'http://localhost:11434';
 
 export const OLLAMA_MODELS = {
   embed: process.env.OLLAMA_EMBED_MODEL ?? 'nomic-embed-text',
-  generate: process.env.OLLAMA_GENERATE_MODEL ?? 'gemma3:1b',
+  generate: process.env.OLLAMA_GENERATE_MODEL ?? 'qwen3:1.7b',
 } as const;
 
 /**
@@ -47,6 +47,7 @@ export async function* generateStream(opts: {
       prompt: opts.prompt,
       system: opts.system,
       stream: true,
+      think: false, // qwen3 thinking 비활성. dense 모델은 무시.
       options: {
         num_predict: opts.maxTokens ?? 180,
         num_ctx: 2048,

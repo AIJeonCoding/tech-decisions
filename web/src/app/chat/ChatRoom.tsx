@@ -63,6 +63,7 @@ export default function ChatRoom() {
         model: string;
         prompt: string;
         system: string;
+        think?: boolean;
         options?: Record<string, unknown>;
         citations: Citation[];
       };
@@ -81,6 +82,7 @@ export default function ChatRoom() {
           prompt: init.prompt,
           system: init.system,
           stream: true,
+          think: init.think ?? false,
           options: init.options,
         }),
       });

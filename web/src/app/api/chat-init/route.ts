@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
 
   const funnelUrl = process.env.OLLAMA_URL;
   const secret = process.env.HMAC_SECRET;
-  const model = process.env.OLLAMA_GENERATE_MODEL ?? 'gemma3:1b';
+  const model = process.env.OLLAMA_GENERATE_MODEL ?? 'qwen3:1.7b';
   if (!funnelUrl || !secret) {
     return Response.json({ error: 'server misconfigured (OLLAMA_URL or HMAC_SECRET missing)' }, { status: 500 });
   }
@@ -112,6 +112,8 @@ export async function POST(req: NextRequest) {
     model,
     prompt,
     system: SYSTEM,
+    // think:false → qwen3 thinking 비활성 (dense 모델은 무시). browser가 그대로 funnel에 전달.
+    think: false,
     options: { num_predict: 180, num_ctx: 2048, temperature: 0.4 },
     citations,
   });

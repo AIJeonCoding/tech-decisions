@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { MessageCircle, Send, Sparkles, X, Loader2 } from 'lucide-react';
+import { MessageCircle, Send, Sparkles, X, Loader2, RotateCcw } from 'lucide-react';
 
 interface Citation {
   source: 'article' | 'cell';
@@ -172,13 +172,31 @@ export default function FloatingChat() {
               </div>
             </div>
           </div>
-          <button
-            aria-label="닫기"
-            onClick={() => setOpen(false)}
-            className="w-8 h-8 rounded-md hover:bg-muted text-fg/60 hover:text-fg flex items-center justify-center transition-colors"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-1">
+            {turns.length > 0 && (
+              <button
+                aria-label="새 대화 시작"
+                onClick={() => {
+                  if (busy) return;
+                  setTurns([]);
+                  setInput('');
+                }}
+                disabled={busy}
+                title="새 대화"
+                className="px-2 h-8 rounded-md hover:bg-muted text-fg/60 hover:text-fg flex items-center gap-1 text-[11px] font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                새 대화
+              </button>
+            )}
+            <button
+              aria-label="닫기"
+              onClick={() => setOpen(false)}
+              className="w-8 h-8 rounded-md hover:bg-muted text-fg/60 hover:text-fg flex items-center justify-center transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         </header>
 
         {/* Body */}

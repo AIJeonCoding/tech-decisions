@@ -1,6 +1,6 @@
 'use client';
 
-import { MessageCircle, Sparkles, ArrowRight } from 'lucide-react';
+import { MessageCircle, Sparkles, ArrowRight, Moon } from 'lucide-react';
 
 const EXAMPLE_PROMPTS = [
   '토스랑 카카오페이의 결제 동시성 처리 차이는?',
@@ -12,11 +12,44 @@ function openChat(prompt?: string) {
   window.dispatchEvent(new CustomEvent('open-chat', { detail: { prompt } }));
 }
 
+interface Props {
+  /** Server-computed: false = 야간 운영시간 외 (KST 19~7시). UI를 톤다운. */
+  isOperating?: boolean;
+}
+
 /**
  * Main-page hero card highlighting the RAG chatbot. Click → dispatches the
  * 'open-chat' window event which FloatingChat listens for.
  */
-export default function HeroChatCTA() {
+export default function HeroChatCTA({ isOperating = true }: Props) {
+  if (!isOperating) {
+    return (
+      <section className="container-wide pb-14">
+        <div className="relative overflow-hidden rounded-3xl border border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent px-6 sm:px-10 py-8">
+          <div className="flex items-start gap-4">
+            <div className="shrink-0 w-12 h-12 rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-300 flex items-center justify-center">
+              <Moon className="w-6 h-6" />
+            </div>
+            <div className="flex-1">
+              <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 mb-2">
+                <span className="text-[10px] font-bold tracking-wider uppercase text-amber-700 dark:text-amber-300">
+                  야간 점검 중
+                </span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-bold tracking-tight">
+                AI 챗봇은 <span className="text-amber-700 dark:text-amber-300">07:00 ~ 19:00 KST</span>에 운영합니다
+              </h2>
+              <p className="mt-2 text-sm text-fg/70 leading-relaxed">
+                노트북에서 도는 로컬 LLM이라 야간엔 발열·전력 절감을 위해 잠시 쉽니다.
+                그 사이 <strong className="text-fg">비교</strong>, <strong className="text-fg">검색</strong>,
+                <strong className="text-fg"> 회사별 페이지</strong>는 정상 동작합니다.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
   return (
     <section className="container-wide pb-14">
       <div className="relative overflow-hidden rounded-3xl border border-accent/30 bg-gradient-to-br from-accent/10 via-fuchsia-500/5 to-violet-500/10 px-6 sm:px-10 py-10 sm:py-12">

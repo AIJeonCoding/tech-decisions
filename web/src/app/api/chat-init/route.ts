@@ -21,6 +21,18 @@ function isOriginAllowed(req: NextRequest): boolean {
   return ALLOWED_ORIGINS.has(origin);
 }
 
+/**
+ * 챗봇 운영 시간 — KST 07:00 ~ 18:59 만 활성. 외 시간은 Mac 발열·전력 절감.
+ * 실제 Funnel은 cron으로 토글되지만, 그 전에 Vercel 단에서 안내 메시지로
+ * 우아하게 차단해야 사용자가 빨간 에러 대신 정중한 안내를 본다.
+ */
+function isWithinOperatingHours(): { ok: true } | { ok: false; hourKst: number } {
+  // Vercel 서버는 UTC. KST = UTC+9.
+  const kstHour = new Date(Date.now() + 9 * 60 * 60 * 1000).getUTCHours();
+  if (kstHour >= 7 && kstHour < 19) return { ok: true };
+  return { ok: false, hourKst: kstHour };
+}
+
 const Body = z.object({ message: z.string().min(1).max(500) });
 
 const SYSTEM = [
@@ -58,6 +70,18 @@ export async function POST(req: NextRequest) {
   if (!chatBackendEnabled()) {
     return Response.json(
       { error: 'CLOUD_LLM_ENABLED=true and OLLAMA_URL/HMAC_SECRET must be set.' },
+      { status: 503 },
+    );
+  }
+  const hours = isWithinOperatingHours();
+  if (!hours.ok) {
+    return Response.json(
+      {
+        scheduledOff: true,
+        hourKst: hours.hourKst,
+        message:
+          '🌙 챗봇 야간 점검 시간입니다. 매일 KST 07:00 ~ 19:00 사이에 운영합니다. 그 외 시간엔 검색·비교·셀 기능을 이용해주세요.',
+      },
       { status: 503 },
     );
   }

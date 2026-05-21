@@ -21,6 +21,7 @@ interface Turn {
   citations: Citation[];
   streaming: boolean;
   error?: string;
+  scheduledOff?: boolean;
 }
 
 const QUICK_PROMPTS = [
@@ -51,9 +52,20 @@ export default function ChatRoom() {
         body: JSON.stringify({ message: question }),
       });
       if (!initRes.ok) {
-        const txt = await initRes.text();
+        const errBody = await initRes.text();
+        let scheduledOff = false;
+        let message = errBody || `HTTP ${initRes.status}`;
+        try {
+          const j = JSON.parse(errBody);
+          if (j.scheduledOff) {
+            scheduledOff = true;
+            message = j.message ?? message;
+          } else if (j.error) {
+            message = j.error;
+          }
+        } catch {}
         setTurns((t) =>
-          t.map((tr, i) => (i === turnIdx ? { ...tr, streaming: false, error: txt || `HTTP ${initRes.status}` } : tr)),
+          t.map((tr, i) => (i === turnIdx ? { ...tr, streaming: false, error: message, scheduledOff } : tr)),
         );
         return;
       }
@@ -149,12 +161,14 @@ export default function ChatRoom() {
               <div className="text-[11px] uppercase tracking-wider text-fg/55 mb-1">질문</div>
               <p className="text-sm leading-relaxed whitespace-pre-wrap">{t.user}</p>
             </div>
-            <div className="card p-4">
+            <div className={`card p-4 ${t.scheduledOff ? 'bg-amber-500/10 border-amber-500/30' : ''}`}>
               <div className="text-[11px] uppercase tracking-wider text-fg/55 mb-1 flex items-center gap-1">
-                <MessageSquareText className="w-3 h-3" /> Gemma E2B 응답
+                <MessageSquareText className="w-3 h-3" /> {t.scheduledOff ? '안내' : 'qwen3:1.7b 응답'}
                 {t.streaming && <Loader2 className="w-3 h-3 animate-spin ml-1" />}
               </div>
-              {t.error ? (
+              {t.scheduledOff ? (
+                <p className="text-sm text-amber-900 dark:text-amber-200 leading-relaxed">{t.error}</p>
+              ) : t.error ? (
                 <p className="text-sm text-red-500">{t.error}</p>
               ) : (
                 <p className="text-sm leading-relaxed whitespace-pre-wrap">{t.answer || '…'}</p>

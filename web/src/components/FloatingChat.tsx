@@ -21,6 +21,7 @@ interface Turn {
   citations: Citation[];
   streaming: boolean;
   error?: string;
+  scheduledOff?: boolean;
 }
 
 const QUICK_PROMPTS = [
@@ -78,9 +79,21 @@ export default function FloatingChat() {
         body: JSON.stringify({ message: question }),
       });
       if (!initRes.ok) {
-        const txt = await initRes.text();
+        // Vercel route가 503 + scheduledOff hint를 줄 수도 — JSON 시도
+        const errBody = await initRes.text();
+        let scheduledOff = false;
+        let message = errBody || `HTTP ${initRes.status}`;
+        try {
+          const j = JSON.parse(errBody);
+          if (j.scheduledOff) {
+            scheduledOff = true;
+            message = j.message ?? message;
+          } else if (j.error) {
+            message = j.error;
+          }
+        } catch {}
         setTurns((t) =>
-          t.map((tr, i) => (i === turnIdx ? { ...tr, streaming: false, error: txt || `HTTP ${initRes.status}` } : tr)),
+          t.map((tr, i) => (i === turnIdx ? { ...tr, streaming: false, error: message, scheduledOff } : tr)),
         );
         return;
       }
@@ -241,8 +254,16 @@ export default function FloatingChat() {
 
               {/* AI bubble */}
               <div className="flex justify-start">
-                <div className="max-w-[90%] rounded-2xl rounded-tl-md bg-muted/40 border border-border text-[13px] px-3 py-2 leading-relaxed">
-                  {t.error ? (
+                <div
+                  className={`max-w-[90%] rounded-2xl rounded-tl-md border text-[13px] px-3 py-2 leading-relaxed ${
+                    t.scheduledOff
+                      ? 'bg-amber-500/10 border-amber-500/30 text-amber-900 dark:text-amber-200'
+                      : 'bg-muted/40 border-border'
+                  }`}
+                >
+                  {t.scheduledOff ? (
+                    <p className="whitespace-pre-wrap leading-relaxed">{t.error}</p>
+                  ) : t.error ? (
                     <span className="text-red-500">{t.error}</span>
                   ) : t.answer ? (
                     <p className="whitespace-pre-wrap">{t.answer}</p>

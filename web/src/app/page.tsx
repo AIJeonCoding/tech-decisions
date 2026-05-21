@@ -85,8 +85,12 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* AI 챗봇 강조 — 메인 페이지 hero 바로 아래 */}
-      {chatBackendEnabled() && <HeroChatCTA />}
+      {/* AI 챗봇 강조 — 메인 페이지 hero 바로 아래. KST 07~19시만 활성 톤. */}
+      {chatBackendEnabled() && (() => {
+        const kstHour = new Date(Date.now() + 9 * 60 * 60 * 1000).getUTCHours();
+        const isOperating = kstHour >= 7 && kstHour < 19;
+        return <HeroChatCTA isOperating={isOperating} />;
+      })()}
 
       {/* 첫 화면 예시 — 실제 비교 한 줄 그대로 */}
       {heroRow.length > 0 && (

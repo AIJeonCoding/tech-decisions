@@ -42,3 +42,4 @@ export function chatBackendEnabled(): boolean {
   return localLlmEnabled() || cloudLlmEnabled();
 }
 
+
